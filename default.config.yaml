@@ -1,0 +1,6 @@
+# @format
+---
+# Date time configurations
+datetime_ntp_server: pool.ntp.org
+datetime_timezone: Asia/Singapore
+datetime_hardware_clock: UTC

@@ -1,5 +1,11 @@
-# Local development directory
-workshop/
+# Local development directories
+.vagrant
+dev-inventory
+Vagrantfile
+workshop.yaml
 
 # Vscode configuration
 .vscode
+
+# Local configuration file
+config.yaml

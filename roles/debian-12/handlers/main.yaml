@@ -1,0 +1,12 @@
+# @format
+---
+- name: Restart timesyncd
+  ansible.builtin.service:
+    name: systemd-timesyncd
+    state: restarted
+  become: true
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+  become: true
