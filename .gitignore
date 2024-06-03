@@ -1,0 +1,5 @@
+# Local development directory
+workshop/
+
+# Vscode configuration
+.vscode
