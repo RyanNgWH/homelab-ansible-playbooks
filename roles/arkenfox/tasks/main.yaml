@@ -1,0 +1,17 @@
+# @format
+---
+- name: Run arkenfox updater on all profiles
+  ansible.builtin.expect:
+    chdir: "{{ arkenfox_profiles_dir }}/{{ item }}"
+    command: "./updater.sh"
+    responses:
+      "(.*)Continue Y/N?(.*)": "y"
+  loop: "{{ arkenfox_profiles }}"
+
+- name: Run arkenfox prefsCleaner on all profiles
+  ansible.builtin.expect:
+    chdir: "{{ arkenfox_profiles_dir }}/{{ item }}"
+    command: "./prefsCleaner.sh"
+    responses:
+      "(.*)#\\?(.*)": "1"
+  loop: "{{ arkenfox_profiles }}"
