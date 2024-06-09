@@ -4,13 +4,13 @@
   hosts: arkenfox
 
   vars_files:
-    - config/arkenfox-default-config.yaml
+    - config/arkenfox/default.config.yaml
 
   pre_tasks:
     - name: Include playbook configuration
       ansible.builtin.include_vars: "{{ item }}"
       with_fileglob:
-        - "{{ playbook_dir }}/config/arkenfox-config.yaml"
+        - "{{ playbook_dir }}/config/arkenfox/config.yaml"
 
   roles:
     - arkenfox

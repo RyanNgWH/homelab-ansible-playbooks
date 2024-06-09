@@ -1,7 +1,0 @@
-# @format
----
-# Override default environment variables here
-arkenfox_profiles:
-  - "2u9pmwhg.Tiny-Amalie-Fingerprinting"
-  - "9krsdn7e.Tiny-Amalie-WebGL"
-  - "otxv2jlp.Tiny-Amalie-Default"
