@@ -4,13 +4,49 @@
 
 Playbooks for the Tinynamoo homelab environment.
 
-## Installation
+# Requirements
 
-1. [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/index.html)
+## Local system
+
+The following softwares must be installed on the local machine before ansible can be used to manage the servers.
+
+- [Ansible](https://docs.ansible.com/ansible/latest/index.html)
+
+## Setup
+
 1. Clone this repository to your local machine
-1. Run `ansible-galaxy install -r roles/requirements.yaml` inside this directory to install the required Ansible dependencies
+1. Install the required Ansible dependencies
 
-## Usage
+```bash
+ansible-galaxy install -r roles/requirements.yaml`
+```
 
-1. Update configurations as required under `config/[application]-config.yaml`. (Configuration variables as well as default values can be found in `config/[application]-default-config.yaml`)
-1. Run the desired playbook using `ansible-playbook -i inventory [playbook].yaml`
+# Usage
+
+1. Add ansible ssh private key to `ssh-agent`
+
+```bash
+# Add ssh key
+ssh-add "/path/to/your/ssh/key"
+
+# Verify key has been added
+ssh-add -L
+```
+
+2. Run the desired playbook
+
+```bash
+ansible-playbook -i inventories [playbook].yaml --ask-become-pass
+```
+
+# Configuration
+
+Each playbook has a configuration file `configs/[playbook].config.yaml`
+
+Default configuration variables for each role can be found in `defaults/[role].config.yaml`
+
+# Playbooks
+
+| Playbook | Description                         | Command                                         |
+| -------- | ----------------------------------- | ----------------------------------------------- |
+| Arkenfox | Update arkenfox on the local system | `ansible-playbook -i inventories arkenfox.yaml` |
