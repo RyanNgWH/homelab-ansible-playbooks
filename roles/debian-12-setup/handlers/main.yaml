@@ -10,3 +10,9 @@
   ansible.builtin.apt:
     update_cache: true
   become: true
+
+- name: Restart ssh
+  ansible.builtin.service:
+    name: ssh
+    state: restarted
+  become: true

@@ -1,5 +1,11 @@
 # @format
 ---
+- name: Ensure systemd-timesyncd is installed
+  ansible.builtin.package:
+    name: systemd-timesyncd
+    state: present
+  become: true
+
 - name: "Set timezone to {{ debian_datetime_timezone }}"
   community.general.timezone:
     hwclock: "{{ debian_datetime_hardware_clock }}"
@@ -18,7 +24,7 @@
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
-- name: Copy debian https sources file
+- name: Ensure apt uses https sources
   ansible.builtin.copy:
     src: files/debian-apt-sources.list
     dest: /etc/apt/sources.list
@@ -31,4 +37,13 @@
     update_cache: true
     upgrade: dist
     autoremove: true
+    purge: true
+  become: true
+
+- name: Harden SSH server
+  ansible.builtin.copy:
+    src: files/ssh_hardening.conf
+    dest: /etc/ssh/sshd_config.d/ssh_hardening.conf
+    mode: "0644"
+  notify: Restart ssh
   become: true
