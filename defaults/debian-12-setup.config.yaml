@@ -1,0 +1,6 @@
+# @format
+---
+# Date time configurations
+debian_datetime_ntp_server: pool.ntp.org
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC

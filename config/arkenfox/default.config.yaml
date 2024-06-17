@@ -1,6 +1,0 @@
-# @format
----
-firefox_profiles_dir: "{{ ansible_env.HOME }}/.mozilla/firefox"
-
-arkenfox_profiles:
-  - default
