@@ -3,9 +3,7 @@
 dev-inventory
 Vagrantfile
 workshop.yaml
+workshop.config.yaml
 
 # Vscode configuration
 .vscode
-
-# Local configuration file
-config.yaml
