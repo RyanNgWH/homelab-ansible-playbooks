@@ -1,0 +1,5 @@
+# @format
+---
+# Hosts
+ansible:
+  hosts: ansible.tinynamoo.com
