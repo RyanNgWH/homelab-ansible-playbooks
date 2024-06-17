@@ -1,55 +1,78 @@
 # @format
 ---
-- name: Ensure systemd-timesyncd is installed
-  ansible.builtin.package:
-    name: systemd-timesyncd
-    state: present
+- name: Setup common Debian 12 configurations
   become: true
+  block:
+    - name: Install and configure time synchronisation
+      notify: Restart timesyncd
+      block:
+        - name: Ensure systemd-timesyncd is installed
+          ansible.builtin.package:
+            name: systemd-timesyncd
+            state: present
 
-- name: "Set timezone to {{ debian_datetime_timezone }}"
-  community.general.timezone:
-    hwclock: "{{ debian_datetime_hardware_clock }}"
-    name: "{{ debian_datetime_timezone }}"
-  notify: Restart timesyncd
-  become: true
+        - name: "Set timezone to {{ debian_datetime_timezone }}"
+          community.general.timezone:
+            hwclock: "{{ debian_datetime_hardware_clock }}"
+            name: "{{ debian_datetime_timezone }}"
 
-- name: Setup time synchronisation
-  ansible.builtin.template:
-    src: templates/timesyncd.conf
-    dest: /etc/systemd/timesyncd.conf
-    mode: "0644"
-  notify: Restart timesyncd
-  become: true
+        - name: Set NTP servers
+          ansible.builtin.template:
+            src: templates/timesyncd.conf
+            dest: /etc/systemd/timesyncd.conf
+            mode: "0644"
 
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
 
-- name: Ensure apt uses https sources
-  ansible.builtin.copy:
-    src: files/debian-apt-sources.list
-    dest: /etc/apt/sources.list
-    mode: "0644"
-  notify: Update apt cache
-  become: true
+    - name: Update apt sources and packages
+      block:
+        - name: Ensure apt uses https sources
+          ansible.builtin.copy:
+            src: files/debian-apt-sources.list
+            dest: /etc/apt/sources.list
+            mode: "0644"
 
-- name: Update apt cache, upgrade packages and remove unused dependencies
-  ansible.builtin.apt:
-    update_cache: true
-    upgrade: dist
-    autoremove: true
-    purge: true
-  become: true
+        - name: Update apt cache, upgrade packages and remove unused dependencies
+          ansible.builtin.apt:
+            update_cache: true
+            upgrade: dist
+            autoremove: true
+            purge: true
 
-- name: Harden SSH server
-  ansible.builtin.copy:
-    src: files/ssh_hardening.conf
-    dest: /etc/ssh/sshd_config.d/ssh_hardening.conf
-    mode: "0644"
-  notify: Restart ssh
-  become: true
+    - name: Harden SSH server
+      ansible.builtin.copy:
+        src: files/ssh_hardening.conf
+        dest: /etc/ssh/sshd_config.d/ssh_hardening.conf
+        mode: "0644"
+      notify: Restart ssh
 
-- name: Ensure unattended-upgrades is installed
-  ansible.builtin.package:
-    name: unattended-upgrades
-    state: present
-  become: true
+    - name: Install unattended-upgrades
+      ansible.builtin.package:
+        name: unattended-upgrades
+        state: present
+
+    - name: Create default VM user with SSH public key
+      block:
+        - name: "Create group: {{ debian_user_name }}"
+          ansible.builtin.group:
+            name: "{{ debian_user_name }}"
+            state: present
+
+        - name: "Create user: {{ debian_user_name }}"
+          ansible.builtin.user:
+            name: "{{ debian_user_name }}"
+            group: "{{ debian_user_name }}"
+            groups:
+              - sudo
+            password: "{{ debian_user_password }}"
+            shell: "{{ debian_user_shell }}"
+            comment: "{{ debian_user_name }}"
+            create_home: true
+            state: present
+
+        - name: "Add SSH auhorised key for user: {{ debian_user_name }}"
+          ansible.posix.authorized_key:
+            user: "{{ debian_user_name }}"
+            key: "{{ debian_user_ssh_public_key }}"
+            state: present
