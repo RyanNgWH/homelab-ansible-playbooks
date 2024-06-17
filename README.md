@@ -18,7 +18,7 @@ The following softwares must be installed on the local machine before ansible ca
 1. Install the required Ansible dependencies
 
 ```bash
-ansible-galaxy install -r roles/requirements.yaml`
+ansible-galaxy install -r roles/requirements.yaml
 ```
 
 # Usage
