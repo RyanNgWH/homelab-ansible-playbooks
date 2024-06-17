@@ -1,9 +1,9 @@
 # @format
 ---
-- name: "Set timezone to {{ datetime_timezone }}"
+- name: "Set timezone to {{ debian_datetime_timezone }}"
   community.general.timezone:
-    hwclock: "{{ datetime_hardware_clock }}"
-    name: "{{ datetime_timezone }}"
+    hwclock: "{{ debian_datetime_hardware_clock }}"
+    name: "{{ debian_datetime_timezone }}"
   notify: Restart timesyncd
   become: true
 
