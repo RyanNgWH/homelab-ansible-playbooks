@@ -32,7 +32,7 @@
   notify: Update apt cache
   become: true
 
-- name: Update apt cache, upgrade packages and remove unused dependencies.
+- name: Update apt cache, upgrade packages and remove unused dependencies
   ansible.builtin.apt:
     update_cache: true
     upgrade: dist
@@ -46,4 +46,10 @@
     dest: /etc/ssh/sshd_config.d/ssh_hardening.conf
     mode: "0644"
   notify: Restart ssh
+  become: true
+
+- name: Ensure unattended-upgrades is installed
+  ansible.builtin.package:
+    name: unattended-upgrades
+    state: present
   become: true
