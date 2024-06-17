@@ -3,14 +3,15 @@
 - name: Update Arkenfox on all Firefox profiles that have it installed.
   hosts: arkenfox
 
-  vars_files:
-    - config/arkenfox/default.config.yaml
-
   pre_tasks:
+    - name: Include roles default configurations
+      ansible.builtin.include_vars:
+        file: "defaults/{{ item }}.config.yaml"
+      loop: "{{ ansible_play_role_names }}"
     - name: Include playbook configuration
       ansible.builtin.include_vars: "{{ item }}"
       with_fileglob:
-        - "{{ playbook_dir }}/config/arkenfox/config.yaml"
+        - "{{ playbook_dir }}/configs/arkenfox.config.yaml"
 
   roles:
     - arkenfox
