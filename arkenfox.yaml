@@ -7,11 +7,6 @@
   hosts: arkenfox
 
   pre_tasks:
-    - name: Include roles default configurations
-      ansible.builtin.include_vars:
-        file: "defaults/{{ item }}.config.yaml"
-      loop: "{{ ansible_play_role_names }}"
-
     - name: Include playbook configuration
       ansible.builtin.include_vars: "{{ item }}"
       with_fileglob:
