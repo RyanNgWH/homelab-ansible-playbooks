@@ -47,6 +47,6 @@ Default configuration variables for each role can be found in `defaults/[role].c
 
 # Playbooks
 
-| Playbook | Description                         | Command                                         |
-| -------- | ----------------------------------- | ----------------------------------------------- |
-| Arkenfox | Update arkenfox on the local system | `ansible-playbook -i inventories arkenfox.yaml` |
+| Playbook | Description                          | Command                                         |
+| -------- | ------------------------------------ | ----------------------------------------------- |
+| Arkenfox | Update arkenfox on installed systems | `ansible-playbook -i inventories arkenfox.yaml` |
