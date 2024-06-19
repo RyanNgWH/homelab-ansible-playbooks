@@ -36,14 +36,18 @@ This role utilises modules from the following collections that is not part of `a
 | `debian_user_name`           | Username of default VM user to be created.                                                                                                            | `debian`    |
 | `debian_user_password`       | Hashed password of default VM user to be created. Use `*` to lock user password.<br><br>Hashed password can be generated using `mkpasswd -m SHA-512`. | `*`         |
 | `debian_user_shell`          | Shell of the default VM user to be created.                                                                                                           | `/bin/bash` |
-| `debian_user_ssh_public_key` | SSH public key of the default VM user to be created.                                                                                                  |             |
+| `debian_user_ssh_public_key` | Path to SSH public key of the default VM user to be created.                                                                                          |             |
 
 ## Example Playbook
 
 ```
-    - hosts: servers
-      roles:
-         - { role: debian-12-setup, debian_datetime_ntp_server: 0.debian.pool.ntp.org, debian_user_name: ansible }
+- hosts: debian
+  vars:
+    - debian_datetime_ntp_server: 0.debian.pool.ntp.org
+    - debian_user_name: ansible
+
+  roles:
+      - debian-12-setup
 ```
 
 ## Author Information
