@@ -1,0 +1,52 @@
+# @format
+---
+- name: Install docker engine
+  become: true
+  block:
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - architecture
+          - distribution_release
+
+    - name: Ensure ca-certificates package is present
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+        update_cache: true
+        state: present
+
+    - name: Ensure apt keyrings directory exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+
+    - name: Add docker's official gpg key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/debian/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Add docker repository to apt sources
+      ansible.builtin.template:
+        src: templates/apt-docker.list
+        dest: /etc/apt/sources.list.d/docker.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Install docker packages
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        update_cache: true
+        state: present
