@@ -33,20 +33,18 @@ ssh-add "/path/to/your/ssh/key"
 ssh-add -L
 ```
 
-2. Run the desired playbook
+2. Run the desired playbook from the root of this project
 
 ```bash
-ansible-playbook -i inventories [playbook].yaml --ask-become-pass
+ansible-playbook playbooks/<application>/main.yaml [--ask-become-pass]
 ```
 
 # Configuration
 
-Each playbook has a configuration file `configs/[playbook].config.yaml`
-
-Default configuration variables for each role can be found in `defaults/[role].config.yaml`
+Each playbook has an associated configuration file `playbooks/<application>/config.yaml`
 
 # Playbooks
 
 | Playbook | Description                          | Command                                         |
 | -------- | ------------------------------------ | ----------------------------------------------- |
-| Arkenfox | Update arkenfox on installed systems | `ansible-playbook -i inventories arkenfox.yaml` |
+| Arkenfox | Update arkenfox on installed systems | `ansible-playbook playbooks/arkenfox/main.yaml` |
