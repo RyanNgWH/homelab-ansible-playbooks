@@ -1,0 +1,105 @@
+# @format
+---
+- name: Install and configure NFSv4 client with Kerberos authentication
+  become: true
+  block:
+    - name: Ensure NFS user is present
+      block:
+        - name: Ensure NFS group is present
+          ansible.builtin.group:
+            name: "{{ nfs_user_name }}"
+            gid: "{{ nfs_user_id }}"
+            system: true
+            state: present
+
+        - name: Ensure NFS user is present
+          ansible.builtin.user:
+            name: "{{ nfs_user_name }}"
+            group: "{{ nfs_user_name }}"
+            password: "*"
+            shell: "/usr/sbin/nologin"
+            create_home: true
+            uid: "{{ nfs_user_id }}"
+            state: present
+
+    - name: Install NFS and Kerberos clients
+      ansible.builtin.apt:
+        name:
+          - nfs-common
+          - krb5-user
+        update_cache: true
+        state: present
+
+    - name: Configure Kerberos client
+      block:
+        - name: Copy kerberos configuration file (krb5.conf)
+          ansible.builtin.template:
+            src: templates/krb5.conf
+            dest: /etc/krb5.conf
+            mode: "0644"
+
+        - name: Copy host keytab file to server
+          ansible.builtin.copy:
+            src: "{{ nfs_krb5_host_keytab_file }}"
+            dest: /etc/krb5.keytab
+            owner: root
+            group: root
+            mode: "0600"
+
+        - name: Ensure user keytab directory is present
+          ansible.builtin.file:
+            path: "/home/{{ nfs_user_name }}/.config/"
+            owner: "{{ nfs_user_name }}"
+            group: "{{ nfs_user_name }}"
+            mode: "0755"
+            state: directory
+
+        - name: Copy user keytab file to server
+          ansible.builtin.copy:
+            src: "{{ nfs_krb5_user_keytab_file }}"
+            dest: "/home/{{ nfs_user_name }}/.config/krb5.keytab"
+            owner: "{{ nfs_user_name }}"
+            group: "{{ nfs_user_name }}"
+            mode: "0400"
+
+        - name: Ensure rpc-gssd systemd service is enabled and running
+          ansible.builtin.systemd_service:
+            name: rpc-gssd.service
+            enabled: true
+            state: started
+
+        - name: Create systemd service for automated kinit of the user principal
+          ansible.builtin.template:
+            src: templates/nfs-kinit.service
+            dest: /etc/systemd/system/nfs-kinit.service
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Create systemd timer for daily kinit of user principal
+          ansible.builtin.copy:
+            src: files/nfs-kinit.timer
+            dest: /etc/systemd/system/nfs-kinit.timer
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Enable and start nfs-kinit.service
+          ansible.builtin.systemd_service:
+            name: nfs-kinit.service
+            daemon_reload: true
+            enabled: true
+            state: reloaded
+
+        - name: Enable nfs-kinit.timer
+          ansible.builtin.systemd_service:
+            name: nfs-kinit.timer
+            enabled: true
+
+    - name: Configure NFS mount
+      ansible.posix.mount:
+        src: "{{ nfs_mount_server }}:/{{ nfs_mount_share }}"
+        path: "{{ nfs_mount_point }}"
+        fstype: nfs
+        opts: "nfsvers=4,proto=tcp,port=2049,sec=krb5p,lazytime,auto,_netdev"
+        state: mounted

@@ -1,0 +1,13 @@
+[Unit]
+Description=Perform kinit automatically for {{ nfs_user_name }} (NFS4 Kerberos access)
+After=network-online.target default.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/bash -c "kinit -l 25h -r 7d -k -t /home/{{ nfs_user_name }}/.config/krb5.keytab $USER"
+User={{ nfs_user_name }}
+Group={{ nfs_user_name }}
+
+[Install]
+WantedBy=default.target
