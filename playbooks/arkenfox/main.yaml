@@ -10,7 +10,7 @@
     - name: Include playbook configuration
       ansible.builtin.include_vars: "{{ item }}"
       with_fileglob:
-        - "{{ playbook_dir }}/configs/arkenfox.config.yaml"
+        - "{{ playbook_dir }}/config.yaml"
 
   roles:
     - arkenfox

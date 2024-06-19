@@ -2,8 +2,7 @@
 .vagrant
 dev-inventory
 Vagrantfile
-workshop.yaml
-workshop.config.yaml
+playbooks/workshop
 
 # Vscode configuration
 .vscode
