@@ -44,16 +44,16 @@ This role utilises modules from the following collections that is not part of `a
 ```
 - hosts: nfs
   vars:
-    - nfs_krb5_realm: TINYNAMOO.COM
-    - nfs_krb5_kdc: storage.tinynamoo.com
-    - nfs_krb5_admin_server: storage.tinynamoo.com
-    - nfs_krb5_host_keytab_file: "/path/to/your/host/keytab/file"
-    - nfs_krb5_user_keytab_file: "/path/to/your/user/keytab/file"
-    - nfs_user_name: wikij
-    - nfs_user_id: 170
-    - nfs_mount_server: storage.tinynamoo.com
-    - nfs_mount_share: winter
-    - nfs_mount_point: /srv/winter
+    nfs_krb5_realm: TINYNAMOO.COM
+    nfs_krb5_kdc: storage.tinynamoo.com
+    nfs_krb5_admin_server: storage.tinynamoo.com
+    nfs_krb5_host_keytab_file: "/path/to/your/host/keytab/file"
+    nfs_krb5_user_keytab_file: "/path/to/your/user/keytab/file"
+    nfs_user_name: wikij
+    nfs_user_id: 170
+    nfs_mount_server: storage.tinynamoo.com
+    nfs_mount_share: winter
+    nfs_mount_point: /srv/winter
 
   roles:
       - nfsv4-client-setup

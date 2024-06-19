@@ -43,8 +43,8 @@ This role utilises modules from the following collections that is not part of `a
 ```
 - hosts: debian
   vars:
-    - debian_datetime_ntp_server: 0.debian.pool.ntp.org
-    - debian_user_name: ansible
+    debian_datetime_ntp_server: 0.debian.pool.ntp.org
+    debian_user_name: ansible
 
   roles:
       - debian-12-setup

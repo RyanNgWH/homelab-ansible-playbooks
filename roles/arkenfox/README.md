@@ -26,8 +26,12 @@ This role requires the following software to be installed:
 
 ```
     - hosts: arkenfox
+      vars:
+        arkenfox_profiles:
+          - 1usdf3hd.Default
+          - 29sdfh3s.Arkenfox-Installed
       roles:
-         - { role: arkenfox, arkenfox_profiles: [ "1usdf3hd.Default", 29sdfh3s.Arkenfox-Installed"] }
+         - arkenfox
 ```
 
 ## Author Information
