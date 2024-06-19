@@ -1,5 +1,10 @@
 # @format
 ---
+- name: Gather facts
+  ansible.builtin.setup:
+    gather_subset:
+      - env
+
 - name: Run arkenfox updater on all profiles
   ansible.builtin.expect:
     chdir: "{{ arkenfox_profiles_dir }}/{{ item }}"
