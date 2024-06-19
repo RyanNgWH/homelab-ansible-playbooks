@@ -7,8 +7,9 @@
       notify: Restart timesyncd
       block:
         - name: Ensure systemd-timesyncd is installed
-          ansible.builtin.package:
+          ansible.builtin.apt:
             name: systemd-timesyncd
+            update_cache: true
             state: present
 
         - name: "Set timezone to {{ debian_datetime_timezone }}"
@@ -48,8 +49,9 @@
       notify: Restart ssh
 
     - name: Install unattended-upgrades
-      ansible.builtin.package:
+      ansible.builtin.apt:
         name: unattended-upgrades
+        update_cache: true
         state: present
 
     - name: Create default VM user with SSH public key
