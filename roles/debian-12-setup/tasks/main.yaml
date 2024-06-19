@@ -4,7 +4,7 @@
   become: true
   block:
     - name: Install and configure time synchronisation
-      notify: Restart timesyncd
+      notify: Restart timesyncd service
       block:
         - name: Ensure systemd-timesyncd is installed
           ansible.builtin.apt:
@@ -46,7 +46,7 @@
         src: files/ssh_hardening.conf
         dest: /etc/ssh/sshd_config.d/ssh_hardening.conf
         mode: "0644"
-      notify: Restart ssh
+      notify: Restart ssh service
 
     - name: Install unattended-upgrades
       ansible.builtin.apt:
@@ -73,7 +73,7 @@
             create_home: true
             state: present
 
-        - name: "Add SSH auhorised key for user: {{ debian_user_name }}"
+        - name: "Add SSH authorised key for user: {{ debian_user_name }}"
           ansible.posix.authorized_key:
             user: "{{ debian_user_name }}"
             key: "{{ debian_user_ssh_public_key }}"
