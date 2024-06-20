@@ -1,0 +1,121 @@
+# @format
+---
+- name: Install nginx packages
+  become: true
+  ansible.builtin.apt:
+    name:
+      - nginx
+      - nginx-extras
+    update_cache: true
+    state: present
+
+- name: Copy nginx configuration files
+  become: true
+  block:
+    - name: Copy nginx https configuration file
+      ansible.builtin.copy:
+        src: files/nginx.https.conf
+        dest: /etc/nginx/https.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Copy application configuration files
+      ansible.builtin.template:
+        src: "{{ item.path }}"
+        dest: "/etc/nginx/conf.d/{{ item.filename }}"
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ nginx_conf_files }}"
+
+- name: Configure nginx user and group
+  become: true
+  ansible.builtin.lineinfile:
+    path: /etc/nginx/nginx.conf
+    line: "user {{ nginx_user }} {{ nginx_group }};"
+    regexp: "^user www-data;"
+    state: present
+
+- name: Configure TLS with certbot & cloudflare
+  become: true
+  block:
+    - name: Install certbot
+      ansible.builtin.apt:
+        name:
+          - python3-certbot-dns-cloudflare
+        update_cache: true
+        state: present
+
+    - name: Ensure root secrets directory is present
+      ansible.builtin.file:
+        path: /root/.secrets
+        owner: root
+        group: root
+        mode: "0700"
+        state: directory
+
+    - name: Configure cloudflare credentials
+      ansible.builtin.copy:
+        content: |
+          # Cloudflare API token used by Certbot
+          dns_cloudflare_api_token = {{ nginx_tls_cloudflare_api_token }}
+        dest: /root/.secrets/cloudflare.ini
+        owner: root
+        group: root
+        mode: "0400"
+
+    - name: Copy certbot global configuration file
+      ansible.builtin.copy:
+        src: files/nginx.certbot.cli.ini
+        dest: /etc/letsencrypt/cli.ini
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure post hook directory exists
+      ansible.builtin.file:
+        path: /etc/letsencrypt/renewal-hooks/post
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+
+    - name: Create post hook to reload nginx on cert renewal
+      ansible.builtin.copy:
+        src: files/nginx.certbot.reload-nginx.sh
+        dest: /etc/letsencrypt/renewal-hooks/post/reload-nginx.sh
+        owner: root
+        group: root
+        mode: "0750"
+
+    - name: Generate certificates using certbot
+      ansible.builtin.command:
+        cmd: >-
+          certbot certonly
+          -a dns-cloudflare
+          --dns-cloudflare-credentials /root/.secrets/cloudflare.ini
+          --dns-cloudflare-propagation-seconds {{ nginx_tls_timeout }}
+          --preferred-challenge dns
+          --domains {{ item }}
+          --non-interactive
+          --post-hook /etc/letsencrypt/renewal-hooks/post/reload-nginx.sh
+          --email {{ certbot_admin_email }}
+          --agree-tos
+      register: certbot_output
+      changed_when: "'Successfully received certificate.\n' in certbot_output.stdout_lines"
+      loop: "{{ nginx_tls_domains }}"
+
+    - name: Generate dhparams
+      community.crypto.openssl_dhparam:
+        path: /etc/letsencrypt/ssl-dhparams.pem
+        owner: root
+        group: root
+        mode: "0644"
+        size: 4096
+        state: present
+
+    - name: Reload nginx configuration
+      ansible.builtin.command:
+        cmd: nginx -s reload
+      changed_when: true

@@ -7,3 +7,7 @@
 - name: Install docker
   ansible.builtin.include_tasks: docker.yaml
   when: "'docker' in task_list"
+
+- name: Install and configure nginx
+  ansible.builtin.include_tasks: nginx.yaml
+  when: "'nginx' in task_list"
