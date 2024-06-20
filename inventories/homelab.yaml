@@ -3,3 +3,6 @@
 # Hosts
 ansible:
   hosts: ansible.tinynamoo.com
+
+piped:
+  hosts: tube.tinynamoo.com

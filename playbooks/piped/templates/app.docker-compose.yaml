@@ -1,0 +1,66 @@
+services:
+  piped-frontend:
+    image: 1337kavin/piped-frontend:latest
+    restart: unless-stopped
+    depends_on:
+      - piped
+    environment:
+      BACKEND_HOSTNAME: {{ piped_backend_hostname }}
+    container_name: piped-frontend
+  piped-proxy:
+    image: 1337kavin/piped-proxy:latest
+    restart: unless-stopped
+    environment:
+      - UDS=1
+    volumes:
+      - piped-proxy:/app/socket
+    container_name: piped-proxy
+  piped:
+    image: 1337kavin/piped:latest
+    restart: unless-stopped
+    volumes:
+      - ./config/config.properties:/app/config.properties:ro
+    depends_on:
+      - postgres
+    container_name: piped-backend
+  nginx:
+    image: nginx:mainline-alpine
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./config/pipedapi.conf:/etc/nginx/conf.d/pipedapi.conf:ro
+      - ./config/pipedproxy.conf:/etc/nginx/conf.d/pipedproxy.conf:ro
+      - ./config/pipedfrontend.conf:/etc/nginx/conf.d/pipedfrontend.conf:ro
+      - ./config/ytproxy.conf:/etc/nginx/snippets/ytproxy.conf:ro
+      - piped-proxy:/var/run/ytproxy
+    container_name: nginx
+    depends_on:
+      - piped
+      - piped-proxy
+      - piped-frontend
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
+    volumes:
+      - {{ piped_database_dir }}:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=piped
+      - POSTGRES_USER=piped
+      - POSTGRES_PASSWORD="{{ piped_database_password }}"
+    container_name: postgres
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+  watchtower:
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+    container_name: watchtower
+    command: piped-frontend piped-backend piped-proxy varnish nginx postgres watchtower
+volumes:
+  piped-proxy: null

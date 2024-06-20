@@ -1,0 +1,45 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.20.1
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User
+debian_user_name: twyla
+debian_user_shell: /bin/bash
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEulGGxOvUZV2Po2aUFZLOZpYbcdsy+uMkkL3Ldkvbqq twyla@tube.tinynamoo.com"
+
+## NFSv4-client-setup variables
+# Kerberos
+nfs_krb5_realm: TINYNAMOO.COM
+nfs_krb5_kdc: storage.tinynamoo.com
+nfs_krb5_admin_server: storage.tinynamoo.com
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Twyla] Piped/host.keytab"
+nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Twyla] Piped/user.keytab"
+
+# NFS
+nfs_user_name: piped
+nfs_user_id: 204
+nfs_mount_server: storage.tinynamoo.com
+nfs_mount_share: twyla
+nfs_mount_point: /srv/twyla
+
+## Piped variables
+piped_backend_hostname: tubeapi.tinynamoo.com
+piped_frontend_hostname: tube.tinynamoo.com
+piped_proxy_hostname: tubeproxy.tinynamoo.com
+
+piped_database_dir: /srv/twyla/data/db
+
+## NGINX variables
+nginx_conf_files:
+  - filename: piped-frontend.conf
+    path: templates/nginx.piped-frontend.conf
+  - filename: piped-backend.conf
+    path: templates/nginx.piped-backend.conf
+  - filename: piped-proxy.conf
+    path: templates/nginx.piped-proxy.conf
+
+certbot_admin_email: admin@tinynamoo.com
