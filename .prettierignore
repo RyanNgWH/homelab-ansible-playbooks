@@ -1,0 +1,2 @@
+# Docker compose templates
+playbooks/*/templates/docker-compose.yaml
