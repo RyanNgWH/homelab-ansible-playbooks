@@ -18,7 +18,7 @@ The following softwares must be installed on the local machine before ansible ca
 1. Install the required Ansible dependencies
 
 ```bash
-ansible-galaxy install -r roles/requirements.yaml
+ansible-galaxy install -r requirements.yaml
 ```
 
 # Usage
@@ -36,7 +36,7 @@ ssh-add -L
 2. Run the desired playbook from the root of this project
 
 ```bash
-ansible-playbook playbooks/<application>/main.yaml [--ask-become-pass]
+ansible-playbook playbooks/<application>/main.yaml [--ask-become-pass] [--ask-vault-pass]
 ```
 
 # Configuration
