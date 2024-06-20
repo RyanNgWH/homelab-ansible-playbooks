@@ -89,6 +89,15 @@
         group: root
         mode: "0750"
 
+    - name: Generate dhparams
+      community.crypto.openssl_dhparam:
+        path: /etc/letsencrypt/ssl-dhparams.pem
+        owner: root
+        group: root
+        mode: "0644"
+        size: 4096
+        state: present
+
     - name: Generate certificates using certbot
       ansible.builtin.command:
         cmd: >-
@@ -105,15 +114,6 @@
       register: certbot_output
       changed_when: "'Successfully received certificate.\n' in certbot_output.stdout_lines"
       loop: "{{ nginx_tls_domains }}"
-
-    - name: Generate dhparams
-      community.crypto.openssl_dhparam:
-        path: /etc/letsencrypt/ssl-dhparams.pem
-        owner: root
-        group: root
-        mode: "0644"
-        size: 4096
-        state: present
 
     - name: Reload nginx configuration
       ansible.builtin.command:
