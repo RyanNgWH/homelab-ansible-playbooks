@@ -2,7 +2,7 @@ BASEDIR:=$(shell dab basedir)
 
 all: info/init_ok
 	dab bootstrap --minimal
-	dab install ca-certificates sudo
+	dab install ca-certificates sudo python3
 
 	dab exec groupadd ansible
 	dab exec useradd -m -c ansible -g ansible -G sudo -p \$$6\$$iYzj9V7kedB7jEtK\$$tRL09.kJ9JNQ4t16GNAxpzK1xEBID0GGkr9/J79LrtKTVYyBqSJnX3vkFf0KV4JPV0KUL9pqI1bqtGW1Ac27e/ -s "/bin/bash" ansible
