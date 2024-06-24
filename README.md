@@ -17,27 +17,27 @@ The following softwares must be installed on the local machine before ansible ca
 1. Clone this repository to your local machine
 1. Install the required Ansible dependencies
 
-```bash
-ansible-galaxy install -r requirements.yaml
-```
+   ```bash
+   ansible-galaxy install -r requirements.yaml
+   ```
 
 # Usage
 
 1. Add ansible ssh private key to `ssh-agent`
 
-```bash
-# Add ssh key
-ssh-add "/path/to/your/ssh/key"
+   ```bash
+   # Add ssh key
+   ssh-add "/path/to/your/ssh/key"
 
-# Verify key has been added
-ssh-add -L
-```
+   # Verify key has been added
+   ssh-add -L
+   ```
 
-2. Run the desired playbook from the root of this project
+1. Run the desired playbook from the root of this project
 
-```bash
-ansible-playbook playbooks/<application>/main.yaml [--ask-become-pass] [--ask-vault-pass]
-```
+   ```bash
+   ansible-playbook playbooks/<application>/main.yaml [-K --ask-become-pass] [-J --ask-vault-pass]
+   ```
 
 # Configuration
 
@@ -45,6 +45,8 @@ Each playbook has an associated configuration file `playbooks/<application>/conf
 
 # Playbooks
 
-| Playbook | Description                          | Command                                         |
-| -------- | ------------------------------------ | ----------------------------------------------- |
-| Arkenfox | Update arkenfox on installed systems | `ansible-playbook playbooks/arkenfox/main.yaml` |
+| Playbook            | Description                                      | Command                                                       | Notes                                                                |
+| ------------------- | ------------------------------------------------ | ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Arkenfox            | Update arkenfox on installed systems             | `ansible-playbook playbooks/arkenfox/main.yaml`               |                                                                      |
+| Piped               | Install and configure Piped youtube proxy server | `ansible-playbook playbooks/piped/main.yaml -KJ`              |                                                                      |
+| Debian LXC Template | Generate a Debian LXC template                   | `ansible-playbook playbooks/debian-lxc-template/main.yaml -K` | Save location of generated template can be modified in `config.yaml` |
