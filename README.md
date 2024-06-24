@@ -45,8 +45,9 @@ Each playbook has an associated configuration file `playbooks/<application>/conf
 
 # Playbooks
 
-| Playbook            | Description                                      | Command                                                       | Notes                                                                |
-| ------------------- | ------------------------------------------------ | ------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Arkenfox            | Update arkenfox on installed systems             | `ansible-playbook playbooks/arkenfox/main.yaml`               |                                                                      |
-| Piped               | Install and configure Piped youtube proxy server | `ansible-playbook playbooks/piped/main.yaml -KJ`              |                                                                      |
-| Debian LXC Template | Generate a Debian LXC template                   | `ansible-playbook playbooks/debian-lxc-template/main.yaml -K` | Save location of generated template can be modified in `config.yaml` |
+| Playbook            | Description                                           | Command                                                       | Notes                                                                |
+| ------------------- | ----------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Arkenfox            | Update arkenfox on installed systems                  | `ansible-playbook playbooks/arkenfox/main.yaml`               |                                                                      |
+| Debian LXC Template | Generate a Debian LXC template                        | `ansible-playbook playbooks/debian-lxc-template/main.yaml -K` | Save location of generated template can be modified in `config.yaml` |
+| IT-Tools            | Install and configure IT-Tools developer tools server | `ansible-playbook playbooks/it-tools/main.yaml -KJ`           |                                                                      |
+| Piped               | Install and configure Piped youtube proxy server      | `ansible-playbook playbooks/piped/main.yaml -KJ`              |                                                                      |

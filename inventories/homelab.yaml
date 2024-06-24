@@ -1,14 +1,17 @@
 # @format
 ---
 # Hosts
-ansible_vm:
-  hosts: ansible.tinynamoo.com
-
 ansible_lxc:
   hosts: ansible.lxc.tinynamoo.com
 
+ansible_vm:
+  hosts: ansible.tinynamoo.com
+
 piped:
   hosts: tube.tinynamoo.com
+
+it_tools:
+  hosts: tools.tinynamoo.com
 
 # Groups
 ansible:

@@ -1,0 +1,9 @@
+# @format
+---
+services:
+  it-tools:
+    image: "ghcr.io/corentinth/it-tools:latest"
+    ports:
+      - "8080:80"
+    restart: unless-stopped
+    container_name: it-tools
