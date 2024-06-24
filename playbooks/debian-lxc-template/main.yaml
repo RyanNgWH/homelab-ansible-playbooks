@@ -31,25 +31,6 @@
           - distribution_version
 
   tasks:
-    - name: Remove cloud-init
-      block:
-        - name: Ensure cloud-init pve configuration is removed
-          ansible.builtin.file:
-            path: /etc/cloud/cloud.cfg.d/99_pve.cfg
-            state: absent
-
-        - name: Ensure cloud-init user configuration is removed
-          ansible.builtin.file:
-            path: /etc/cloud/cloud.cfg.d/50_default_user.cfg
-            state: absent
-
-        - name: Ensure cloud-init is not installed
-          ansible.builtin.apt:
-            name: cloud-init
-            autoremove: true
-            purge: true
-            state: absent
-
     - name: Add proxmox repository key
       ansible.builtin.get_url:
         url: https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg
