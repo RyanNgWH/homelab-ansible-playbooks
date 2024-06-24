@@ -1,0 +1,113 @@
+# @format
+
+# Debian LXC template
+# Generate a Debian LXC template
+---
+- name: Generate a Debian LXC template.
+  hosts: ansible
+  become: true
+
+  vars:
+    debian_architecture:
+      {
+        "armv6l": "armhf",
+        "armv7l": "armhf",
+        "aarch64": "arm64",
+        "x86_64": "amd64",
+        "i386": "i386",
+      }
+
+  pre_tasks:
+    - name: Include playbook configuration
+      ansible.builtin.include_vars: "{{ item }}"
+      with_fileglob:
+        - "{{ playbook_dir }}/config.yaml"
+
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - architecture
+          - distribution_release
+          - distribution_version
+
+  tasks:
+    - name: Remove cloud-init
+      block:
+        - name: Ensure cloud-init pve configuration is removed
+          ansible.builtin.file:
+            path: /etc/cloud/cloud.cfg.d/99_pve.cfg
+            state: absent
+
+        - name: Ensure cloud-init user configuration is removed
+          ansible.builtin.file:
+            path: /etc/cloud/cloud.cfg.d/50_default_user.cfg
+            state: absent
+
+        - name: Ensure cloud-init is not installed
+          ansible.builtin.apt:
+            name: cloud-init
+            autoremove: true
+            purge: true
+            state: absent
+
+    - name: Add proxmox repository key
+      ansible.builtin.get_url:
+        url: https://enterprise.proxmox.com/debian/proxmox-release-bookworm.gpg
+        dest: /etc/apt/trusted.gpg.d/proxmox-release-bookworm.gpg
+        checksum: sha512:7da6fe34168adc6e479327ba517796d4702fa2f8b4f0a9833f5ea6e6b48f6507a6da403a274fe201595edc86a84463d50383d07f64bdde2e3658108db7d6dc87
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Add proxmox repository
+      ansible.builtin.template:
+        src: templates/pve-install-repo.list
+        dest: /etc/apt/sources.list.d/pve-install-repo.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure dab is installed
+      ansible.builtin.apt:
+        name: dab
+        update_cache: true
+        state: present
+
+    - name: Create temporary image generation directory
+      ansible.builtin.file:
+        path: ~/debian-{{ ansible_distribution_version }}-minimal
+        owner: root
+        group: root
+        mode: "0644"
+        state: directory
+
+    - name: Create dab configuration file
+      ansible.builtin.template:
+        src: templates/dab.conf
+        dest: ~/debian-{{ ansible_distribution_version }}-minimal/dab.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Create dab makefile
+      ansible.builtin.template:
+        src: templates/Makefile
+        dest: ~/debian-{{ ansible_distribution_version }}-minimal/Makefile
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Generate LXC template
+      community.general.make:
+        chdir: ~/debian-{{ ansible_distribution_version }}-minimal
+
+    - name: Retrieve generated LXC template
+      ansible.builtin.fetch:
+        src: "~/debian-{{ ansible_distribution_version }}-minimal/debian-{{ ansible_distribution_major_version }}-minimal_{{ ansible_distribution_version }}_{{ debian_architecture[ansible_architecture] }}.tar.gz"
+        dest: "{{ lxc_template_save_directory }}"
+        flat: true
+
+    - name: Clean makefile directory
+      community.general.make:
+        chdir: ~/debian-{{ ansible_distribution_version }}-minimal
+        target: clean
