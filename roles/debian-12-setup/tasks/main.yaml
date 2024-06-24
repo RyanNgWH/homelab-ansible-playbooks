@@ -1,10 +1,16 @@
 # @format
 ---
+- name: Gather facts
+  ansible.builtin.setup:
+    gather_subset:
+      - virtualization_type
+
 - name: Setup common Debian 12 configurations
   become: true
   block:
     - name: Install and configure time synchronisation
       notify: Restart timesyncd service
+      when: ansible_virtualization_type != "lxc"
       block:
         - name: Ensure systemd-timesyncd is installed
           ansible.builtin.apt:
