@@ -31,7 +31,7 @@ This role utilises modules from the following collections that is not part of `a
 | `nginx_conf_files`               | List of nginx configuration files objects. Each object has 2 fields `filename` & `path`.                                                                |         | Refer to the example playbooks below         |
 | `nginx_tls_cloudflare_api_token` | Cloudflare API token for generating TLS certificates.                                                                                                   |         |                                              |
 | `nginx_tls_domains`              | List of domains to generate TLS certificates for.                                                                                                       |         | `[ "site1.domain.com", "site2.domain.com" ]` |
-| `nginx_tls_timeout`              | Timeout duration to wait for DNS verification. Increase this if verification is failing (especially if you are creating multiple certificates at once). | `10`    | `25`                                         |
+| `nginx_tls_timeout`              | Timeout duration to wait for DNS verification. Increase this if verification is failing (especially if you are creating multiple certificates at once). | `20`    | `25`                                         |
 | `certbot_admin_email`            | Admin email for certbot registration and renewal emails.                                                                                                |         | `admin@domain.com`                           |
 
 ## Example Playbooks
