@@ -16,6 +16,9 @@ piped:
 vikunja:
   hosts: tasks.tinynamoo.com
 
+wallos:
+  hosts: subs.tinynamoo.com
+
 # Groups
 ansible:
   children:

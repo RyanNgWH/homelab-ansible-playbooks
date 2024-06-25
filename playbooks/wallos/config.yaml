@@ -1,0 +1,40 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.20.1
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User
+debian_user_name: sana
+debian_user_shell: /bin/bash
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMPaSbA11SgZYlWJbeNl1niswr8o7nlfW+zfxHvj7n7a sana@subs.tinynamoo.com"
+
+## NFSv4-client-setup variables
+# Kerberos
+nfs_krb5_realm: TINYNAMOO.COM
+nfs_krb5_kdc: storage.tinynamoo.com
+nfs_krb5_admin_server: storage.tinynamoo.com
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sana] Wallos/host.keytab"
+nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sana] Wallos/user.keytab"
+
+# NFS
+nfs_user_name: wallos
+nfs_user_id: 220
+nfs_mount_server: storage.tinynamoo.com
+nfs_mount_share: sana
+nfs_mount_point: /srv/sana
+
+## PHP configurations
+php_version: 8.2
+
+## Wallos configurations
+wallos_domain: subs.tinynamoo.com
+
+## NGINX variables
+nginx_conf_files:
+  - filename: wallos.conf
+    path: templates/nginx.wallos.conf
+
+certbot_admin_email: admin@tinynamoo.com
