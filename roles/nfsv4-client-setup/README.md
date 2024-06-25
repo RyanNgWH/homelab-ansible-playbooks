@@ -31,13 +31,13 @@ This role utilises modules from the following collections that is not part of `a
 
 ### NFS
 
-| Variable           | Description                      | Default | Example                |
-| ------------------ | -------------------------------- | ------- | ---------------------- |
-| `nfs_user_name`    | Username of NFS user.            |         | `wikijs`               |
-| `nfs_user_id`      | UID & GID of the NFS user.       |         | `170`                  |
-| `nfs_mount_server` | NFS server domain name.          |         | `storage.tinynamoo.com |
-| `nfs_mount_share`  | NFS share to be mounted          |         | `winter`               |
-| `nfs_mount_point`  | Directory to mount the NFS share |         | `/srv/winter`          |
+| Variable           | Description                      | Default | Example                 |
+| ------------------ | -------------------------------- | ------- | ----------------------- |
+| `nfs_user_name`    | Username of NFS user.            |         | `wikijs`                |
+| `nfs_user_id`      | UID & GID of the NFS user.       |         | `170`                   |
+| `nfs_mount_server` | NFS server domain name.          |         | `storage.tinynamoo.com` |
+| `nfs_mount_share`  | NFS share to be mounted          |         | `winter`                |
+| `nfs_mount_point`  | Directory to mount the NFS share |         | `/srv/winter`           |
 
 ## Example Playbook
 
