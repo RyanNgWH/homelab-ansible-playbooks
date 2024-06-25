@@ -112,7 +112,7 @@
           --email {{ certbot_admin_email }}
           --agree-tos
       register: certbot_output
-      changed_when: "'Successfully received certificate.\n' in certbot_output.stdout_lines"
+      changed_when: "'Successfully received certificate.' in certbot_output.stdout_lines"
       loop: "{{ nginx_tls_domains }}"
 
     - name: Reload nginx configuration
