@@ -34,7 +34,7 @@
   ansible.builtin.lineinfile:
     path: /etc/nginx/nginx.conf
     line: "user {{ nginx_user }} {{ nginx_group }};"
-    regexp: "^user www-data;"
+    regexp: "^user .*;"
     state: present
 
 - name: Configure TLS with certbot & cloudflare
