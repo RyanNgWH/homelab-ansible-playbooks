@@ -1,0 +1,10 @@
+---
+service:
+  publicurl: https://{{ vikunja_domain }}
+  enableregistration: true
+  timezone: Asia/Singapore
+mailer:
+  enabled: true
+  host: {{ vikunja_mail_server }}
+  port: {{ vikunja_mail_server_port }}
+  fromemail: {{ vikunja_mail_from_email }}

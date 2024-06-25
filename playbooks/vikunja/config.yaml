@@ -1,0 +1,40 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.20.1
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User
+debian_user_name: tiffany
+debian_user_shell: /bin/bash
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINY1cjFF1ODCuCJdBIJW1SHlgHMicZeAm4wrm+7nBTmH tiffany@tasks.tinynamoo.com"
+
+## NFSv4-client-setup variables
+# Kerberos
+nfs_krb5_realm: TINYNAMOO.COM
+nfs_krb5_kdc: storage.tinynamoo.com
+nfs_krb5_admin_server: storage.tinynamoo.com
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Tiffany] Vikunja/host.keytab"
+nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Tiffany] Vikunja/user.keytab"
+
+# NFS
+nfs_user_name: vikunja
+nfs_user_id: 240
+nfs_mount_server: storage.tinynamoo.com
+nfs_mount_share: tiffany
+nfs_mount_point: /srv/tiffany
+
+## Vikunja configurations
+vikunja_domain: tasks.tinynamoo.com
+vikunja_mail_server: smtp.tinynamoo.com
+vikunja_mail_server_port: 25
+vikunja_mail_from_email: sunny@mail.tinynamoo.com
+
+## NGINX variables
+nginx_conf_files:
+  - filename: vikunja.conf
+    path: templates/nginx.vikunja.conf
+
+certbot_admin_email: admin@tinynamoo.com

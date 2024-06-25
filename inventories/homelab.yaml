@@ -7,11 +7,14 @@ ansible_lxc:
 ansible_vm:
   hosts: ansible.tinynamoo.com
 
+it_tools:
+  hosts: tools.tinynamoo.com
+
 piped:
   hosts: tube.tinynamoo.com
 
-it_tools:
-  hosts: tools.tinynamoo.com
+vikunja:
+  hosts: tasks.tinynamoo.com
 
 # Groups
 ansible:
