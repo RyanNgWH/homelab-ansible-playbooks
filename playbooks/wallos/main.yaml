@@ -1,9 +1,9 @@
 # @format
 
 # Wallos
-# Install and configure Wallos subscription management server.
+# Configure & manage Wallos subscription management server.
 ---
-- name: Install and configure Wallos subscription management server
+- name: Configure & manage Wallos subscription management server
   hosts: wallos
 
   pre_tasks:
@@ -12,216 +12,36 @@
       with_fileglob:
         - "{{ playbook_dir }}/config.yaml"
         - "{{ playbook_dir }}/credentials.yaml"
+      tags: always
 
     - name: Gather facts
       ansible.builtin.setup:
         gather_subset:
           - default_ipv4
           - distribution_release
+      tags: always
 
   roles:
-    - debian-12-setup
-    - nfsv4-client-setup
+    - role: debian-12-setup
+      tags:
+        - install
+        - default
+    - role: nfsv4-client-setup
+      tags:
+        - install
+        - default
     - role: debian-common
+      tags:
+        - install
+        - default
       vars:
         task_list:
           - git
           - docker
 
   tasks:
-    - name: Setup pre-requisites
-      become: true
-      block:
-        - name: Install pre-requisites
-          ansible.builtin.apt:
-            name:
-              - ca-certificates
-            update_cache: true
-            state: present
-
-        - name: Install sury php key
-          ansible.builtin.apt:
-            deb: https://packages.sury.org/debsuryorg-archive-keyring.deb
-            state: present
-
-        - name: Create sury php source list
-          ansible.builtin.copy:
-            content: deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ {{ ansible_distribution_release }} main
-            dest: /etc/apt/sources.list.d/php.list
-            owner: root
-            group: root
-            mode: "0644"
-
-        - name: "Install php{{ php_version }}"
-          ansible.builtin.apt:
-            name:
-              - php{{ php_version }}
-              - php{{ php_version }}-curl
-              - php{{ php_version }}-gd
-              - php{{ php_version }}-imagick
-              - php{{ php_version }}-intl
-              - php{{ php_version }}-sqlite3
-              - php{{ php_version }}-fpm
-              - php{{ php_version }}-zip
-            update_cache: true
-            state: present
-
-        - name: Set user and group to run php-fpm as
-          block:
-            - name: Set user to run php-fpm as
-              ansible.builtin.lineinfile:
-                path: /etc/php/{{ php_version }}/fpm/pool.d/www.conf
-                line: "user = {{ nfs_user_name }}"
-                regexp: "^user = .*"
-                state: present
-
-            - name: Set group to run php-fpm as
-              ansible.builtin.lineinfile:
-                path: /etc/php/{{ php_version }}/fpm/pool.d/www.conf
-                line: "group = {{ nfs_user_name }}"
-                regexp: "^group = .*"
-                state: present
-
-            - name: Set user to listen php-fpm as
-              ansible.builtin.lineinfile:
-                path: /etc/php/{{ php_version }}/fpm/pool.d/www.conf
-                line: "listen.owner = {{ nfs_user_name }}"
-                regexp: "^listen.owner = .*"
-                state: present
-
-            - name: Set group to listen php-fpm as
-              ansible.builtin.lineinfile:
-                path: /etc/php/{{ php_version }}/fpm/pool.d/www.conf
-                line: "listen.group = {{ nfs_user_name }}"
-                regexp: "^listen.group = .*"
-                state: present
-
-            - name: "Restart php{{ php_version }}-fpm" # noqa: name[template]
-              ansible.builtin.systemd_service:
-                name: "php{{ php_version }}-fpm"
-                state: restarted
-
-    - name: Setup Wallos application files
-      become: true
-      block:
-        - name: Add git exception for wallos application directory
-          community.general.git_config:
-            name: safe.directory
-            value: /opt/wallos
-            scope: global
-            state: present
-
-        - name: Clone wallos git repository
-          ansible.builtin.git:
-            repo: https://github.com/ellite/Wallos.git
-            dest: /opt/wallos # noqa: latest
-            force: true
-
-        - name: Ensure owner of wallos application directory is set
-          ansible.builtin.file:
-            path: /opt/wallos
-            owner: "{{ nfs_user_name }}"
-            group: "{{ nfs_user_name }}"
-            mode: "0740"
-            recurse: true
-            follow: false
-            state: directory
-
-        - name: Link database file
-          ansible.builtin.file:
-            src: /srv/sana/wallos/db/wallos.db
-            path: /opt/wallos/db/wallos.db
-            owner: "{{ nfs_user_name }}"
-            group: "{{ nfs_user_name }}"
-            mode: "0640"
-            state: link
-
-        - name: Link uploads directory
-          ansible.builtin.file:
-            src: /srv/sana/wallos/logos
-            path: /opt/wallos/images/uploads/logos
-            owner: "{{ nfs_user_name }}"
-            group: "{{ nfs_user_name }}"
-            mode: "0750"
-            state: link
-
-        - name: Setup crontab
-          block:
-            - name: Setup next payment update cron job
-              ansible.builtin.cron:
-                name: Next payment update
-                user: "{{ nfs_user_name }}"
-                minute: "0"
-                hour: "1"
-                day: "*"
-                month: "*"
-                weekday: "*"
-                job: php /opt/wallos/endpoints/cronjobs/updatenextpayment.php >> /var/log/cron/updatenextpayment.log 2>&1
-                state: present
-
-            - name: Setup exchange cron job
-              ansible.builtin.cron:
-                name: Exchange
-                user: "{{ nfs_user_name }}"
-                minute: "0"
-                hour: "2"
-                day: "*"
-                month: "*"
-                weekday: "*"
-                job: php /opt/wallos/endpoints/cronjobs/updateexchange.php >> /var/log/cron/updateexchange.log 2>&1
-                state: present
-
-            - name: Setup notifications cron job
-              ansible.builtin.cron:
-                name: Notifications
-                user: "{{ nfs_user_name }}"
-                minute: "0"
-                hour: "9"
-                day: "*"
-                month: "*"
-                weekday: "*"
-                job: php /opt/wallos/endpoints/cronjobs/sendnotifications.php >> /var/log/cron/sendnotifications.log 2>&1
-                state: present
-
-            - name: Setup verification emails cron job
-              ansible.builtin.cron:
-                name: Verification emails
-                user: "{{ nfs_user_name }}"
-                minute: "*/2"
-                hour: "*"
-                day: "*"
-                month: "*"
-                weekday: "*"
-                job: php /opt/wallos/html/endpoints/cronjobs/sendverificationemails.php >> /var/log/cron/sendverificationemail.log 2>&1
-                state: present
-
-            - name: Setup reset passwords cron job
-              ansible.builtin.cron:
-                name: Reset passwords
-                user: "{{ nfs_user_name }}"
-                minute: "*/2"
-                hour: "*"
-                day: "*"
-                month: "*"
-                weekday: "*"
-                job: php /opt/wallos/html/endpoints/cronjobs/sendresetpasswordemails.php >> /var/log/cron/sendresetpasswordemails.log 2>&1
-                state: present
-
-    - name: Install and configure nginx
-      vars:
-        task_list:
-          - nginx
-        nginx_tls_domains:
-          - "{{ wallos_domain }}"
-        nginx_user: "{{ nfs_user_name }}"
-        nginx_group: "{{ nfs_user_name }}"
-      ansible.builtin.include_role:
-        name: debian-common
-
-    - name: Run wallos migration
-      become: true
-      ansible.builtin.command:
-        chdir: /opt/wallos/endpoints/db
-        cmd: php migrate.php
-      register: wallos_migration
-      changed_when: "'No migrations to run.' not in wallos_migration.stdout_lines"
+    - name: Install and configure Wallos subscription management server
+      ansible.builtin.import_tasks: install.yaml
+      tags:
+        - install
+        - default

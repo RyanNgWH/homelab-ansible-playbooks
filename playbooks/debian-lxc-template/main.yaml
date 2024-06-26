@@ -6,6 +6,7 @@
 - name: Generate a Debian LXC template.
   hosts: ansible_vm
   become: true
+  tags: always
 
   vars:
     debian_architecture:

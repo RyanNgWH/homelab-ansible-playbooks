@@ -5,6 +5,7 @@
 ---
 - name: Update Arkenfox on all Firefox profiles that have it installed.
   hosts: arkenfox
+  tags: always
 
   pre_tasks:
     - name: Include playbook configuration

@@ -1,0 +1,64 @@
+# @format
+
+# Piped
+# Install and configure Piped youtube proxy server.
+---
+- name: Setup piped application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/piped
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Copy docker compose file to server
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/piped/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Create application config directory
+      ansible.builtin.file:
+        path: /opt/piped/config
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Copy configuration files to server
+      ansible.builtin.template:
+        src: templates/app.{{ item }}
+        dest: /opt/piped/config/{{ item }}
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+      loop:
+        - config.properties
+        - nginx.conf
+        - pipedapi.conf
+        - pipedfrontend.conf
+        - pipedproxy.conf
+        - ytproxy.conf
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ piped_frontend_hostname }}"
+      - "{{ piped_backend_hostname }}"
+      - "{{ piped_proxy_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start Piped youtube proxy
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: piped
+    project_src: /opt/piped
+    state: present

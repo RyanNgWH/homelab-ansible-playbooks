@@ -1,0 +1,63 @@
+# @format
+
+# Vikunja
+# Install and configure Vikunja tasks management server.
+---
+- name: Setup Vikunja application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/vikunja
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/vikunja/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup vikunja config file
+      ansible.builtin.template:
+        src: templates/app.config.yaml
+        dest: /opt/vikunja/config.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup postgres password secrets file
+      ansible.builtin.copy:
+        content: "{{ vikunja_database_password }}"
+        dest: /opt/vikunja/.postgres_pass
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0400"
+
+    - name: Setup jwt secret file
+      ansible.builtin.copy:
+        content: "{{ vikunja_service_jwtsecret }}"
+        dest: /opt/vikunja/.jwt_secret
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0400"
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ vikunja_domain }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start vikunja docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: vikunja
+    project_src: /opt/vikunja
+    state: present
