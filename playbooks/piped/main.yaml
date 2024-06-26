@@ -22,24 +22,17 @@
 
   roles:
     - role: debian-12-setup
-      tags:
-        - install
-        - default
+      tags: install
     - role: nfsv4-client-setup
-      tags:
-        - install
-        - default
+      tags: install
     - role: debian-common
       vars:
         task_list:
           - docker
-      tags:
-        - install
-        - default
+      tags: install
 
   tasks:
     - name: Install and configure Piped youtube proxy server
       ansible.builtin.import_tasks: install.yaml
       tags:
         - install
-        - default

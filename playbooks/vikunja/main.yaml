@@ -22,17 +22,11 @@
 
   roles:
     - role: debian-12-setup
-      tags:
-        - install
-        - default
+      tags: install
     - role: nfsv4-client-setup
-      tags:
-        - install
-        - default
+      tags: install
     - role: debian-common
-      tags:
-        - install
-        - default
+      tags: install
       vars:
         task_list:
           - docker
@@ -42,4 +36,3 @@
       ansible.builtin.import_tasks: install.yaml
       tags:
         - install
-        - default
