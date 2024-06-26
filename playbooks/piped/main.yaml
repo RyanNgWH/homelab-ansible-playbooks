@@ -34,5 +34,4 @@
   tasks:
     - name: Install and configure Piped youtube proxy server
       ansible.builtin.import_tasks: install.yaml
-      tags:
-        - install
+      tags: install
