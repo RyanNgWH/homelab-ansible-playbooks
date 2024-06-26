@@ -50,6 +50,7 @@ Each playbook has an associated configuration file `playbooks/<application>/conf
 | Arkenfox            | Update arkenfox on installed systems          | `ansible-playbook playbooks/arkenfox/main.yaml`                     |                                                                      |
 | Debian LXC Template | Generate a Debian LXC template                | `ansible-playbook playbooks/debian-lxc-template/main.yaml -K`       | Save location of generated template can be modified in `config.yaml` |
 | Gamevault           | Manage Gamevault games management server      | `ansible-playbook playbooks/gamevault/main.yaml -KJ --tags "<tag>"` | Supported tags<li>`install`                                          |
+| Gitea               | Manage Gitea git hosting server               | `ansible-playbook playbooks/gitea/main.yaml -KJ --tags "<tag>"`     | Supported tags<li>`install`                                          |
 | IT-Tools            | Manage IT-Tools developer tools server        | `ansible-playbook playbooks/it-tools/main.yaml -KJ --tags "<tag>"`  | Supported tags<li>`install`                                          |
 | Piped               | Manage Piped youtube proxy server             | `ansible-playbook playbooks/piped/main.yaml -KJ --tags "<tag>"`     | Supported tags<li>`install`                                          |
 | Send                | Manage Send file sharing server               | `ansible-playbook playbooks/send/main.yaml -KJ --tags "<tag>"`      | Supported tags<li>`install`                                          |

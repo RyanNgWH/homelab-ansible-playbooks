@@ -10,6 +10,9 @@ ansible_vm:
 gamevault:
   hosts: games.tinynamoo.com
 
+gitea:
+  hosts: git.tinynamoo.com
+
 it_tools:
   hosts: tools.tinynamoo.com
 
