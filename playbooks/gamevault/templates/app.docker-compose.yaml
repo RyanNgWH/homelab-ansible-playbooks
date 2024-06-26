@@ -1,0 +1,49 @@
+
+---
+services:
+  gamevault-backend:
+    container_name: gamevault-backend
+    image: phalcode/gamevault-backend:latest
+    restart: unless-stopped
+    environment:
+      DB_HOST: gamevault-db
+      DB_USERNAME: gamevault
+      DB_PASSWORD: /run/secrets/postgres_pass
+      # The following line grants Admin Role to the account with this username upon registration.
+      SERVER_ADMIN_USERNAME: admin
+      PUID: {{ nfs_user_id }}
+      PGID: {{ nfs_user_id }}
+      RAWG_API_KEY: {{ gamevault_rawg_api_key }}
+    volumes:
+      # Mount the folder where your games are
+      - {{ nfs_mount_point }}/gamevault/games:/files
+      # Mount the folder where GameVault should store its images
+      - {{ nfs_mount_point }}/gamevault/images:/images
+      # Mount the folder where logs are stored
+      - {{ nfs_mount_point }}/gamevault/logs:/logs
+    ports:
+      - 8080:8080
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    secrets:
+      - postgres_pass
+    depends_on:
+      - gamevault-db
+
+  gamevault-db:
+    container_name: gamevault-db
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: gamevault
+      POSTGRES_PASSWORD: /run/secrets/postgres_pass
+      POSTGRES_DB: gamevault
+    volumes:
+      # Mount the folder where your PostgreSQL database files should land
+      - {{ nfs_mount_point }}/gamevault/database:/var/lib/postgresql/data
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    secrets:
+      - postgres_pass
+
+secrets:
+  postgres_pass:
+    file: .postgres_pass

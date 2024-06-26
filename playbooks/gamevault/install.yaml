@@ -1,0 +1,47 @@
+# @format
+
+# Gamevault
+# Install and configure Gamevault games management server.
+---
+- name: Setup Gamevault application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/gamevault
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/gamevault/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup postgres password secrets file
+      ansible.builtin.copy:
+        content: "{{ gamevault_database_password }}"
+        dest: /opt/gamevault/.postgres_pass
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0400"
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ gamevault_domain }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start gamevault docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: gamevault
+    project_src: /opt/gamevault
+    state: present

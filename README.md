@@ -36,7 +36,7 @@ The following softwares must be installed on the local machine before ansible ca
 1. Run the desired playbook from the root of this project
 
    ```bash
-   ansible-playbook playbooks/<application>/main.yaml [-K --ask-become-pass] [-J --ask-vault-pass]
+   ansible-playbook playbooks/<application>/main.yaml [-K --ask-become-pass] [-J --ask-vault-pass] --tags "[tags]"
    ```
 
 # Configuration
@@ -45,11 +45,12 @@ Each playbook has an associated configuration file `playbooks/<application>/conf
 
 # Playbooks
 
-| Playbook            | Description                                   | Command                                                           | Notes                                                                |
-| ------------------- | --------------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Arkenfox            | Update arkenfox on installed systems          | `ansible-playbook playbooks/arkenfox/main.yaml`                   |                                                                      |
-| Debian LXC Template | Generate a Debian LXC template                | `ansible-playbook playbooks/debian-lxc-template/main.yaml -K`     | Save location of generated template can be modified in `config.yaml` |
-| IT-Tools            | Manage IT-Tools developer tools server        | `ansible-playbook playbooks/it-tools/main.yaml -KJ --tags "<tag>` | Supported tags<li>`install`                                          |
-| Piped               | Manage Piped youtube proxy server             | `ansible-playbook playbooks/piped/main.yaml -KJ --tags "<tag>`    | Supported tags<li>`install`                                          |
-| Vikunja             | Manage Vikunja tasks management server        | `ansible-playbook playbooks/vikunja/main.yaml -KJ --tags "<tag>"` | Supported tags<li>`install`                                          |
-| Wallos              | Manage Wallos subscriptions management server | `ansible-playbook playbooks/wallos/main.yaml -KJ --tags "<tag>"`  | Supported tags<li>`install`<li>`upgrade`                             |
+| Playbook            | Description                                   | Command                                                             | Notes                                                                |
+| ------------------- | --------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Arkenfox            | Update arkenfox on installed systems          | `ansible-playbook playbooks/arkenfox/main.yaml`                     |                                                                      |
+| Debian LXC Template | Generate a Debian LXC template                | `ansible-playbook playbooks/debian-lxc-template/main.yaml -K`       | Save location of generated template can be modified in `config.yaml` |
+| Gamevault           | Manage Gamevault games management server      | `ansible-playbook playbooks/gamevault/main.yaml -KJ --tags "<tag>"` | Supported tags<li>`install`                                          |
+| IT-Tools            | Manage IT-Tools developer tools server        | `ansible-playbook playbooks/it-tools/main.yaml -KJ --tags "<tag>"`  | Supported tags<li>`install`                                          |
+| Piped               | Manage Piped youtube proxy server             | `ansible-playbook playbooks/piped/main.yaml -KJ --tags "<tag>"`     | Supported tags<li>`install`                                          |
+| Vikunja             | Manage Vikunja tasks management server        | `ansible-playbook playbooks/vikunja/main.yaml -KJ --tags "<tag>""`  | Supported tags<li>`install`                                          |
+| Wallos              | Manage Wallos subscriptions management server | `ansible-playbook playbooks/wallos/main.yaml -KJ --tags "<tag>""`   | Supported tags<li>`install`<li>`upgrade`                             |
