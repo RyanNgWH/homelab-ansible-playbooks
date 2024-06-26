@@ -37,3 +37,8 @@
     - name: Install and configure Wallos subscription management server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Wallos subscription management server
+      ansible.builtin.import_tasks: upgrade.yaml
+      become: true
+      tags: upgrade
