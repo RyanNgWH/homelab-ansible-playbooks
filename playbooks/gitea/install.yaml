@@ -30,6 +30,22 @@
         group: "{{ nfs_user_name }}"
         mode: "0400"
 
+    - name: Setup secret key secrets file
+      ansible.builtin.copy:
+        content: "{{ gitea_secret_key }}"
+        dest: /opt/gitea/.secret_key
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0400"
+
+    - name: Setup internal token secrets file
+      ansible.builtin.copy:
+        content: "{{ gitea_internal_token }}"
+        dest: /opt/gitea/.internal_token
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0400"
+
 - name: Setup gitea SSH container passthrough
   become: true
   block:

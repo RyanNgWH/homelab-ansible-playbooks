@@ -8,7 +8,6 @@ services:
     container_name: gitea
     environment:
       # User configuration
-      - APP_NAME=Tiny Git
       - USER_UID={{ nfs_user_id }}
       - USER_GID={{ nfs_user_id }}
 
@@ -22,7 +21,7 @@ services:
       # Server configrations
       - GITEA__server__DOMAIN={{ gitea_domain }}
       - GITEA__server__ROOT_URL=https://{{ gitea_domain }}
-      - GITEA__server__DISABLE_REGISTRATION=true
+      - GITEA__service__DISABLE_REGISTRATION=true
 
       # Mail configuration
       - GITEA__mailer__ENABLED=true
@@ -35,7 +34,6 @@ services:
       - GITEA__server__LFS_START_SERVER=true
       - GITEA__server__LFS_JWT_SECRET = {{ gitea_lfs_jwt }}
       - GITEA__lfs__PATH=/data/lfs
-
 
       # Logging
       - GITEA__log__MODE=file
@@ -57,8 +55,8 @@ services:
 
       # Security Configurations
       - GITEA__security__INSTALL_LOCK=true
-      - GITEA__security__SECRET_KEY={{ gitea_secret_key }}
-      - GITEA__security__INTERNAL_TOKEN={{ gitea_internal_token }}
+      - GITEA__security__SECRET_KEY=/run/secrets/secret_key
+      - GITEA__security__INTERNAL_TOKEN=/run/secrets/internal_token
       - GITEA__security__PASSWORD_HASH_ALGO=argon2
 
       # Oauth2 configurations
@@ -97,3 +95,7 @@ services:
 secrets:
   postgres_pass:
     file: .postgres_pass
+  secret_key:
+    file: .secret_key
+  internal_token:
+    file: .internal_token
