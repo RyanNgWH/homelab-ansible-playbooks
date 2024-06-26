@@ -16,6 +16,9 @@ it_tools:
 piped:
   hosts: tube.tinynamoo.com
 
+send:
+  hosts: send.tinynamoo.com
+
 vikunja:
   hosts: tasks.tinynamoo.com
 

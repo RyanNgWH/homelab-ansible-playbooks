@@ -52,5 +52,6 @@ Each playbook has an associated configuration file `playbooks/<application>/conf
 | Gamevault           | Manage Gamevault games management server      | `ansible-playbook playbooks/gamevault/main.yaml -KJ --tags "<tag>"` | Supported tags<li>`install`                                          |
 | IT-Tools            | Manage IT-Tools developer tools server        | `ansible-playbook playbooks/it-tools/main.yaml -KJ --tags "<tag>"`  | Supported tags<li>`install`                                          |
 | Piped               | Manage Piped youtube proxy server             | `ansible-playbook playbooks/piped/main.yaml -KJ --tags "<tag>"`     | Supported tags<li>`install`                                          |
+| Send                | Manage Send file sharing server               | `ansible-playbook playbooks/send/main.yaml -KJ --tags "<tag>"`      | Supported tags<li>`install`                                          |
 | Vikunja             | Manage Vikunja tasks management server        | `ansible-playbook playbooks/vikunja/main.yaml -KJ --tags "<tag>""`  | Supported tags<li>`install`                                          |
 | Wallos              | Manage Wallos subscriptions management server | `ansible-playbook playbooks/wallos/main.yaml -KJ --tags "<tag>""`   | Supported tags<li>`install`<li>`upgrade`                             |
