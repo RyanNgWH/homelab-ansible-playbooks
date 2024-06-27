@@ -4,11 +4,11 @@ services:
     image: vikunja/vikunja
     environment:
       VIKUNJA_DATABASE_HOST: db
-      VIKUNJA_DATABASE_PASSWORD: /run/secrets/postgres_pass
+      VIKUNJA_DATABASE_PASSWORD: {{ vikunja_database_password }}
       VIKUNJA_DATABASE_TYPE: postgres
       VIKUNJA_DATABASE_USER: vikunja
       VIKUNJA_DATABASE_DATABASE: vikunja
-      VIKUNJA_SERVICE_JWTSECRET: /run/secrets/jwt_secret
+      VIKUNJA_SERVICE_JWTSECRET: {{ vikunja_service_jwtsecret }}
       VIKUNJA_REDIS_ENABLED: 1
       VIKUNJA_REDIS_HOST: 'redis:6379'
       VIKUNJA_CACHE_ENABLED: 1
@@ -26,11 +26,12 @@ services:
       redis:
         condition: service_healthy
     restart: unless-stopped
+
   db:
     container_name: postgres
     image: postgres:16
     environment:
-      POSTGRES_PASSWORD: /run/secrets/postgres_pass
+      POSTGRES_PASSWORD: {{ vikunja_database_password }}
       POSTGRES_USER: vikunja
       POSTGRES_DB: vikunja
     volumes:
@@ -41,6 +42,7 @@ services:
       interval: 2s
       timeout: 10s
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
+
   redis:
     container_name: redis
     image: redis
@@ -49,8 +51,3 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 2s
     restart: unless-stopped
-secrets:
-  postgres_pass:
-    file: .postgres_pass
-  jwt_secret:
-    file: .jwt_secret
