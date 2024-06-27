@@ -1,7 +1,7 @@
 services:
   wikijs:
     container_name: wikijs
-    image: ghcr.io/requarks/wiki:2
+    image: lscr.io/linuxserver/wikijs:latest
     environment:
       DB_TYPE: postgres
       DB_HOST: postgres
@@ -9,9 +9,18 @@ services:
       DB_USER: wikijs
       DB_PASS: {{ wikijs_postgres_pass }}
       DB_NAME: wikijs
+      PUID: {{ nfs_user_id }}
+      GUID: {{ nfs_user_id }}
+      TZ: Asia/Singapore
     ports:
       - "3000:3000"
     restart: unless-stopped
+    volumes:
+      - {{ nfs_mount_point }}/config:/config
+      - {{ nfs_mount_point }}/data:/data
+      - {{ nfs_mount_point }}/backups:/backups
+      - ./git:/wiki/git
+      - /home/{{ nfs_user_name }}/.ssh/id_ed25519:/wiki/.ssh/id_ed25519
     depends_on:
       - postgres
 

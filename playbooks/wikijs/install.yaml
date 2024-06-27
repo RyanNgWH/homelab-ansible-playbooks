@@ -22,6 +22,30 @@
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
+    - name: Ensure git directory is present
+      ansible.builtin.file:
+        path: /opt/wikijs/git
+        owner: "{{ nfs_user_id }}"
+        group: "{{ nfs_user_id }}"
+        mode: "0750"
+        state: directory
+
+    - name: Ensure ssh directory is present
+      ansible.builtin.file:
+        path: /home/{{ nfs_user_name }}/.ssh
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Copy SSH private key for gitea backup
+      ansible.builtin.copy:
+        src: "{{ wikijs_gitea_private_key_file }}"
+        dest: /home/{{ nfs_user_name }}/.ssh/id_ed25519
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0600"
+
 - name: Install and configure nginx
   vars:
     task_list:
