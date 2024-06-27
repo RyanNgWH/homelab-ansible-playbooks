@@ -28,6 +28,9 @@ vikunja:
 wallos:
   hosts: subs.tinynamoo.com
 
+wikijs:
+  hosts: wiki.tinynamoo.com
+
 # Groups
 ansible:
   children:
