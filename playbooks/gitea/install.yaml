@@ -42,7 +42,7 @@
     - name: Copy gitea private key to server
       ansible.builtin.copy:
         src: "{{ gitea_private_key_file }}"
-        dest: /home/{{ nfs_user_name }}/.ssh/gitea_id_ed25519
+        dest: /home/{{ nfs_user_name }}/.ssh/id_ed25519
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0600"
