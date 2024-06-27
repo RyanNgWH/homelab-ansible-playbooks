@@ -22,14 +22,6 @@
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
-    - name: Setup postgres password secrets file
-      ansible.builtin.copy:
-        content: "{{ gamevault_database_password }}"
-        dest: /opt/gamevault/.postgres_pass
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0400"
-
 - name: Install and configure nginx
   vars:
     task_list:

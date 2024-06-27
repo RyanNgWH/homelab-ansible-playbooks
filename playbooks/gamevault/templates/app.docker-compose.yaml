@@ -8,7 +8,8 @@ services:
     environment:
       DB_HOST: gamevault-db
       DB_USERNAME: gamevault
-      DB_PASSWORD: /run/secrets/postgres_pass
+      DB_PASSWORD: {{ gamevault_database_password }}
+
       # The following line grants Admin Role to the account with this username upon registration.
       SERVER_ADMIN_USERNAME: admin
       PUID: {{ nfs_user_id }}
@@ -24,8 +25,6 @@ services:
     ports:
       - 8080:8080
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
-    secrets:
-      - postgres_pass
     depends_on:
       - gamevault-db
 
@@ -35,15 +34,9 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_USER: gamevault
-      POSTGRES_PASSWORD: /run/secrets/postgres_pass
+      POSTGRES_PASSWORD: gamevault_database_password
       POSTGRES_DB: gamevault
     volumes:
       # Mount the folder where your PostgreSQL database files should land
       - {{ nfs_mount_point }}/gamevault/database:/var/lib/postgresql/data
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
-    secrets:
-      - postgres_pass
-
-secrets:
-  postgres_pass:
-    file: .postgres_pass
