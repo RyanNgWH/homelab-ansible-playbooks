@@ -27,7 +27,6 @@ nfs_mount_share: tiffany
 nfs_mount_point: /srv/tiffany
 
 ## Vikunja configurations
-vikunja_domain: tasks.tinynamoo.com
 vikunja_mail_server: smtp.tinynamoo.com
 vikunja_mail_server_port: 25
 vikunja_mail_from_email: sunny@mail.tinynamoo.com

@@ -26,9 +26,6 @@ nfs_mount_server: storage.tinynamoo.com
 nfs_mount_share: stevie
 nfs_mount_point: /srv/stevie
 
-## Send configurations
-send_domain: send.tinynamoo.com
-
 ## NGINX variables
 nginx_conf_files:
   - filename: send.conf

@@ -26,9 +26,6 @@ nfs_mount_server: storage.tinynamoo.com
 nfs_mount_share: sakura
 nfs_mount_point: /srv/sakura
 
-## Gamevault configurations
-gamevault_domain: games.tinynamoo.com
-
 ## NGINX variables
 nginx_conf_files:
   - filename: gamevault.conf

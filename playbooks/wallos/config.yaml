@@ -29,9 +29,6 @@ nfs_mount_point: /srv/sana
 ## PHP configurations
 php_version: 8.2
 
-## Wallos configurations
-wallos_domain: subs.tinynamoo.com
-
 ## NGINX variables
 nginx_conf_files:
   - filename: wallos.conf

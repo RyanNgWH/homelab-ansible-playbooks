@@ -1,6 +1,6 @@
 ---
 service:
-  publicurl: https://{{ vikunja_domain }}
+  publicurl: https://{{ inventory_hostname }}
   enableregistration: true
   timezone: Asia/Singapore
 mailer:

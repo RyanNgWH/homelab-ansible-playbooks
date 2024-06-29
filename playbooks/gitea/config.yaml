@@ -28,7 +28,6 @@ nfs_mount_share: yena
 nfs_mount_point: /srv/yena
 
 ## Gitea configurations
-gitea_domain: git.tinynamoo.com
 gitea_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIxW2NoBiOA/73caeYjYLvHpId88UOdJtERcz+d/r4S0 Gitea Host Key"
 
 ## NGINX variables

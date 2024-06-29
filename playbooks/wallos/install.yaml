@@ -186,7 +186,7 @@
     task_list:
       - nginx
     nginx_tls_domains:
-      - "{{ wallos_domain }}"
+      - "{{ inventory_hostname }}"
     nginx_user: "{{ nfs_user_name }}"
     nginx_group: "{{ nfs_user_name }}"
   ansible.builtin.include_role:

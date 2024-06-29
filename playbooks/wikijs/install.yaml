@@ -51,7 +51,7 @@
     task_list:
       - nginx
     nginx_tls_domains:
-      - "{{ wikijs_domain }}"
+      - "{{ inventory_hostname }}"
   ansible.builtin.include_role:
     name: debian-common
 
