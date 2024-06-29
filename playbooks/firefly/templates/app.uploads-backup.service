@@ -1,0 +1,7 @@
+[Unit]
+Description=Backup firefly uploads diretory
+
+[Service]
+ExecStart=/usr/bin/rsync -a /opt/firefly/uploads {{ nfs_mount_point }}/
+User={{ nfs_user_name }}
+Group={{ nfs_user_name }}

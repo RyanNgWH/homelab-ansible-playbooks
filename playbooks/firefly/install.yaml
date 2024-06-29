@@ -1,0 +1,102 @@
+# @format
+
+# Firefly III
+# Install and configure the firefly iii finance management server.
+---
+- name: Setup Firefly III application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/firefly
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/firefly/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup firefly environment variables
+      ansible.builtin.template:
+        src: templates/app.environment.env
+        dest: /opt/firefly/.env
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup firefly locales
+      ansible.builtin.template:
+        src: files/app.locale.gen
+        dest: /opt/firefly/locale.gen
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Ensure rsync is installed
+      ansible.builtin.apt:
+        name: rsync
+        update_cache: true
+        state: present
+
+    - name: Sync uploads directory from NFS server to local application directory
+      ansible.posix.synchronize:
+        src: "{{ nfs_mount_point }}/uploads"
+        dest: /opt/firefly/
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Ensure uploads directory permissions is set
+      ansible.builtin.file:
+        path: /opt/firefly/uploads
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0740"
+        recurse: true
+        follow: false
+        state: directory
+
+    - name: Setup rsync automated backup for firefly uploads directory
+      block:
+        - name: Setup automated monitoring of uploads directory
+          ansible.builtin.copy:
+            src: files/app.uploads-backup.path
+            dest: /etc/systemd/system/firefly-uploads-backup.path
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Setup rsync automated backup of uploads directory
+          ansible.builtin.template:
+            src: templates/app.uploads-backup.service
+            dest: /etc/systemd/system/firefly-uploads-backup.service
+            owner: root
+            group: root
+            mode: "0644"
+
+        - name: Enable and start firefly uploads directory monitoring & backup
+          ansible.builtin.systemd_service:
+            name: firefly-uploads-backup.path
+            daemon_reload: true
+            enabled: true
+            state: started
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start firefly docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: firefly
+    project_src: /opt/firefly
+    state: present

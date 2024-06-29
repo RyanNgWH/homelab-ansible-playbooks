@@ -7,6 +7,9 @@ ansible_lxc:
 ansible_vm:
   hosts: ansible.tinynamoo.com
 
+firefly:
+  hosts: finance.tinynamoo.com
+
 gamevault:
   hosts: games.tinynamoo.com
 
