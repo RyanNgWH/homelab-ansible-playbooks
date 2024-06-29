@@ -19,6 +19,9 @@ gitea:
 it_tools:
   hosts: tools.tinynamoo.com
 
+paperless:
+  hosts: archive.tinynamoo.com
+
 piped:
   hosts: tube.tinynamoo.com
 

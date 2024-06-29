@@ -1,0 +1,65 @@
+services:
+  paperless:
+    container_name: paperless
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    env_file: paperless.env
+    environment:
+      USERMAP_UID: {{ nfs_user_id }}
+      USERMAP_GID: {{ nfs_user_id }}
+
+      PAPERLESS_REDIS: redis://redis:6379
+
+      PAPERLESS_DBHOST: postgres
+      PAPERLESS_DBUSER: paperless
+      PAPERLESS_DBPASS: {{ paperless_postgres_pass }}
+
+      PAPERLESS_TIKA_ENABLED: true
+      PAPERLESS_TIKA_ENDPOINT: http://tika:9998
+      PAPERLESS_TIKA_GOTENBERG_ENDPOINT: http://gotenberg:3000
+    ports:
+      - "8000:8000"
+    volumes:
+      - {{ nfs_mount_point }}/consume:/usr/src/paperless/consume
+      - {{ nfs_mount_point }}/data:/usr/src/paperless/data
+      - {{ nfs_mount_point }}/media:/usr/src/paperless/media
+      - {{ nfs_mount_point }}/export:/usr/src/paperless/export
+    depends_on:
+      - postgres
+      - redis
+      - gotenberg
+      - tika
+    restart: unless-stopped
+
+  postgres:
+    container_name: postgres
+    image: docker.io/library/postgres:16
+    environment:
+      POSTGRES_DB: paperless
+      POSTGRES_USER: paperless
+      POSTGRES_PASSWORD: {{ paperless_postgres_pass }}
+    volumes:
+      - {{ nfs_mount_point }}/db:/var/lib/postgresql/data
+    restart: unless-stopped
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+
+  redis:
+    container_name: redis
+    image: docker.io/library/redis:7
+    restart: unless-stopped
+
+  gotenberg:
+    container_name: gotenberg
+    image: docker.io/gotenberg/gotenberg:8
+    restart: unless-stopped
+
+    # The gotenberg chromium route is used to convert .eml files. We do not
+    # want to allow external content like tracking pixels or even javascript.
+    command:
+      - "gotenberg"
+      - "--chromium-disable-javascript=true"
+      - "--chromium-allow-list=file:///tmp/.*"
+
+  tika:
+    container_name: tika
+    image: docker.io/apache/tika:latest
+    restart: unless-stopped
