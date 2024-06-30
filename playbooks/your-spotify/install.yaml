@@ -1,0 +1,40 @@
+# @format
+
+# Your-Spotify
+# Install and configure the Your-Spotify statistics server.
+---
+- name: Setup Your-Spotify application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/your-spotify
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/your-spotify/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+      - "{{ yourspotify_api_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start your-spotify docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: your-spotify
+    project_src: /opt/your-spotify
+    state: present

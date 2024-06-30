@@ -37,6 +37,9 @@ wallos:
 wikijs:
   hosts: wiki.tinynamoo.com
 
+your_spotify:
+  hosts: spotify.tinynamoo.com
+
 # Groups
 ansible:
   children:
