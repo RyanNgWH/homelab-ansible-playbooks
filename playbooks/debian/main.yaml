@@ -1,0 +1,17 @@
+# @format
+
+# Debian
+# Configure & manage Debian servers.
+---
+- name: Configure & manage Debian servers
+  hosts: debian
+
+  tasks:
+    - name: Upgrade packages & purge unused dependencies
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+      tags: upgrade

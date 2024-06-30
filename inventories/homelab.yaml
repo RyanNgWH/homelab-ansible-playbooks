@@ -45,3 +45,19 @@ ansible:
   children:
     ansible_vm:
     ansible_lxc:
+
+debian:
+  children:
+    ansible_lxc:
+    ansible_vm:
+    firefly:
+    gamevault:
+    gitea:
+    it_tools:
+    paperless:
+    piped:
+    send:
+    vikunja:
+    wallos:
+    wikijs:
+    your_spotify:
