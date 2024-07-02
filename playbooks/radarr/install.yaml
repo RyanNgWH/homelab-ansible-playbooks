@@ -1,0 +1,66 @@
+# @format
+
+# Radarr
+# Install and configure the Radarr movies management server.
+---
+- name: Setup Radarr application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/radarr
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/radarr/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+- name: Setup radarr user
+  become: true
+  block:
+    - name: Create media group
+      ansible.builtin.group:
+        name: "{{ radarr_media_group_name }}"
+        gid: "{{ radarr_media_group_gid }}"
+        system: true
+        state: present
+
+    - name: Add radarr user to media group
+      ansible.builtin.user:
+        name: "{{ nfs_user_name }}"
+        groups: "{{ radarr_media_group_name }}"
+        append: true
+
+- name: Setup recyclarr configuration
+  become: true
+  ansible.builtin.template:
+    src: templates/app.recyclarr.yaml
+    dest: "{{ nfs_mount_point }}/configs/recyclarr/radarr/recyclarr.yaml"
+    owner: "{{ nfs_user_name }}"
+    group: "media"
+    mode: "0640"
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+      - "{{ radarr_4k_hostname }}"
+      - "{{ radarr_anime_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start radarr docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: radarr
+    project_src: /opt/radarr
+    state: present

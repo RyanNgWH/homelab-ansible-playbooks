@@ -25,6 +25,9 @@ paperless:
 piped:
   hosts: tube.tinynamoo.com
 
+radarr:
+  hosts: movies.tinynamoo.com
+
 send:
   hosts: send.tinynamoo.com
 
