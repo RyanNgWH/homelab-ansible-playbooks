@@ -10,7 +10,7 @@
 # Instance Definition: https://recyclarr.dev/wiki/yaml/config-reference/basic/
 radarr:
   hd-bluray-web:
-    base_url: https://{{ radarr_base_url }}
+    base_url: https://{{ inventory_hostname }}
     api_key: {{ radarr_api_key }}
 
     include:
@@ -50,7 +50,7 @@ radarr:
           - name: HD Bluray + WEB
 
   uhd-bluray-web:
-    base_url: https://{{ radarr4k_base_url }}
+    base_url: https://{{ radarr_4k_hostname }}
     api_key: {{ radarr4k_api_key }}
 
     include:
@@ -131,7 +131,7 @@ radarr:
           - name: UHD Bluray + WEB
 
   anime-radarr:
-    base_url: https://{{ radarr_anime_base_url }}
+    base_url: https://{{ radarr_anime_hostname }}
     api_key: {{ radarr_anime_api_key }}
 
     include:
