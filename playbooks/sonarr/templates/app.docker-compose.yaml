@@ -1,0 +1,84 @@
+services:
+  sonarr:
+    container_name: sonarr
+    image: lscr.io/linuxserver/sonarr:latest
+    environment:
+      PUID: {{ nfs_user_id }}
+      GUID: {{ nfs_user_id }}
+      TZ: {{ debian_datetime_timezone }}
+      UMASK: 007
+    volumes:
+      - {{ nfs_mount_point }}:/data
+      - {{ nfs_mount_point }}/configs/sonarr:/config
+    ports:
+      - "8989:8989"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  sonarr4k:
+    container_name: sonarr4k
+    image: lscr.io/linuxserver/sonarr:latest
+    environment:
+      PUID: {{ nfs_user_id }}
+      GUID: {{ nfs_user_id }}
+      TZ: {{ debian_datetime_timezone }}
+      UMASK: 007
+    volumes:
+      - {{ nfs_mount_point }}:/data
+      - {{ nfs_mount_point }}/configs/sonarr4k:/config
+    ports:
+      - "8990:8989"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  sonarr-anime:
+    container_name: sonarr-anime
+    image: lscr.io/linuxserver/sonarr:latest
+    environment:
+      PUID: {{ nfs_user_id }}
+      GUID: {{ nfs_user_id }}
+      TZ: {{ debian_datetime_timezone }}
+      UMASK: 007
+    volumes:
+      - {{ nfs_mount_point }}:/data
+      - {{ nfs_mount_point }}/configs/sonarr-anime:/config
+    ports:
+      - "8991:8989"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  recyclarr:
+    container_name: recyclarr
+    image: ghcr.io/recyclarr/recyclarr:latest
+    environment:
+      TZ: {{ debian_datetime_timezone }}
+    volumes:
+      - {{ nfs_mount_point }}/configs/recyclarr/sonarr:/config
+    user: {{ nfs_user_id }}:{{ sonarr_media_group_gid }}
+    restart: unless-stopped
+    depends_on:
+      - sonarr
+      - sonarr4k
+      - sonarr-anime
+
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    environment:
+      POSTGRES_DB: sonarr-main
+      POSTGRES_USER: sonarr
+      POSTGRES_PASSWORD: {{ sonarr_postgres_pass }}
+    volumes:
+      - {{ nfs_mount_point }}/databases/sonarr:/var/lib/postgresql/data
+    user: {{ nfs_user_id }}:{{ sonarr_media_group_gid }}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER -d sonarr-main"]
+      interval: 2s
+      timeout: 20s

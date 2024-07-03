@@ -31,6 +31,9 @@ radarr:
 send:
   hosts: send.tinynamoo.com
 
+sonarr:
+  hosts: tv.tinynamoo.com
+
 vikunja:
   hosts: tasks.tinynamoo.com
 
