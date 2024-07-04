@@ -23,8 +23,10 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Alyssa] Paperless/
 nfs_user_name: paperless
 nfs_user_id: 130
 nfs_mount_server: storage.tinynamoo.com
-nfs_mount_share: alyssa
-nfs_mount_point: /srv/alyssa
+nfs_mounts:
+  alyssa:
+    mount_share: alyssa
+    mount_point: /srv/alyssa
 
 ## NGINX variables
 nginx_conf_files:

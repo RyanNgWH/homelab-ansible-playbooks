@@ -19,10 +19,10 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - {{ nfs_mount_point }}/consume:/usr/src/paperless/consume
-      - {{ nfs_mount_point }}/data:/usr/src/paperless/data
-      - {{ nfs_mount_point }}/media:/usr/src/paperless/media
-      - {{ nfs_mount_point }}/export:/usr/src/paperless/export
+      - {{ nfs_mounts.alyssa.mount_point }}/consume:/usr/src/paperless/consume
+      - {{ nfs_mounts.alyssa.mount_point }}/data:/usr/src/paperless/data
+      - {{ nfs_mounts.alyssa.mount_point }}/media:/usr/src/paperless/media
+      - {{ nfs_mounts.alyssa.mount_point }}/export:/usr/src/paperless/export
     depends_on:
       - postgres
       - redis
@@ -38,7 +38,7 @@ services:
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: {{ paperless_postgres_pass }}
     volumes:
-      - {{ nfs_mount_point }}/db:/var/lib/postgresql/data
+      - {{ nfs_mounts.alyssa.mount_point }}/db:/var/lib/postgresql/data
     restart: unless-stopped
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
 
