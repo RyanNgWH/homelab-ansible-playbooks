@@ -98,10 +98,11 @@
             enabled: true
             state: started
 
-    - name: Configure NFS mount
+    - name: Configure NFS mounts
       ansible.posix.mount:
-        src: "{{ nfs_mount_server }}:/{{ nfs_mount_share }}"
-        path: "{{ nfs_mount_point }}"
+        src: "{{ nfs_mount_server }}:/{{ item.value.mount_share }}"
+        path: "{{ item.value.mount_point }}"
         fstype: nfs
         opts: "nfsvers=4,proto=tcp,port=2049,sec=krb5p,lazytime,auto,_netdev"
         state: mounted
+      loop: "{{ nfs_mounts | dict2items }}"

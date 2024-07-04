@@ -31,14 +31,15 @@ This role utilises modules from the following collections that is not part of `a
 
 ### NFS
 
-| Variable           | Description                      | Default             | Example                 |
-| ------------------ | -------------------------------- | ------------------- | ----------------------- |
-| `nfs_user_name`    | Username of NFS user.            |                     | `wikijs`                |
-| `nfs_user_id`      | UID & GID of the NFS user.       |                     | `170`                   |
-| `nfs_user_shell`   | UID & GID of the NFS user.       | `/usr/sbin/nologin` | `170`                   |
-| `nfs_mount_server` | NFS server domain name.          |                     | `storage.tinynamoo.com` |
-| `nfs_mount_share`  | NFS share to be mounted          |                     | `winter`                |
-| `nfs_mount_point`  | Directory to mount the NFS share |                     | `/srv/winter`           |
+| Variable                       | Description                      | Default             | Example                 |
+| ------------------------------ | -------------------------------- | ------------------- | ----------------------- |
+| `nfs_user_name`                | Username of NFS user.            |                     | `wikijs`                |
+| `nfs_user_id`                  | UID & GID of the NFS user.       |                     | `170`                   |
+| `nfs_user_shell`               | UID & GID of the NFS user.       | `/usr/sbin/nologin` | `170`                   |
+| `nfs_mount_server`             | NFS server domain name.          |                     | `storage.tinynamoo.com` |
+| `nfs_mounts`                   | Dictionary of NFS mounts.        |                     | -                       |
+| `nfs_mounts.<key>.mount_share` | NFS share to be mounted          |                     | `winter`                |
+| `nfs_mounts.<key>.mount_point` | Directory to mount the NFS share |                     | `/srv/winter`           |
 
 ## Example Playbook
 
@@ -53,8 +54,10 @@ This role utilises modules from the following collections that is not part of `a
     nfs_user_name: wikij
     nfs_user_id: 170
     nfs_mount_server: storage.tinynamoo.com
-    nfs_mount_share: winter
-    nfs_mount_point: /srv/winter
+    nfs_mounts:
+      my_mount:
+        nfs_mount_share: winter
+        nfs_mount_point: /srv/winter
 
   roles:
       - nfsv4-client-setup
