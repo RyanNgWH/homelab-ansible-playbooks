@@ -23,8 +23,10 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sana] Wallos/user.
 nfs_user_name: wallos
 nfs_user_id: 220
 nfs_mount_server: storage.tinynamoo.com
-nfs_mount_share: sana
-nfs_mount_point: /srv/sana
+nfs_mounts:
+  sana:
+    mount_share: sana
+    mount_point: /srv/sana
 
 ## PHP configurations
 php_version: 8.2

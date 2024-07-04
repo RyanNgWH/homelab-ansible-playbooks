@@ -103,7 +103,7 @@
 
     - name: Link database file
       ansible.builtin.file:
-        src: /srv/sana/wallos/db/wallos.db
+        src: "{{ nfs_mounts.sana.mount_point }}/wallos/db/wallos.db"
         path: /opt/wallos/db/wallos.db
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
@@ -112,7 +112,7 @@
 
     - name: Link uploads directory
       ansible.builtin.file:
-        src: /srv/sana/wallos/logos
+        src: "{{ nfs_mounts.sana.mount_point }}/wallos/logos"
         path: /opt/wallos/images/uploads/logos
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
