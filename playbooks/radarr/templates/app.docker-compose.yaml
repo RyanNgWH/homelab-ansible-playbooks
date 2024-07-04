@@ -8,8 +8,8 @@ services:
       TZ: {{ debian_datetime_timezone }}
       UMASK: 007
     volumes:
-      - {{ nfs_mount_point }}:/data
-      - {{ nfs_mount_point }}/configs/radarr:/config
+      - {{ nfs_mounts.marilyn.mount_point }}:/data
+      - {{ nfs_mounts.marilyn.mount_point }}/configs/radarr:/config
     ports:
       - "7878:7878"
     restart: unless-stopped
@@ -26,8 +26,8 @@ services:
       TZ: {{ debian_datetime_timezone }}
       UMASK: 007
     volumes:
-      - {{ nfs_mount_point }}:/data
-      - {{ nfs_mount_point }}/configs/radarr4k:/config
+      - {{ nfs_mounts.marilyn.mount_point }}:/data
+      - {{ nfs_mounts.marilyn.mount_point }}/configs/radarr4k:/config
     ports:
       - "7879:7878"
     restart: unless-stopped
@@ -44,8 +44,8 @@ services:
       TZ: {{ debian_datetime_timezone }}
       UMASK: 007
     volumes:
-      - {{ nfs_mount_point }}:/data
-      - {{ nfs_mount_point }}/configs/radarr-anime:/config
+      - {{ nfs_mounts.marilyn.mount_point }}:/data
+      - {{ nfs_mounts.marilyn.mount_point }}/configs/radarr-anime:/config
     ports:
       - "7880:7878"
     restart: unless-stopped
@@ -59,7 +59,7 @@ services:
     environment:
       TZ: {{ debian_datetime_timezone }}
     volumes:
-      - {{ nfs_mount_point }}/configs/recyclarr/radarr:/config
+      - {{ nfs_mounts.marilyn.mount_point }}/configs/recyclarr/radarr:/config
     user: {{ nfs_user_id }}:{{ radarr_media_group_gid }}
     restart: unless-stopped
     depends_on:
@@ -75,7 +75,7 @@ services:
       POSTGRES_USER: radarr
       POSTGRES_PASSWORD: {{ radarr_postgres_pass }}
     volumes:
-      - {{ nfs_mount_point }}/databases/radarr:/var/lib/postgresql/data
+      - {{ nfs_mounts.marilyn.mount_point }}/databases/radarr:/var/lib/postgresql/data
     user: {{ nfs_user_id }}:{{ radarr_media_group_gid }}
     restart: unless-stopped
     healthcheck:

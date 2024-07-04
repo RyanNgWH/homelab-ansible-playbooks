@@ -23,8 +23,10 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Rainbow] Radarr/us
 nfs_user_name: radarr
 nfs_user_id: 283
 nfs_mount_server: storage.tinynamoo.com
-nfs_mount_share: marilyn
-nfs_mount_point: /srv/marilyn
+nfs_mounts:
+  marilyn:
+    mount_share: marilyn
+    mount_point: /srv/marilyn
 
 ## Radarr variables
 radarr_4k_hostname: movies4k.tinynamoo.com
