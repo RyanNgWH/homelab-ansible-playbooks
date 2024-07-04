@@ -32,6 +32,6 @@ services:
     container_name: mongodb
     image: mongo:6
     volumes:
-      - {{ nfs_mount_point }}/your_spotify_db:/data/db
+      - {{ nfs_mounts.melodee.mount_point }}/your_spotify_db:/data/db
     restart: unless-stopped
     user: {{ nfs_user_id }}:{{ nfs_user_id }}

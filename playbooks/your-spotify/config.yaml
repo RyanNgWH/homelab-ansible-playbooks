@@ -23,8 +23,10 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Melodee] YourSpoti
 nfs_user_name: yourspotify
 nfs_user_id: 217
 nfs_mount_server: storage.tinynamoo.com
-nfs_mount_share: melodee
-nfs_mount_point: /srv/melodee
+nfs_mounts:
+  melodee:
+    mount_share: melodee
+    mount_point: /srv/melodee
 
 ## Your-Spotify variables
 yourspotify_api_hostname: spotifyapi.tinynamoo.com
