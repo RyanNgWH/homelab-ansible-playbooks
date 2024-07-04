@@ -1,0 +1,100 @@
+# @format
+
+# Jellyfin
+# Install and configure the Jellyfin media streaming server.
+---
+- name: Setup Jellyfin application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/jellyfin
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/jellyfin/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup cache directory
+      ansible.builtin.file:
+        path: /opt/jellyfin/cache
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+- name: Setup jellyfin user
+  become: true
+  block:
+    - name: Create media group
+      ansible.builtin.group:
+        name: "{{ jellyfin_media_group_name }}"
+        gid: "{{ jellyfin_media_group_gid }}"
+        system: true
+        state: present
+
+    - name: Add jellyfin user to media group
+      ansible.builtin.user:
+        name: "{{ nfs_user_name }}"
+        groups: "{{ jellyfin_media_group_name }}"
+        append: true
+
+- name: Setup Fail2Ban
+  become: true
+  block:
+    - name: Install Fail2Ban
+      ansible.builtin.apt:
+        name: fail2ban
+        update_cache: true
+        state: present
+
+    - name: Add jellyfin fail2ban filter
+      ansible.builtin.template:
+        src: templates/fail2ban.filter.jellyfin.conf
+        dest: /etc/fail2ban/filter.d/jellyfin.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Add jellyfin fail2ban jail
+      ansible.builtin.template:
+        src: templates/fail2ban.jail.jellyfin.conf
+        dest: /etc/fail2ban/jail.d/jellyfin.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Configure sshd jail (addresses upstream bug)
+      ansible.builtin.lineinfile:
+        path: /etc/fail2ban/jail.conf
+        line: "backend = systemd"
+        regexp: "^backend = .*sshd.*"
+        state: present
+
+    - name: Restart fail2ban
+      ansible.builtin.systemd_service:
+        name: fail2ban.service
+        state: restarted
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start jellyfin docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: jellyfin
+    project_src: /opt/jellyfin
+    state: present

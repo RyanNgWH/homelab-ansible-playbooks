@@ -19,6 +19,9 @@ gitea:
 it_tools:
   hosts: tools.tinynamoo.com
 
+jellyfin:
+  hosts: filme.tinynamoo.com
+
 paperless:
   hosts: archive.tinynamoo.com
 

@@ -1,0 +1,43 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.20.1
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User
+debian_user_name: marilyn
+debian_user_shell: /bin/bash
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMoKEzfP1NwngMCLHl/TvQhWi9wH8fLCP5k+6z3/fZtS marilyn@filme.tinynamoo.com"
+
+## NFSv4-client-setup variables
+# Kerberos
+nfs_krb5_realm: TINYNAMOO.COM
+nfs_krb5_kdc: storage.tinynamoo.com
+nfs_krb5_admin_server: storage.tinynamoo.com
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Marilyn] Jellyfin/host.keytab"
+nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Marilyn] Jellyfin/user.keytab"
+
+# NFS
+nfs_user_name: jellyfin
+nfs_user_id: 281
+nfs_mount_server: storage.tinynamoo.com
+nfs_mounts:
+  marilyn-media:
+    mount_share: marilyn-media
+    mount_point: /srv/marilyn-media
+  marilyn-configs-jellyfin:
+    mount_share: marilyn-configs-jellyfin
+    mount_point: /srv/marilyn-configs-jellyfin
+
+## Jellyfin variables
+jellyfin_media_group_name: media
+jellyfin_media_group_gid: 200
+
+## NGINX variables
+nginx_conf_files:
+  - filename: jellyfin.conf
+    path: templates/nginx.jellyfin.conf
+
+certbot_admin_email: admin@tinynamoo.com
