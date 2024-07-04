@@ -56,8 +56,8 @@ This role utilises modules from the following collections that is not part of `a
     nfs_mount_server: storage.tinynamoo.com
     nfs_mounts:
       my_mount:
-        nfs_mount_share: winter
-        nfs_mount_point: /srv/winter
+        mount_share: winter
+        mount_point: /srv/winter
 
   roles:
       - nfsv4-client-setup
