@@ -6,7 +6,7 @@ services:
     ports:
       - '1443:1443'
     volumes:
-      - {{ nfs_mount_point }}:/uploads
+      - {{ nfs_mounts.stevie.mount_point }}:/uploads
     environment:
       - BASE_URL=https://{{ inventory_hostname }}
 
