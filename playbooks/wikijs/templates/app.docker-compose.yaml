@@ -16,9 +16,9 @@ services:
       - "3000:3000"
     restart: unless-stopped
     volumes:
-      - {{ nfs_mount_point }}/config:/config
-      - {{ nfs_mount_point }}/data:/data
-      - {{ nfs_mount_point }}/backups:/backups
+      - {{ nfs_mounts.winter.mount_point }}/config:/config
+      - {{ nfs_mounts.winter.mount_point }}/data:/data
+      - {{ nfs_mounts.winter.mount_point }}/backups:/backups
       - ./git:/wiki/git
       - /home/{{ nfs_user_name }}/.ssh/id_ed25519:/wiki/.ssh/id_ed25519
     depends_on:
@@ -35,5 +35,5 @@ services:
       driver: "none"
     restart: unless-stopped
     volumes:
-      - {{ nfs_mount_point }}/db:/var/lib/postgresql/data
+      - {{ nfs_mounts.winter.mount_point }}/db:/var/lib/postgresql/data
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
