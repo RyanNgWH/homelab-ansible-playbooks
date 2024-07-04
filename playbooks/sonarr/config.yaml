@@ -23,8 +23,10 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sapphire] Sonarr/u
 nfs_user_name: sonarr
 nfs_user_id: 282
 nfs_mount_server: storage.tinynamoo.com
-nfs_mount_share: marilyn
-nfs_mount_point: /srv/marilyn
+nfs_mounts:
+  marilyn:
+    mount_share: marilyn
+    mount_point: /srv/marilyn
 
 ## Sonarr variables
 sonarr_4k_hostname: tv4k.tinynamoo.com
