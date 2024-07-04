@@ -23,8 +23,10 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Tiffany] Vikunja/u
 nfs_user_name: vikunja
 nfs_user_id: 240
 nfs_mount_server: storage.tinynamoo.com
-nfs_mount_share: tiffany
-nfs_mount_point: /srv/tiffany
+nfs_mounts:
+  tiffany:
+    mount_share: tiffany
+    mount_point: /srv/tiffany
 
 ## Vikunja configurations
 vikunja_mail_server: smtp.tinynamoo.com

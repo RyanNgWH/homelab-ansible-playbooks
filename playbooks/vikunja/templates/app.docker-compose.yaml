@@ -18,7 +18,7 @@ services:
     ports:
       - 3456:3456
     volumes:
-      - {{ nfs_mount_point }}/files:/app/vikunja/files
+      - {{ nfs_mounts.tiffany.mount_point }}/files:/app/vikunja/files
       - ./config.yaml:/etc/vikunja/config.yaml
     depends_on:
       db:
@@ -35,7 +35,7 @@ services:
       POSTGRES_USER: vikunja
       POSTGRES_DB: vikunja
     volumes:
-      - {{ nfs_mount_point }}/db:/var/lib/postgresql/data
+      - {{ nfs_mounts.tiffany.mount_point }}/db:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER"]
