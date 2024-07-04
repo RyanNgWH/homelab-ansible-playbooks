@@ -1,33 +1,34 @@
 services:
   piped-frontend:
+    container_name: piped-frontend
     image: 1337kavin/piped-frontend:latest
+    environment:
+      BACKEND_HOSTNAME: {{ piped_backend_hostname }}
     restart: unless-stopped
     depends_on:
       - piped
-    environment:
-      BACKEND_HOSTNAME: {{ piped_backend_hostname }}
-    container_name: piped-frontend
+
   piped-proxy:
+    container_name: piped-proxy
     image: 1337kavin/piped-proxy:latest
-    restart: unless-stopped
     environment:
       - UDS=1
     volumes:
       - piped-proxy:/app/socket
-    container_name: piped-proxy
-  piped:
-    image: 1337kavin/piped:latest
     restart: unless-stopped
+
+  piped:
+    container_name: piped-backend
+    image: 1337kavin/piped:latest
     volumes:
       - ./config/config.properties:/app/config.properties:ro
     depends_on:
       - postgres
-    container_name: piped-backend
-  nginx:
-    image: nginx:mainline-alpine
     restart: unless-stopped
-    ports:
-      - "8080:80"
+
+  nginx:
+    container_name: nginx
+    image: nginx:mainline-alpine
     volumes:
       - ./config/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./config/pipedapi.conf:/etc/nginx/conf.d/pipedapi.conf:ro
@@ -35,32 +36,37 @@ services:
       - ./config/pipedfrontend.conf:/etc/nginx/conf.d/pipedfrontend.conf:ro
       - ./config/ytproxy.conf:/etc/nginx/snippets/ytproxy.conf:ro
       - piped-proxy:/var/run/ytproxy
-    container_name: nginx
+    ports:
+      - "8080:80"
+    restart: unless-stopped
     depends_on:
       - piped
       - piped-proxy
       - piped-frontend
+
   postgres:
+    container_name: postgres
     image: postgres:15
-    restart: unless-stopped
-    volumes:
-      - {{ piped_database_dir }}:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=piped
       - POSTGRES_USER=piped
       - POSTGRES_PASSWORD="{{ piped_database_password }}"
-    container_name: postgres
-    user: {{ nfs_user_id }}:{{ nfs_user_id }}
-  watchtower:
-    image: containrrr/watchtower
-    restart: always
     volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/timezone:/etc/timezone:ro
+      - {{ nfs_mounts.twyla.mount_point }}/data/db:/var/lib/postgresql/data
+    restart: unless-stopped
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+
+  watchtower:
+    container_name: watchtower
+    image: containrrr/watchtower
+    command: piped-frontend piped-backend piped-proxy varnish nginx postgres watchtower
     environment:
       - WATCHTOWER_CLEANUP=true
       - WATCHTOWER_INCLUDE_RESTARTING=true
-    container_name: watchtower
-    command: piped-frontend piped-backend piped-proxy varnish nginx postgres watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /etc/timezone:/etc/timezone:ro
+    restart: always
+
 volumes:
   piped-proxy: null
