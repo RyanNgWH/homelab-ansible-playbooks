@@ -32,7 +32,7 @@ services:
     networks:
       - firefly
     volumes:
-      - {{ nfs_mount_point }}/db:/var/lib/mysql
+      - {{ nfs_mounts.alora.mount_point }}/db:/var/lib/mysql
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
 
   cron:

@@ -46,7 +46,7 @@
 
     - name: Sync uploads directory from NFS server to local application directory
       ansible.posix.synchronize:
-        src: "{{ nfs_mount_point }}/uploads"
+        src: "{{ nfs_mounts.alora.mount_point }}/uploads"
         dest: /opt/firefly/
       delegate_to: "{{ inventory_hostname }}"
 
