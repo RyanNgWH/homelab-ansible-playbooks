@@ -28,6 +28,9 @@ paperless:
 piped:
   hosts: tube.tinynamoo.com
 
+proxmox:
+  hosts: server.tinynamoo.com
+
 radarr:
   hosts: movies.tinynamoo.com
 

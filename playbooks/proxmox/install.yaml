@@ -1,0 +1,106 @@
+# @format
+
+# Proxmox
+# Install and configure the Proxmox hypervisor.
+---
+- name: Setup repositories
+  become: true
+  block:
+    - name: Enable no-subscription respository
+      ansible.builtin.template:
+        src: templates/host.pve-no-subscription.list
+        dest: /etc/apt/sources.list.d/pve-no-subscription.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Disable enterprise respository
+      ansible.builtin.copy:
+        content: "# deb https://enterprise.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-enterprise"
+        dest: /etc/apt/sources.list.d/pve-enterprise.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Disable no subscription nagging message
+      ansible.builtin.copy:
+        src: files/host.no-nag-script
+        dest: /etc/apt/apt.conf.d/no-nag-script
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Reinstall proxmox-widget toolkit
+      ansible.builtin.shell:
+        cmd: apt-get --reinstall install proxmox-widget-toolkit
+      environment:
+        DEBIAN_FRONTEND: noninteractive
+      changed_when: true
+
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+- name: Setup PCIe passthrough in Proxmox
+  become: true
+  block:
+    - name: Check if IMMOU is enabled in grub
+      ansible.builtin.command:
+        cmd: grep -c "intel_immou=on" /etc/default/grub
+      register: immou_exists
+      changed_when: false
+      failed_when: immou_exists.rc == 2
+
+    - name: Ensure IOMMU is enabled in kernel
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=.*)"$'
+        line: '\1 intel_immou=on"'
+        backrefs: true
+        state: present
+      when: immou_exists.stdout == "0"
+
+    - name: Check if IMMOU passthrough is enabled in grub
+      ansible.builtin.command:
+        cmd: grep -c "iommu=pt" /etc/default/grub
+      register: immou_passthrough_exists
+      changed_when: false
+      failed_when: immou_passthrough_exists.rc == 2
+
+    - name: Ensure IOMMU passthrough is enabled in kernel
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: '^(GRUB_CMDLINE_LINUX_DEFAULT=.*)"$'
+        line: '\1 iommu=pt"'
+        backrefs: true
+        state: present
+      when: immou_passthrough_exists.stdout == "0"
+
+    - name: Ensure vfio kernel module is loaded
+      community.general.modprobe:
+        name: vfio
+        persistent: present
+        state: present
+
+    - name: Ensure vfio_iommu_type1 kernel module is loaded
+      community.general.modprobe:
+        name: vfio_iommu_type1
+        persistent: present
+        state: present
+
+    - name: Ensure vfio_pci kernel module is loaded
+      community.general.modprobe:
+        name: vfio_pci
+        persistent: present
+        state: present
+
+    - name: Ensure vfio-pci configurations are set
+      ansible.builtin.copy:
+        content: "options vfio-pci ids={{ pcie_passthrough_ids }} disable_vga=1"
+        dest: /etc/modprobe.d/vfio.conf
+        owner: root
+        group: root
+        mode: "0644"

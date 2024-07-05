@@ -1,0 +1,12 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.10.1
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User
+debian_user_name: sierra
+debian_user_shell: /bin/bash
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILjYx0p1edQncP3TXu+a1lhy9hDRsQgXRGHRnmORCYIn sierra@server.tinynamoo.com"

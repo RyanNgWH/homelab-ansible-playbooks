@@ -1,0 +1,24 @@
+# @format
+
+# Proxmox
+# Configure & manage the Proxmox hypervisor.
+---
+- name: Configure & manage the Proxmox hypervisor
+  hosts: proxmox
+
+  pre_tasks:
+    - name: Include playbook configuration
+      ansible.builtin.include_vars: "{{ item }}"
+      with_fileglob:
+        - "{{ playbook_dir }}/config.yaml"
+        - "{{ playbook_dir }}/credentials.yaml"
+      tags: always
+
+  roles:
+    - role: debian-12-setup
+      tags: install
+
+  tasks:
+    - name: Install and configure the Proxmox hypervisor
+      ansible.builtin.import_tasks: install.yaml
+      tags: install
