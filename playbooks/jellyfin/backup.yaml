@@ -1,0 +1,33 @@
+# @format
+
+# Jellyfin
+# Backup the Jellyfin data directory.
+---
+- name: Backup Jellyfin data directory
+  become: true
+  block:
+    - name: Ensure rsync is installed
+      ansible.builtin.apt:
+        name: rsync
+        update_cache: true
+        state: present
+
+    - name: Ensure jellyfin docker containers are stopped
+      community.docker.docker_compose_v2:
+        project_name: jellyfin
+        project_src: /opt/jellyfin
+        state: absent
+
+    - name: Sync data directory from local application directory to NFS server
+      ansible.posix.synchronize:
+        src: /opt/jellyfin/data
+        dest: '{{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/'
+        owner: false
+        group: false
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Start jellyfin docker containers
+      community.docker.docker_compose_v2:
+        project_name: jellyfin
+        project_src: /opt/jellyfin
+        state: present
