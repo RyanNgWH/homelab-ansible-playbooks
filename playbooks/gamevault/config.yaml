@@ -22,7 +22,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sakura] Gamevault/
 # NFS
 nfs_user_name: gamevault
 nfs_user_id: 230
-nfs_mount_server: storage.tinynamoo.
+nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   sakura:
     mount_share: sakura
