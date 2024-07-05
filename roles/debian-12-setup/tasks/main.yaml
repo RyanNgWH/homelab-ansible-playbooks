@@ -35,8 +35,8 @@
     - name: Update apt sources and packages
       block:
         - name: Ensure apt uses https sources
-          ansible.builtin.copy:
-            src: files/debian-apt-sources.list
+          ansible.builtin.template:
+            src: templates/debian-apt-sources.list
             dest: /etc/apt/sources.list
             mode: "0644"
 
