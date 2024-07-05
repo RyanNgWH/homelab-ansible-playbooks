@@ -3,7 +3,7 @@ services:
     container_name: jellyfin
     image: jellyfin/jellyfin:latest
     volumes:
-      - {{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}:/config
+      - {{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/config:/config
       - /opt/jellyfin/data:/data
       - /opt/jellyfin/cache:/cache
       - {{ nfs_mounts["marilyn-media"].mount_point }}:/media
@@ -14,3 +14,9 @@ services:
       - "8096:8096"
     restart: unless-stopped
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]

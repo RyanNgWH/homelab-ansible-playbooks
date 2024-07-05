@@ -91,6 +91,154 @@
         name: fail2ban.service
         state: restarted
 
+- name: Setup GPU hardware acceleration
+  become: true
+  block:
+    - name: Install kernel headers to build NVIDIA drivers
+      ansible.builtin.apt:
+        name: linux-headers-amd64
+        update_cache: true
+        state: present
+
+    - name: Update Debian sources with 'non-free' components
+      ansible.builtin.lineinfile:
+        path: /etc/apt/sources.list
+        regexp: "{{ item.regex }}"
+        line: "{{ item.line }}"
+        state: present
+      loop:
+        - {
+            regex: "deb .*debian {{ ansible_distribution_release }} .*$",
+            line: "deb https://deb.debian.org/debian {{ ansible_distribution_release }} main contrib non-free non-free-firmware",
+          }
+        - {
+            regex: "deb-src .*debian {{ ansible_distribution_release }} .*$",
+            line: "deb-src https://deb.debian.org/debian {{ ansible_distribution_release }} main contrib non-free non-free-firmware",
+          }
+
+    - name: Install NVIDIA drivers & firmware
+      ansible.builtin.apt:
+        name:
+          - nvidia-driver
+          - firmware-misc-nonfree
+          - libnvcuvid1
+          - libnvidia-encode1
+        update_cache: true
+        state: present
+      notify: Reboot system
+      ignore_errors: true
+
+    - name: Add nvidia container repository key
+      ansible.builtin.get_url:
+        url: https://nvidia.github.io/libnvidia-container/gpgkey
+        dest: /etc/apt/trusted.gpg.d/nvidia-container-toolkit.asc
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Add nvidia container toolkit repository
+      ansible.builtin.copy:
+        src: files/nvidia-container-toolkit.list
+        dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure NVIDIA container toolkit is installed
+      ansible.builtin.apt:
+        name: nvidia-container-toolkit
+        update_cache: true
+        state: present
+
+    - name: Configure Docker with NVIDIA container toolkit
+      ansible.builtin.command:
+        cmd: nvidia-ctk runtime configure --runtime=docker
+      changed_when: true
+
+    - name: Restart Docker daemon
+      ansible.builtin.systemd_service:
+        name: docker
+        enabled: true
+        state: restarted
+
+    - name: Add jellyfin user to video group
+      ansible.builtin.user:
+        name: "{{ nfs_user_name }}"
+        groups: "video"
+        append: true
+
+    - name: Add git exception for nvidia patcher directory
+      community.general.git_config:
+        name: safe.directory
+        value: /opt/nvidia-patch
+        scope: global
+        state: present
+
+    - name: Clone NVENC encoding restriction patcher
+      ansible.builtin.git:
+        repo: https://github.com/keylase/nvidia-patch.git
+        dest: /opt/nvidia-patch # noqa: latest
+        force: true
+
+    - name: Ensure owner of nvidia patcher application directory is set
+      ansible.builtin.file:
+        path: /opt/nvidia-patch
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0740"
+        recurse: true
+        follow: false
+        state: directory
+
+    - name: Check if nvidia drivers is running
+      ansible.builtin.command:
+        cmd: nvidia-smi
+      register: driver_output
+      changed_when: false
+      ignore_errors: true
+
+    - name: Reboot system
+      ansible.builtin.reboot:
+      when: driver_output.rc == 9
+
+    - name: Patch NVENC driver
+      ansible.builtin.command:
+        chdir: /opt/nvidia-patch
+        cmd: ./patch.sh
+      register: patch_output
+      changed_when: "'Patched!' in patch_output.stdout_lines"
+
+- name: Sync backup of jellyfin data directory
+  become: true
+  block:
+    - name: Ensure rsync is installed
+      ansible.builtin.apt:
+        name: rsync
+        update_cache: true
+        state: present
+
+    - name: Ensure jellyfin docker containers are stopped
+      community.docker.docker_compose_v2:
+        project_name: jellyfin
+        project_src: /opt/jellyfin
+        state: absent
+
+    - name: Sync data directory from NFS server to local application directory
+      ansible.posix.synchronize:
+        src: '{{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/data'
+        dest: /opt/jellyfin/
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Ensure data directory permissions is set
+      ansible.builtin.file:
+        path: /opt/jellyfin/data
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        recurse: true
+        follow: false
+        state: directory
+
 - name: Install and configure nginx
   vars:
     task_list:
@@ -100,7 +248,7 @@
   ansible.builtin.include_role:
     name: debian-common
 
-- name: Start jellyfin docker containers
+- name: Start Jellyfin docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: jellyfin
