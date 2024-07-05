@@ -30,6 +30,14 @@
         mode: "0750"
         state: directory
 
+    - name: Setup data directory
+      ansible.builtin.file:
+        path: /opt/jellyfin/data
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
 - name: Setup jellyfin user
   become: true
   block:
