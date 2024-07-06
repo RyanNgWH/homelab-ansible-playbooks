@@ -1,0 +1,49 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.20.1
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User
+debian_user_name: bibi
+debian_user_shell: /bin/bash
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINQH72xuzepe9BY1Drq2VtBSygKH8uoAMwPW1N39D20F bibi@subs.media.tinynamoo.com"
+
+## NFSv4-client-setup variables
+# Kerberos
+nfs_krb5_realm: TINYNAMOO.COM
+nfs_krb5_kdc: storage.tinynamoo.com
+nfs_krb5_admin_server: storage.tinynamoo.com
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Bibi] Bazarr/host.keytab"
+nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Bibi] Bazarr/user.keytab"
+
+# NFS
+nfs_user_name: bazarr
+nfs_user_id: 118
+nfs_mount_server: storage.tinynamoo.com
+nfs_mounts:
+  marilyn-media:
+    mount_share: marilyn-media
+    mount_point: /srv/marilyn-media
+  marilyn-configs:
+    mount_share: marilyn-configs
+    mount_point: /srv/marilyn-configs
+  marilyn-databases-bazarr:
+    mount_share: marilyn-databases-bazarr
+    mount_point: /srv/marilyn-databases-bazarr
+
+## Bazarr variables
+bazarr_4k_hostname: subtitles4k.tinynamoo.com
+bazarr_media_group_name: media
+bazarr_media_group_gid: 200
+
+## NGINX variables
+nginx_conf_files:
+  - filename: bazarr.conf
+    path: templates/nginx.bazarr.conf
+  - filename: bazarr4k.conf
+    path: templates/nginx.bazarr4k.conf
+
+certbot_admin_email: admin@tinynamoo.com

@@ -1,0 +1,56 @@
+# @format
+
+# Bazarr
+# Install and configure the Bazarr subtitles management server.
+---
+- name: Setup Bazarr application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/bazarr
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/bazarr/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+- name: Setup bazarr user
+  become: true
+  block:
+    - name: Create media group
+      ansible.builtin.group:
+        name: "{{ bazarr_media_group_name }}"
+        gid: "{{ bazarr_media_group_gid }}"
+        system: true
+        state: present
+
+    - name: Add bazarr user to media group
+      ansible.builtin.user:
+        name: "{{ nfs_user_name }}"
+        groups: "{{ bazarr_media_group_name }}"
+        append: true
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+      - "{{ bazarr_4k_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start bazarr docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: bazarr
+    project_src: /opt/bazarr
+    state: present
