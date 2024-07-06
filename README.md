@@ -61,4 +61,5 @@ Each playbook has an associated configuration file `playbooks/<application>/conf
 | Send                | Manage Send file sharing server               | `ansible-playbook playbooks/send/main.yaml -KJ --tags "<tag>"`          | Supported tags<li>`install`                                          |
 | Vikunja             | Manage Vikunja tasks management server        | `ansible-playbook playbooks/vikunja/main.yaml -KJ --tags "<tag>""`      | Supported tags<li>`install`                                          |
 | Wallos              | Manage Wallos subscriptions management server | `ansible-playbook playbooks/wallos/main.yaml -KJ --tags "<tag>""`       | Supported tags<li>`install`<li>`upgrade`                             |
+| Wikijs              | Manage Wikijs wiki engine server              | `ansible-playbook playbooks/wikijs/main.yaml -KJ --tags "<tag>""`       | Supported tags<li>`install`<li>`upgrade`                             |
 | Your-Spotify        | Manage Your-Spotify statistics server         | `ansible-playbook playbooks/your-spotify/main.yaml -KJ --tags "<tag>""` | Supported tags<li>`install`                                          |

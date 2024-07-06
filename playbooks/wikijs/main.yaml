@@ -35,3 +35,8 @@
     - name: Install and configure Wikijs wiki server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Wikijs wiki engine server
+      ansible.builtin.import_tasks: upgrade.yaml
+      become: true
+      tags: upgrade
