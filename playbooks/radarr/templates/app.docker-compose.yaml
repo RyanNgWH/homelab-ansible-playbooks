@@ -4,7 +4,7 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     environment:
       PUID: {{ nfs_user_id }}
-      GUID: {{ nfs_user_id }}
+      PGID: {{ nfs_user_id }}
       TZ: {{ debian_datetime_timezone }}
       UMASK: 007
     volumes:
@@ -22,7 +22,7 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     environment:
       PUID: {{ nfs_user_id }}
-      GUID: {{ nfs_user_id }}
+      PGID: {{ nfs_user_id }}
       TZ: {{ debian_datetime_timezone }}
       UMASK: 007
     volumes:
@@ -40,7 +40,7 @@ services:
     image: lscr.io/linuxserver/radarr:latest
     environment:
       PUID: {{ nfs_user_id }}
-      GUID: {{ nfs_user_id }}
+      PGID: {{ nfs_user_id }}
       TZ: {{ debian_datetime_timezone }}
       UMASK: 007
     volumes:

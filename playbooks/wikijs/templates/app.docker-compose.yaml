@@ -10,7 +10,7 @@ services:
       DB_PASS: {{ wikijs_postgres_pass }}
       DB_NAME: wikijs
       PUID: {{ nfs_user_id }}
-      GUID: {{ nfs_user_id }}
+      PGID: {{ nfs_user_id }}
       TZ: Asia/Singapore
     ports:
       - "3000:3000"
