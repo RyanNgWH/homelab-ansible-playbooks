@@ -1,0 +1,11 @@
+[Unit]
+Description=NAT-PMP Updater for qBittorrent
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/opt/qbittorrent/qbittorrent-natpmpc-updater.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

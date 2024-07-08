@@ -1,0 +1,130 @@
+# @format
+
+# qBittorrent
+# Install and configure qBittorrent downloads server.
+---
+- name: Setup ProtonVPN
+  become: true
+  block:
+    - name: Install wireguard packages
+      ansible.builtin.apt:
+        name: wireguard
+        update_cache: true
+        state: present
+
+    - name: Setup ProtonVPN wireguard configuration
+      ansible.builtin.template:
+        src: templates/wireguard.protonvpn.conf
+        dest: "/etc/wireguard/protonvpn.conf"
+        owner: root
+        group: root
+        mode: "0640"
+
+    - name: Enable and start ProtonVPN
+      ansible.builtin.systemd_service:
+        name: wg-quick@protonvpn.service
+        daemon_reload: true
+        enabled: true
+        state: started
+
+    - name: Get public IP
+      community.general.ipify_facts:
+        timeout: 20
+      register: public_ip
+
+    - name: Ensure traffic is routed through ProtonVPN
+      ansible.builtin.assert:
+        that: ipify_public_ip == "146.70.29.198"
+
+- name: Setup qBittorrent application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/qbittorrent
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/qbittorrent/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup cross-seed configuration file
+      ansible.builtin.template:
+        src: templates/cross-seed.config.js
+        dest: "{{ nfs_mounts.marilyn.mount_point }}/configs/cross-seed/config.js"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ qbit_media_group_name }}"
+        mode: "0660"
+
+- name: Setup qbit user
+  become: true
+  block:
+    - name: Create media group
+      ansible.builtin.group:
+        name: "{{ qbit_media_group_name }}"
+        gid: "{{ qbit_media_group_gid }}"
+        system: true
+        state: present
+
+    - name: Add qbit user to media group
+      ansible.builtin.user:
+        name: "{{ nfs_user_name }}"
+        groups: "{{ qbit_media_group_name }}"
+        append: true
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start qbittorrent docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: qbittorrent
+    project_src: /opt/qbittorrent
+    state: present
+
+- name: Setup ProtonVPN port forwarding
+  become: true
+  block:
+    - name: Ensure natpmpc & curl is installed
+      ansible.builtin.apt:
+        name:
+          - natpmpc
+          - curl
+        update_cache: true
+        state: present
+
+    - name: Setup natpmpc updater script
+      ansible.builtin.template:
+        src: templates/protonvpn.qbittorrent-natpmpc-updater.sh
+        dest: /opt/qbittorrent/qbittorrent-natpmpc-updater.sh
+        owner: root
+        group: root
+        mode: "0750"
+
+    - name: Setup natpmpc updater systemd service
+      ansible.builtin.template:
+        src: templates/systemd.natpmpc-updater.service
+        dest: /etc/systemd/system/natpmpc-updater.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Enable and start natpmpc updater
+      ansible.builtin.systemd_service:
+        name: natpmpc-updater.service
+        daemon_reload: true
+        enabled: true
+        state: started

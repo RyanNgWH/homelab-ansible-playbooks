@@ -34,6 +34,9 @@ piped:
 proxmox:
   hosts: server.tinynamoo.com
 
+qbittorrent:
+  hosts: download.tinynamoo.com
+
 radarr:
   hosts: movies.tinynamoo.com
 
