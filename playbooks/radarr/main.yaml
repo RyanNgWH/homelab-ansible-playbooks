@@ -35,3 +35,7 @@
     - name: Install and configure the Radarr movies management server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Radarr movies management server
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade
