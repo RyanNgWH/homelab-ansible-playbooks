@@ -10,7 +10,7 @@ services:
       UMASK: 007
     volumes:
       - {{ nfs_mounts.marilyn.mount_point }}/configs/qbittorrent:/config
-      - {{ nfs_mounts.marilyn.mount_point }}/torrents:/data/downloads
+      - {{ nfs_mounts.marilyn.mount_point }}/torrents:/data/torrents
       - {{ nfs_mounts.marilyn.mount_point }}/media/cross-seed-links:/data/media/cross-seed-links
     ports:
       - 8080:8080
