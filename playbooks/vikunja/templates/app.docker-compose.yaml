@@ -13,8 +13,6 @@ services:
       VIKUNJA_REDIS_HOST: 'redis:6379'
       VIKUNJA_CACHE_ENABLED: 1
       VIKUNJA_CACHE_TYPE: 1
-      PUID: {{ nfs_user_id }}
-      PGID: {{ nfs_user_id }}
     ports:
       - 3456:3456
     volumes:
@@ -25,6 +23,7 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
 
   db:
