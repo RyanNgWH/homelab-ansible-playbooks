@@ -38,5 +38,4 @@
 
     - name: Upgrade Wikijs wiki engine server
       ansible.builtin.import_tasks: upgrade.yaml
-      become: true
       tags: upgrade
