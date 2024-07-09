@@ -1,0 +1,19 @@
+# @format
+---
+## Debian-12-setup variables
+# Date time configurations
+debian_datetime_ntp_server: 172.28.20.1
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User configurations
+debian_user_name: danielle
+debian_user_shell: /bin/bash
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGivXxjmTnRB0aOrtWLRdW8vuyRfC/QKwoqtZYmS3hXT danielle@pdf.tinynamoo.com"
+
+## NGINX variables
+nginx_conf_files:
+  - filename: stirling-pdf.conf
+    path: templates/nginx.stirling-pdf.conf
+
+certbot_admin_email: admin@tinynamoo.com

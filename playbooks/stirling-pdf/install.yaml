@@ -1,0 +1,38 @@
+# @format
+
+# Stirling PDF
+# Install and configure Stirling PDF tools collection.
+---
+- name: Create application directory
+  become: true
+  ansible.builtin.file:
+    path: /opt/stirling-pdf
+    owner: "{{ debian_user_name }}"
+    group: "{{ debian_user_name }}"
+    mode: "0640"
+    state: directory
+
+- name: Setup Stirling PDF docker compose file
+  become: true
+  ansible.builtin.copy:
+    src: files/app.docker-compose.yaml
+    dest: /opt/stirling-pdf/docker-compose.yaml
+    owner: "{{ debian_user_name }}"
+    group: "{{ debian_user_name }}"
+    mode: "0640"
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start Stirling PDF docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: stirling-pdf
+    project_src: /opt/stirling-pdf
+    state: present

@@ -2,7 +2,7 @@
 ---
 # Hosts
 ansible_lxc:
-  hosts: ansible.lxc.tinynamoo.com
+  hosts: ansible-lxc.tinynamoo.com
 
 ansible_vm:
   hosts: ansible.tinynamoo.com
@@ -45,6 +45,9 @@ send:
 
 sonarr:
   hosts: tv.tinynamoo.com
+
+stirling-pdf:
+  hosts: pdf.tinynamoo.com
 
 vikunja:
   hosts: tasks.tinynamoo.com
