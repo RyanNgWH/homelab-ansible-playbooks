@@ -63,6 +63,14 @@
         group: "{{ qbit_media_group_name }}"
         mode: "0660"
 
+    - name: Setup qbit-manage configuration file
+      ansible.builtin.template:
+        src: templates/qbit-manage.config.yaml
+        dest: "/opt/qbittorrent/qbit-manage.config.yaml"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
 - name: Setup qbit user
   become: true
   block:

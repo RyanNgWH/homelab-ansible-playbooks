@@ -36,3 +36,21 @@ services:
     depends_on:
       qbittorrent:
         condition: service_healthy
+
+  qbit-manage:
+    container_name: qbit-manage
+    image: ghcr.io/stuffanthings/qbit_manage:latest
+    volumes:
+      - ./qbit-manage.config.yaml:/app/config.yml
+      - {{ nfs_mounts.marilyn.mount_point }}/torrents:/data/torrents
+      - {{ nfs_mounts.marilyn.mount_point }}/configs/qbittorrent/qBittorrent:/qbittorrent/:ro
+    environment:
+      QBT_RUN: false
+      QBT_SCHEDULE: 1440
+      QBT_CONFIG: config.yml
+      QBT_LOGFILE: activity.log
+      QBT_LOG_LEVEL: INFO
+    restart: unless-stopped
+    depends_on:
+      qbittorrent:
+        condition: service_healthy
