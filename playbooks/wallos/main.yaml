@@ -31,7 +31,6 @@
       vars:
         task_list:
           - git
-          - docker
 
   tasks:
     - name: Install and configure Wallos subscription management server
