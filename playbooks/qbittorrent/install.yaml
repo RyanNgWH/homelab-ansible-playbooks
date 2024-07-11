@@ -29,7 +29,7 @@
 
     - name: Get public IP
       community.general.ipify_facts:
-        timeout: 20
+        timeout: 30
       register: public_ip
 
     - name: Ensure traffic is routed through ProtonVPN
