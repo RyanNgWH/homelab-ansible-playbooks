@@ -36,6 +36,22 @@
       ansible.builtin.assert:
         that: ipify_public_ip == "146.70.29.198"
 
+- name: Setup qbit user
+  become: true
+  block:
+    - name: Create media group
+      ansible.builtin.group:
+        name: "{{ qbit_media_group_name }}"
+        gid: "{{ qbit_media_group_gid }}"
+        system: true
+        state: present
+
+    - name: Add qbit user to media group
+      ansible.builtin.user:
+        name: "{{ nfs_user_name }}"
+        groups: "{{ qbit_media_group_name }}"
+        append: true
+
 - name: Setup qBittorrent application files
   become: true
   block:
@@ -70,22 +86,6 @@
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"
-
-- name: Setup qbit user
-  become: true
-  block:
-    - name: Create media group
-      ansible.builtin.group:
-        name: "{{ qbit_media_group_name }}"
-        gid: "{{ qbit_media_group_gid }}"
-        system: true
-        state: present
-
-    - name: Add qbit user to media group
-      ansible.builtin.user:
-        name: "{{ nfs_user_name }}"
-        groups: "{{ qbit_media_group_name }}"
-        append: true
 
 - name: Install and configure nginx
   vars:
