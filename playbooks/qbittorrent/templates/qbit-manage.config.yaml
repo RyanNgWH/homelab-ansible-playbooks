@@ -164,6 +164,10 @@ share_limits:
       - movies4k
       - tv
       - tv4k
+      - movies-completed
+      - movies4k-completed
+      - tv-completed
+      - tv4k-completed
     max_ratio: 10.0
     min_seeding_time: 6mo
     max_seeding_time: 1y
@@ -179,6 +183,10 @@ share_limits:
       - movies4k
       - tv
       - tv4k
+      - movies-completed
+      - movies4k-completed
+      - tv-completed
+      - tv4k-completed
     max_ratio: 10.0
     min_seeding_time: 6mo
     max_seeding_time: 1y
@@ -194,6 +202,10 @@ share_limits:
       - movies4k
       - tv
       - tv4k
+      - movies-completed
+      - movies4k-completed
+      - tv-completed
+      - tv4k-completed
     max_ratio: 10.0
     min_seeding_time: 7d
     max_seeding_time: 1y
@@ -208,6 +220,10 @@ share_limits:
       - movies4k
       - tv
       - tv4k
+      - movies-completed
+      - movies4k-completed
+      - tv-completed
+      - tv4k-completed
     max_ratio: 10.0
     min_seeding_time: 7d
     max_seeding_time: 1y
@@ -223,6 +239,10 @@ share_limits:
       - movies4k
       - tv
       - tv4k
+      - movies-completed
+      - movies4k-completed
+      - tv-completed
+      - tv4k-completed
     max_ratio: 10.0
     min_seeding_time: 7d
     max_seeding_time: 1y
