@@ -16,8 +16,8 @@ services:
       POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
     volumes:
       - {{ nfs_mounts["marilyn-configs"].mount_point }}/bazarr:/config
-      - {{ nfs_mounts["marilyn-media"].mount_point }}/movies-hd:/data/movies-hd
-      - {{ nfs_mounts["marilyn-media"].mount_point }}/tv-hd:/data/tv-hd
+      - {{ nfs_mounts["marilyn-media"].mount_point }}/movies:/data/movies
+      - {{ nfs_mounts["marilyn-media"].mount_point }}/tv:/data/tv
     ports:
       - "6767:6767"
     restart: unless-stopped
@@ -42,8 +42,8 @@ services:
       POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
     volumes:
       - {{ nfs_mounts["marilyn-configs"].mount_point }}/bazarr4k:/config
-      - {{ nfs_mounts["marilyn-media"].mount_point }}/movies-uhd:/data/movies-uhd
-      - {{ nfs_mounts["marilyn-media"].mount_point }}/tv-uhd:/data/tv-uhd
+      - {{ nfs_mounts["marilyn-media"].mount_point }}/movies4k:/data/movies4k
+      - {{ nfs_mounts["marilyn-media"].mount_point }}/tv4k:/data/tv4k
     ports:
       - "6768:6767"
     restart: unless-stopped
