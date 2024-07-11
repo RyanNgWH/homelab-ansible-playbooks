@@ -19,6 +19,9 @@ gamevault:
 gitea:
   hosts: git.tinynamoo.com
 
+immich:
+  hosts: photos.tinynamoo.com
+
 it_tools:
   hosts: tools.tinynamoo.com
 

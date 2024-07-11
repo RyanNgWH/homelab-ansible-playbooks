@@ -1,0 +1,63 @@
+# @format
+
+# Immich
+# Install and configure Immich photos management server.
+---
+- name: Setup Immich application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/immich
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/immich/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup immich environment variables file
+      ansible.builtin.template:
+        src: templates/app.immich.env
+        dest: /opt/immich/.env
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+- name: Setup immich user
+  become: true
+  block:
+    - name: Create photos group
+      ansible.builtin.group:
+        name: "{{ immich_photos_group_name }}"
+        gid: "{{ immich_photos_group_gid }}"
+        system: true
+        state: present
+
+    - name: Add immich user to photos group
+      ansible.builtin.user:
+        name: "{{ nfs_user_name }}"
+        groups: "{{ immich_photos_group_name }}"
+        append: true
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start immich docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: immich
+    project_src: /opt/immich
+    state: present
