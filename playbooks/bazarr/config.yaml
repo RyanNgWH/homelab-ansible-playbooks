@@ -9,7 +9,7 @@ debian_datetime_hardware_clock: UTC
 # User
 debian_user_name: bibi
 debian_user_shell: /bin/bash
-debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINQH72xuzepe9BY1Drq2VtBSygKH8uoAMwPW1N39D20F bibi@subs.media.tinynamoo.com"
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINQH72xuzepe9BY1Drq2VtBSygKH8uoAMwPW1N39D20F bibi@subtitles.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
