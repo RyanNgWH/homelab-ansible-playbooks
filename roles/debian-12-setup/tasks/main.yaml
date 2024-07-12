@@ -84,3 +84,6 @@
             user: "{{ debian_user_name }}"
             key: "{{ debian_user_ssh_public_key }}"
             state: present
+
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
