@@ -1,0 +1,16 @@
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/ajnart/homarr:latest
+    environment:
+      BASE_URL: {{ inventory_hostname }}
+      TZ: Asia/Singapore
+      DISABLE_ANALYTICS: true
+    volumes:
+#      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - {{ nfs_mounts.hanni.mount_point }}/configs:/app/data/configs
+      - {{ nfs_mounts.hanni.mount_point }}/icons:/app/public/icons
+      - {{ nfs_mounts.hanni.mount_point }}/data:/data
+    ports:
+      - '7575:7575'
+    restart: unless-stopped
