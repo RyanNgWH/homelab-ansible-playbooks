@@ -1,0 +1,14 @@
+---
+services:
+  jellyseerr:
+    container_name: jellyseerr
+    image: fallenbagel/jellyseerr:latest
+    environment:
+      LOG_LEVEL: debug
+      TZ: Asia/Singapore
+    volumes:
+      - {{ nfs_mounts["marilyn-configs-jellyseerr"].mount_point }}:/app/config
+    ports:
+      - 5055:5055
+    user: {{ nfs_user_id }}:{{ jellyseerr_media_group_gid }}
+    restart: unless-stopped

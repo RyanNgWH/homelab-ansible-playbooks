@@ -28,6 +28,9 @@ it_tools:
 jellyfin:
   hosts: filme.tinynamoo.com
 
+jellyseerr:
+  hosts: media.tinynamoo.com
+
 paperless:
   hosts: archive.tinynamoo.com
 

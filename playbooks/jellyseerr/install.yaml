@@ -1,0 +1,55 @@
+# @format
+
+# Jellyseerr
+# Install and configure the Jellyseerr media managment server.
+---
+- name: Setup Jellyseerr application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/jellyseerr
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/jellyseerr/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+- name: Setup jellyseerr user
+  become: true
+  block:
+    - name: Create media group
+      ansible.builtin.group:
+        name: "{{ jellyseerr_media_group_name }}"
+        gid: "{{ jellyseerr_media_group_gid }}"
+        system: true
+        state: present
+
+    - name: Add jellyseerr user to media group
+      ansible.builtin.user:
+        name: "{{ nfs_user_name }}"
+        groups: "{{ jellyseerr_media_group_name }}"
+        append: true
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start jellyseerr docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: jellyseerr
+    project_src: /opt/jellyseerr
+    state: present
