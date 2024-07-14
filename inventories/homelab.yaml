@@ -46,6 +46,9 @@ piped:
 proxmox:
   hosts: server.tinynamoo.com
 
+prowlarr:
+  hosts: indexers.tinynamoo.com
+
 qbittorrent:
   hosts: download.tinynamoo.com
 
