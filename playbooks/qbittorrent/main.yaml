@@ -35,3 +35,7 @@
     - name: Install and configure qBittorrent downloads server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade qBittorrent downloads server
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade

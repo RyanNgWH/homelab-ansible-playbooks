@@ -1,0 +1,31 @@
+# @format
+
+# qBittorrent
+# Upgrade qBittorrent download server
+---
+- name: Upgrade Sonarr TV management server
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Update & start qBittorrent docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: qbittorrent
+        project_src: /opt/qbittorrent
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true
