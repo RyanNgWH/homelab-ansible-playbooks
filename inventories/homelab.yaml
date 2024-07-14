@@ -61,7 +61,7 @@ send:
 sonarr:
   hosts: tv.tinynamoo.com
 
-stirling-pdf:
+stirling_pdf:
   hosts: pdf.tinynamoo.com
 
 vikunja:

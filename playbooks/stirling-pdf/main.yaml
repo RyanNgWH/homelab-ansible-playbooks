@@ -4,7 +4,7 @@
 # Install and configure Stirling PDF tools collection.
 ---
 - name: Install and configure Stirling PDF tools collection
-  hosts: stirling-pdf
+  hosts: stirling_pdf
 
   pre_tasks:
     - name: Include playbook configuration
