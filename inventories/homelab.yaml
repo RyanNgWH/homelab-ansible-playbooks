@@ -34,6 +34,9 @@ jellyfin:
 jellyseerr:
   hosts: media.tinynamoo.com
 
+miniflux:
+  hosts: feeds.tinynamoo.com
+
 paperless:
   hosts: archive.tinynamoo.com
 

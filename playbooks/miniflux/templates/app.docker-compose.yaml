@@ -1,0 +1,32 @@
+services:
+  miniflux:
+    container_name: miniflux
+    image: miniflux/miniflux:latest
+    environment:
+      DATABASE_URL: user=miniflux password={{ miniflux_postgres_pass }} dbname=miniflux host=postgres sslmode=disable
+      BASE_URL: https://{{ inventory_hostname }}
+      RUN_MIGRATIONS: 1
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "/usr/bin/miniflux", "-healthcheck", "auto"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    environment:
+      POSTGRES_DB: miniflux
+      POSTGRES_USER: miniflux
+      POSTGRES_PASSWORD: {{ miniflux_postgres_pass }}
+    volumes:
+      - {{ nfs_mounts.florence.mount_point }}/db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "miniflux"]
+      interval: 2s
+      timeout: 20s
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
