@@ -266,7 +266,7 @@ share_limits:
     max_seeding_time: 30d
     cleanup: true
   manual-seed:
-    priority: 8
+    priority: 9
     categories:
       - manual-seed
     max_ratio: 10.0
