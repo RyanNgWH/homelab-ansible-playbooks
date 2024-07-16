@@ -64,6 +64,9 @@ sonarr:
 stirling_pdf:
   hosts: pdf.tinynamoo.com
 
+uptime_kuma:
+  hosts: status.tinynamoo.com
+
 vikunja:
   hosts: tasks.tinynamoo.com
 
@@ -86,13 +89,26 @@ debian:
   children:
     ansible_lxc:
     ansible_vm:
+    bazarr:
     firefly:
     gamevault:
     gitea:
+    homarr:
+    immich:
     it_tools:
+    jellyfin:
+    jellyseerr:
+    miniflux:
     paperless:
     piped:
+    proxmox:
+    prowlarr:
+    qbittorrent:
+    radarr:
     send:
+    sonarr:
+    stirling_pdf:
+    uptime_kuma:
     vikunja:
     wallos:
     wikijs:

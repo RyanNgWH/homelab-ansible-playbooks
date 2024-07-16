@@ -1,0 +1,78 @@
+# @format
+
+# Uptime Kuma
+# Install and configure the Uptime Kuma monitoring server.
+---
+- name: Setup Uptime Kuma application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/uptime-kuma
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/uptime-kuma/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup data directory
+      ansible.builtin.file:
+        path: /opt/uptime-kuma/data
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+- name: Sync backup of uptime kuma data directory
+  become: true
+  block:
+    - name: Ensure rsync is installed
+      ansible.builtin.apt:
+        name: rsync
+        update_cache: true
+        state: present
+
+    - name: Ensure uptime kuma docker containers are stopped
+      community.docker.docker_compose_v2:
+        project_name: uptime-kuma
+        project_src: /opt/uptime-kuma
+        state: absent
+
+    - name: Sync data directory from NFS server to local application directory
+      ansible.posix.synchronize:
+        src: "{{ nfs_mounts.serene.mount_point }}/data"
+        dest: /opt/uptime-kuma/
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Ensure data directory permissions is set
+      ansible.builtin.file:
+        path: /opt/uptime-kuma/data
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        recurse: true
+        follow: false
+        state: directory
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start uptime kuma docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: uptime-kuma
+    project_src: /opt/uptime-kuma
+    state: present

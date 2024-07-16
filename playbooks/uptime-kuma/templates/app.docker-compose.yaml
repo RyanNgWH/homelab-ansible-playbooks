@@ -1,0 +1,12 @@
+services:
+  uptime-kuma:
+    container_name: uptime-kuma
+    image: louislam/uptime-kuma:1
+    environment:
+      PUID: {{ nfs_user_id }}
+      PGID: {{ nfs_user_id }}
+    volumes:
+      - ./data:/app/data
+    ports:
+      - 3001:3001
+    restart: unless-stopped
