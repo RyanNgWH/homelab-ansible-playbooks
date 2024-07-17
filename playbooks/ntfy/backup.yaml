@@ -1,0 +1,36 @@
+# @format
+
+# Ntfy
+# Backup the Ntfy notifications cache & data directory.
+---
+- name: Backup ntfy cache & data directories
+  become: true
+  block:
+    - name: Ensure rsync is installed
+      ansible.builtin.apt:
+        name: rsync
+        update_cache: true
+        state: present
+
+    - name: Ensure ntfy docker containers are stopped
+      community.docker.docker_compose_v2:
+        project_name: ntfy
+        project_src: /opt/ntfy
+        state: absent
+
+    - name: Sync cache & data directories from local application directory to NFS server
+      ansible.posix.synchronize:
+        src: /opt/ntfy/{{ item }}
+        dest: "{{ nfs_mounts.karina.mount_point }}/"
+        owner: false
+        group: false
+      delegate_to: "{{ inventory_hostname }}"
+      loop:
+        - cache
+        - data
+
+    - name: Start ntfy docker containers
+      community.docker.docker_compose_v2:
+        project_name: ntfy
+        project_src: /opt/ntfy
+        state: present

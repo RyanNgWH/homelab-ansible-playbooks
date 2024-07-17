@@ -1,0 +1,96 @@
+# @format
+
+# Ntfy
+# Install and configure the Ntfy notifications service.
+---
+- name: Setup Ntfy application files
+  become: true
+  block:
+    - name: Ensure Ntfy directory is present
+      ansible.builtin.file:
+        path: /opt/ntfy
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/ntfy/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup ntfy directories
+      ansible.builtin.file:
+        path: /opt/ntfy/{{ item }}
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+      loop:
+        - cache
+        - data
+        - config
+
+    - name: Setup ntfy configuration file
+      ansible.builtin.template:
+        src: templates/app.configuration.yml
+        dest: /opt/ntfy/config/server.yml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+- name: Sync backup of ntfy cache & data directories
+  become: true
+  block:
+    - name: Ensure rsync is installed
+      ansible.builtin.apt:
+        name: rsync
+        update_cache: true
+        state: present
+
+    - name: Ensure ntfy docker containers are stopped
+      community.docker.docker_compose_v2:
+        project_name: ntfy
+        project_src: /opt/ntfy
+        state: absent
+
+    - name: Sync cache & data directories from NFS server to local application directory
+      ansible.posix.synchronize:
+        src: "{{ nfs_mounts.karina.mount_point }}/{{ item }}"
+        dest: /opt/ntfy/
+      delegate_to: "{{ inventory_hostname }}"
+      loop:
+        - cache
+        - data
+
+    - name: Ensure cache & data directories permissions is set
+      ansible.builtin.file:
+        path: /opt/ntfy/{{ item }}
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        recurse: true
+        follow: false
+        state: directory
+      loop:
+        - cache
+        - data
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start ntfy docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: ntfy
+    project_src: /opt/ntfy
+    state: present

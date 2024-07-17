@@ -37,6 +37,9 @@ jellyseerr:
 miniflux:
   hosts: feeds.tinynamoo.com
 
+ntfy:
+  hosts: push.tinynamoo.com
+
 paperless:
   hosts: archive.tinynamoo.com
 
@@ -99,6 +102,7 @@ debian:
     jellyfin:
     jellyseerr:
     miniflux:
+    ntfy:
     paperless:
     piped:
     proxmox:
