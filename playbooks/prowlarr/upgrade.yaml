@@ -1,0 +1,31 @@
+# @format
+
+# Prowlarr
+# Upgrade Prowlarr indexer managment server
+---
+- name: Upgrade Prowlarr indexer managment server
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Update & start Prowlarr docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: prowlarr
+        project_src: /opt/prowlarr
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true
