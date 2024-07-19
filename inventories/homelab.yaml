@@ -58,6 +58,9 @@ qbittorrent:
 radarr:
   hosts: movies.tinynamoo.com
 
+scrutiny:
+  hosts: smart.tinynamoo.com
+
 send:
   hosts: send.tinynamoo.com
 
@@ -109,6 +112,7 @@ debian:
     prowlarr:
     qbittorrent:
     radarr:
+    scrutiny:
     send:
     sonarr:
     stirling_pdf:

@@ -1,0 +1,44 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.10.1
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User
+debian_user_name: solar
+debian_user_shell: /bin/bash
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBsZq3Eceg8RrDTyoh7iqVwKSfLf7FwU6sOljydwMHjK solar@smart.tinynamoo.com"
+
+## NFSv4-client-setup variables
+# Kerberos
+nfs_krb5_realm: TINYNAMOO.COM
+nfs_krb5_kdc: storage.tinynamoo.com
+nfs_krb5_admin_server: storage.tinynamoo.com
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Solar] Scrutiny/host.keytab"
+nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Solar] Scrutiny/user.keytab"
+
+# NFS
+nfs_user_name: scrutiny
+nfs_user_id: 150
+nfs_mount_server: storage.tinynamoo.com
+nfs_mounts:
+  solar:
+    mount_share: solar
+    mount_point: /srv/solar
+
+## NGINX variables
+nginx_conf_files:
+  - filename: scrutiny.conf
+    path: templates/nginx.scrutiny.conf
+
+certbot_admin_email: admin@tinynamoo.com
+
+## Scrutiny variables
+scrutiny_smtp_hostname: smtp.tinynamoo.com
+scrutiny_smtp_from_email: sunny@mail.tinynamoo.com
+scrutiny_smtp_to_email: admin@tinynamoo.com
+
+scrutiny_ntfy_hostname: push.tinynamoo.com
+scrutiny_ntfy_topic: Scrutiny

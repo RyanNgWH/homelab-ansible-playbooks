@@ -1,0 +1,86 @@
+# @format
+
+# Scrutiny
+# Install and configure the Scrutiny SMART monitoring server.
+---
+- name: Setup scrutiny application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: /opt/scrutiny
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: /opt/scrutiny/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup config directory
+      ansible.builtin.file:
+        path: /opt/scrutiny/config
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup scrutiny configuration file
+      ansible.builtin.template:
+        src: templates/app.configuration.yaml
+        dest: /opt/scrutiny/config/scrutiny.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+- name: Sync backup of scrutiny sqlite database
+  become: true
+  block:
+    - name: Ensure rsync is installed
+      ansible.builtin.apt:
+        name: rsync
+        update_cache: true
+        state: present
+
+    - name: Ensure scrutiny docker containers are stopped
+      community.docker.docker_compose_v2:
+        project_name: scrutiny
+        project_src: /opt/scrutiny
+        state: absent
+
+    - name: Sync sqlite database from NFS server to local application directory
+      ansible.posix.synchronize:
+        src: "{{ nfs_mounts.solar.mount_point }}/scrutiny/config/scrutiny.db"
+        dest: /opt/scrutiny/config/
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Ensure config directory permissions is set
+      ansible.builtin.file:
+        path: /opt/scrutiny/config
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        recurse: true
+        follow: false
+        state: directory
+
+- name: Install and configure nginx
+  vars:
+    task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ inventory_hostname }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start scrutiny docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: scrutiny
+    project_src: /opt/scrutiny
+    state: present

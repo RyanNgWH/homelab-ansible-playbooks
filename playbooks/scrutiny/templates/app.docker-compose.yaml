@@ -1,0 +1,31 @@
+services:
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.2
+    volumes:
+      - {{ nfs_mounts.solar.mount_point }}/influxdb2/db:/var/lib/influxdb2
+      - {{ nfs_mounts.solar.mount_point }}/influxdb2/config:/etc/influxdb2
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 2s
+      timeout: 20s
+
+  scrutiny:
+    container_name: scrutiny
+    image: ghcr.io/analogj/scrutiny:master-web
+    volumes:
+      - ./config:/opt/scrutiny/config
+      - {{ nfs_mounts.solar.mount_point }}/scrutiny/logs:/opt/scrutiny/logs
+    ports:
+      - 8080:8080
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    depends_on:
+      - influxdb
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 2s
+      timeout: 20s
+      start_period: 10s

@@ -1,0 +1,33 @@
+# @format
+
+# Scrutiny
+# Backup the Scrutiny sqlite database.
+---
+- name: Backup scrutiny sqlite database
+  become: true
+  block:
+    - name: Ensure rsync is installed
+      ansible.builtin.apt:
+        name: rsync
+        update_cache: true
+        state: present
+
+    - name: Ensure scrutiny docker containers are stopped
+      community.docker.docker_compose_v2:
+        project_name: scrutiny
+        project_src: /opt/scrutiny
+        state: absent
+
+    - name: Sync sqlite database from local application directory to NFS server
+      ansible.posix.synchronize:
+        src: /opt/scrutiny/config/scrutiny.db
+        dest: "{{ nfs_mounts.solar.mount_point }}/scrutiny/config/"
+        owner: false
+        group: false
+      delegate_to: "{{ inventory_hostname }}"
+
+    - name: Start scrutiny docker containers
+      community.docker.docker_compose_v2:
+        project_name: scrutiny
+        project_src: /opt/scrutiny
+        state: present
