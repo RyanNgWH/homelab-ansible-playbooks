@@ -18,7 +18,7 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -s -o /dev/null -f http://localhost:8080"]
       interval: 2s
-      timeout: 20s
+      timeout: 30s
 
   cross-seed:
     container_name: cross-seed
