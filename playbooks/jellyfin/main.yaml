@@ -43,3 +43,7 @@
     - name: Install and configure the Jellyfin media streaming server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Jellyfin media streaming server
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade

@@ -31,3 +31,4 @@
         project_name: jellyfin
         project_src: /opt/jellyfin
         state: present
+      when: "'backup' in ansible_run_tags"
