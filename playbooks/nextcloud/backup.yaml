@@ -1,0 +1,39 @@
+# @format
+
+# Nextcloud
+# Backup the Nextcloud config & clamav directory.
+---
+- name: Backup Nextcloud config & clamav directory
+  become: true
+  block:
+    - name: Ensure rsync is installed
+      ansible.builtin.apt:
+        name: rsync
+        update_cache: true
+        state: present
+
+    - name: Ensure nextcloud docker containers are stopped
+      community.docker.docker_compose_v2:
+        project_name: nextcloud
+        project_src: /opt/nextcloud
+        state: absent
+
+    - name: Sync directories from local application directory to NFS server
+      ansible.posix.synchronize:
+        src: /opt/nextcloud/{{ item.src }}
+        dest: "{{ nfs_mounts.wendy.mount_point }}/{{ item.dest }}"
+        owner: false
+        group: false
+      delegate_to: "{{ inventory_hostname }}"
+      loop:
+        - src: config
+          dest: nextcloud
+        - src: clamav
+          dest: ""
+
+    - name: Start nextcloud docker containers
+      community.docker.docker_compose_v2:
+        project_name: nextcloud
+        project_src: /opt/nextcloud
+        state: present
+      when: "'backup' in ansible_run_tags"

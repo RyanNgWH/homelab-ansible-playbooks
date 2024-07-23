@@ -1,0 +1,7 @@
+[Unit]
+Description=Nextcloud cron.php job
+
+[Service]
+ExecCondition=/usr/bin/docker exec -u {{ nfs_user_id }} nextcloud php -f /var/www/html/occ status -e
+ExecStart=/usr/bin/docker exec -u {{ nfs_user_id }} nextcloud php -f /var/www/html/cron.php
+KillMode=process

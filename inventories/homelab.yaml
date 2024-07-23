@@ -37,6 +37,9 @@ jellyseerr:
 miniflux:
   hosts: feeds.tinynamoo.com
 
+nextcloud:
+  hosts: cloud.tinynamoo.com
+
 ntfy:
   hosts: push.tinynamoo.com
 
@@ -105,6 +108,7 @@ debian:
     jellyfin:
     jellyseerr:
     miniflux:
+    nextcloud:
     ntfy:
     paperless:
     piped:

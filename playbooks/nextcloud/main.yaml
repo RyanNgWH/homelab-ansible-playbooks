@@ -1,0 +1,41 @@
+# @format
+
+# Nextcloud
+# Install and configure Nextcloud cloud storage.
+---
+- name: Install and configure Nextcloud cloud storage
+  hosts: nextcloud
+
+  pre_tasks:
+    - name: Include playbook configuration
+      ansible.builtin.include_vars: "{{ item }}"
+      with_fileglob:
+        - "{{ playbook_dir }}/config.yaml"
+        - "{{ playbook_dir }}/credentials.yaml"
+      tags: always
+
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
+  roles:
+    - role: debian-12-setup
+      tags: install
+    - role: nfsv4-client-setup
+      tags: install
+    - role: debian-common
+      tags: install
+      vars:
+        task_list:
+          - docker
+
+  tasks:
+    - name: Backup Nextcloud config & clamav directories
+      ansible.builtin.import_tasks: backup.yaml
+      tags: backup
+
+    - name: Install and configure Nextcloud cloud storage
+      ansible.builtin.import_tasks: install.yaml
+      tags: install

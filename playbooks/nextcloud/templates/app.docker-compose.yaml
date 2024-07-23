@@ -1,0 +1,106 @@
+services:
+  nextcloud:
+    container_name: nextcloud
+    image: nextcloud:fpm
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: {{ nextcloud_postgres_pass }}
+
+      REDIS_HOST: redis
+
+      NEXTCLOUD_DATA_DIR: /srv/nextcloud/data
+      NEXTCLOUD_TRUSTED_DOMAINS: {{ inventory_hostname }}
+
+      SMTP_HOST: {{ nextcloud_smtp_host }}
+      SMTP_PORT: {{ nextcloud_smtp_port }}
+      SMTP_AUTHTYPE: {{ nextcloud_smtp_auth }}
+      MAIL_FROM_ADDRESS: {{ nextcloud_smtp_from_address }}
+      MAIL_DOMAIN: {{ nextcloud_smtp_mail_domain }}
+
+      PHP_UPLOAD_LIMIT: 10G
+    volumes:
+      - ./config:/var/www/html
+      - {{ nfs_mounts.wendy.mount_point }}/nextcloud/data:/srv/nextcloud/data
+      - ./redis-session.ini:/usr/local/etc/php/conf.d/redis-session.ini
+    ports:
+      - "9000:9000"
+    networks:
+      nextcloud:
+        ipv4_address: "172.18.0.2"
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      clamav:
+        condition: service_healthy
+      collabora:
+        condition: service_started
+
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: {{ nextcloud_postgres_pass }}
+    volumes:
+      - {{ nfs_mounts.wendy.mount_point }}/db:/var/lib/postgresql/data
+    networks:
+      nextcloud:
+        ipv4_address: "172.18.0.3"
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER"]
+      interval: 2s
+      timeout: 20s
+
+  redis:
+    container_name: redis
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      nextcloud:
+        ipv4_address: "172.18.0.4"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+
+  clamav:
+    container_name: clamav
+    image: clamav/clamav:stable_base
+    entrypoint: /init-unprivileged
+    volumes:
+      - ./clamav:/var/lib/clamav
+    networks:
+      nextcloud:
+        ipv4_address: "172.18.0.5"
+    user: clamav:{{ nfs_user_id }}
+    restart: unless-stopped
+
+  collabora:
+    container_name: collabora
+    image: collabora/code
+    environment:
+      aliasgroup1: https://{{ inventory_hostname }}
+      username: {{ nextcloud_collabora_admin_username }}
+      password: {{ nextcloud_collabora_admin_pass }}
+    ports:
+      - "9980:9980"
+    networks:
+      nextcloud:
+        ipv4_address: "172.18.0.6"
+    restart: unless-stopped
+
+networks:
+  nextcloud:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+          gateway: "172.18.0.1"
