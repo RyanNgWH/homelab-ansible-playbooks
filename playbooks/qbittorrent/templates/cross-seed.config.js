@@ -40,6 +40,8 @@ module.exports = {
     "/data/media/movies-uhd",
     "/data/media/tv-hd",
     "/data/media/tv-uhd",
+    "/data/media/anime",
+    "/data/media/animetv",
   ],
   /**
    * Determines flexibility of naming during matching. "safe" will allow only perfect name matches

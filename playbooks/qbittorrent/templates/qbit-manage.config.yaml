@@ -57,6 +57,12 @@ directory:
 cat:
   # Category & Path Parameters
   # <Category Name> : <save_path>  # Path of your save directory.
+  anime: "/data/torrents/anime"
+  anime-completed: "/data/torrents/anime"
+  anime-completed.cross-seed: "/data/torrents/anime"
+  animetv: "/data/torrents/animetv"
+  animetv-completed: "/data/torrents/animetv"
+  animetv-completed.cross-seed: "/data/torrents/animetv"
   cross-seed-data: "/data/media/cross-seed-links"
   games: "/data/torrents/games"
   manual-seed: "/data/torrents/manual-seed"
