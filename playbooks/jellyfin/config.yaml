@@ -35,9 +35,14 @@ nfs_mounts:
 jellyfin_media_group_name: media
 jellyfin_media_group_gid: 200
 
+## Jellystat variables
+jellystat_hostname: filmestats.tinynamoo.com
+
 ## NGINX variables
 nginx_conf_files:
   - filename: jellyfin.conf
     path: templates/nginx.jellyfin.conf
+  - filename: jellystat.conf
+    path: templates/nginx.jellystat.conf
 
 certbot_admin_email: admin@tinynamoo.com

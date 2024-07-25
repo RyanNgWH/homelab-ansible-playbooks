@@ -20,8 +20,8 @@
 
     - name: Sync data directory from local application directory to NFS server
       ansible.posix.synchronize:
-        src: /opt/jellyfin/data
-        dest: '{{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/'
+        src: /opt/jellyfin/data/
+        dest: '{{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/data/jellyfin'
         owner: false
         group: false
       delegate_to: "{{ inventory_hostname }}"

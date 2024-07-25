@@ -225,8 +225,8 @@
 
     - name: Sync data directory from NFS server to local application directory
       ansible.posix.synchronize:
-        src: '{{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/data'
-        dest: /opt/jellyfin/
+        src: '{{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/data/jellyfin/'
+        dest: /opt/jellyfin/data
       delegate_to: "{{ inventory_hostname }}"
 
     - name: Ensure data directory permissions is set
@@ -245,6 +245,7 @@
       - nginx
     nginx_tls_domains:
       - "{{ inventory_hostname }}"
+      - "{{ jellystat_hostname }}"
   ansible.builtin.include_role:
     name: debian-common
 

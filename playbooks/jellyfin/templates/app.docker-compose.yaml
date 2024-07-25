@@ -20,3 +20,37 @@ services:
         reservations:
           devices:
             - capabilities: [gpu]
+
+  jellystat:
+    container_name: jellystat
+    image: cyfershepard/jellystat:latest
+    environment:
+      POSTGRES_DB: jellystat
+      POSTGRES_USER: jellystat
+      POSTGRES_PASSWORD: {{ jellystat_postgres_pass }}
+      POSTGRES_IP: postgres
+      POSTGRES_PORT: 5432
+      JWT_SECRET: {{ jellystat_JWT_secret }}
+    ports:
+      - "3000:3000"
+    volumes:
+      - {{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/data/jellystat:/app/backend/backup-data
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres
+    image: postgres:16
+    environment:
+      POSTGRES_DB: jellystat
+      POSTGRES_USER: jellystat
+      POSTGRES_PASSWORD: {{ jellystat_postgres_pass }}
+    volumes:
+    - {{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "jellystat"]
+      interval: 2s
+      timeout: 20s
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
