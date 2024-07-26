@@ -17,12 +17,12 @@ module.exports = {
    * Wrap each URL in quotation marks, and separate them with commas, and surround the entire set in brackets.
    */
   torznab: [
-    "https://{{ cross_seed_prowlarr_hostname }}/6/api?apikey={{ cross_seed_prowlarr_api_key }}", // HD-Space
-    "https://{{ cross_seed_prowlarr_hostname }}/4/api?apikey={{ cross_seed_prowlarr_api_key }}", // Oldtoons
-    "https://{{ cross_seed_prowlarr_hostname }}/5/api?apikey={{ cross_seed_prowlarr_api_key }}", // Upload.cx
     "https://{{ cross_seed_prowlarr_hostname }}/1/api?apikey={{ cross_seed_prowlarr_api_key }}", // AvistaZ
     "https://{{ cross_seed_prowlarr_hostname }}/2/api?apikey={{ cross_seed_prowlarr_api_key }}", // CinemaZ
+    "https://{{ cross_seed_prowlarr_hostname }}/4/api?apikey={{ cross_seed_prowlarr_api_key }}", // Oldtoons
+    "https://{{ cross_seed_prowlarr_hostname }}/5/api?apikey={{ cross_seed_prowlarr_api_key }}", // Upload.cx
     "https://{{ cross_seed_prowlarr_hostname }}/6/api?apikey={{ cross_seed_prowlarr_api_key }}", // JPTV
+    "https://{{ cross_seed_prowlarr_hostname }}/7/api?apikey={{ cross_seed_prowlarr_api_key }}", // LST
   ],
   /**
    * To search with downloaded data, you can pass in directories to your downloaded torrent
