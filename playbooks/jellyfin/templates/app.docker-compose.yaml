@@ -35,6 +35,7 @@ services:
       - "3000:3000"
     volumes:
       - {{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/data/jellystat:/app/backend/backup-data
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
