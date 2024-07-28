@@ -36,10 +36,10 @@ module.exports = {
    *          dataDirs: ["C:\\My Data\\Downloads"]
    */
   dataDirs: [
-    "/data/media/movies-hd",
-    "/data/media/movies-uhd",
-    "/data/media/tv-hd",
-    "/data/media/tv-uhd",
+    "/data/media/movies",
+    "/data/media/movies4k",
+    "/data/media/tv",
+    "/data/media/tv4k",
     "/data/media/anime",
     "/data/media/animetv",
   ],
