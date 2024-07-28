@@ -43,5 +43,5 @@ protonvpn_gateway: 10.2.0.1
 protonvpn_port_forward_lifetime: 60 # ProtonVPN currently limits at 60s
 protonvpn_port_forward_interval: 45
 
-cross_seed_prowlarr_hostname: indexer.media.tinynamoo.com
+cross_seed_prowlarr_hostname: indexers.tinynamoo.com
 cross_seed_ntfy_hostname: push.tinynamoo.com
