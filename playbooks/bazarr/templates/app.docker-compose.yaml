@@ -51,6 +51,32 @@ services:
       postgres:
         condition: service_healthy
 
+  bazarr-anime:
+    container_name: bazarr-anime
+    image: lscr.io/linuxserver/bazarr:latest
+    environment:
+      PUID: {{ nfs_user_id }}
+      PGID: {{ nfs_user_id }}
+      TZ: {{ debian_datetime_timezone }}
+      UMASK: 007
+
+      POSTGRES_ENABLED: true
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DATABASE: bazarr-anime
+      POSTGRES_USERNAME: bazarr
+      POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
+    volumes:
+      - {{ nfs_mounts["marilyn-configs"].mount_point }}/bazarr-anime:/config
+      - {{ nfs_mounts["marilyn-media"].mount_point }}/anime:/data/anime
+      - {{ nfs_mounts["marilyn-media"].mount_point }}/animetv:/data/animetv
+    ports:
+      - "6769:6767"
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
   postgres:
     container_name: postgres
     image: postgres:16

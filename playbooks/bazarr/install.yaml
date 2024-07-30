@@ -45,6 +45,7 @@
     nginx_tls_domains:
       - "{{ inventory_hostname }}"
       - "{{ bazarr_4k_hostname }}"
+      - "{{ bazarr_anime_hostname }}"
   ansible.builtin.include_role:
     name: debian-common
 

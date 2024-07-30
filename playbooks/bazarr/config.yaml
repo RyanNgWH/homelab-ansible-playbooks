@@ -36,6 +36,7 @@ nfs_mounts:
 
 ## Bazarr variables
 bazarr_4k_hostname: subtitles4k.tinynamoo.com
+bazarr_anime_hostname: animesubs.tinynamoo.com
 bazarr_media_group_name: media
 bazarr_media_group_gid: 200
 
@@ -45,5 +46,7 @@ nginx_conf_files:
     path: templates/nginx.bazarr.conf
   - filename: bazarr4k.conf
     path: templates/nginx.bazarr4k.conf
+  - filename: bazarr-anime.conf
+    path: templates/nginx.bazarr-anime.conf
 
 certbot_admin_email: admin@tinynamoo.com
