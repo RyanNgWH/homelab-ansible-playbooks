@@ -2,7 +2,7 @@
 ---
 ## Debian-12-setup variables
 # Datetime
-debian_datetime_ntp_server: 172.28.20.1
+debian_datetime_ntp_server: 172.28.17.1
 debian_datetime_timezone: Asia/Singapore
 debian_datetime_hardware_clock: UTC
 
