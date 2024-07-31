@@ -1,6 +1,6 @@
 services:
   immich-server:
-    container_name: immich-server
+    container_name: {{ immich_server_docker_name }}
     image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION:-release}
     volumes:
       - ${UPLOAD_LOCATION}:/usr/src/app/upload

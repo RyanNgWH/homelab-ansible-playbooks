@@ -38,3 +38,13 @@ certbot_admin_email: admin@tinynamoo.com
 ## Immich variables
 immich_photos_group_name: photos
 immich_photos_group_gid: 201
+
+immich_server_docker_name: immich-server
+
+## Proxmox instance variables
+proxmox_api_host: server.tinynamoo.com
+proxmox_api_user: ansible@pam
+
+proxmox_snapshot_vmid: 14120
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: true

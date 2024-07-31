@@ -12,6 +12,54 @@ The following softwares must be installed on the local machine before ansible ca
 
 - [Ansible](https://docs.ansible.com/ansible/latest/index.html)
 
+### Python
+
+The following python packages must be installed on the local machine before ansible can be used to manage the servers.
+
+- github3py
+- pexpect
+- proxmoxer
+- pyjwt
+
+## Proxmox
+
+### SSH connection
+
+1. Create a pam user for the SSH connection
+
+```
+adduser ansible
+```
+
+1. Configure the `sudo` privilege for the user
+
+   ```bash
+   visudo --file=/etc/sudoers.d/ansible
+   ```
+
+   Add the following lines
+
+   ```conf
+   ansible ALL=(root) ALL
+   ```
+
+1. Add SSH public key file to the `~/.ssh/authorized_keys` file of the `ansible` user.
+1. Test the SSH connection and password-less sudo
+
+   ```bash
+   ssh -i "/path/to/private/key" ansible@your-server sudo -S pvesm apiinfo
+   ```
+
+   > **Note:**
+   >
+   > If you have a clustered proxmox instance, this user has to be created with `sudo` privileges on all nodes in the cluster
+
+### API token
+
+An API token with the following permissions has to be created on your Proxmox instance. Stricter permissions might be possible but these playbooks have only been tested with the following proxmox privileges:
+
+- VM.Snapshot
+
 ## Setup
 
 1. Clone this repository to your local machine

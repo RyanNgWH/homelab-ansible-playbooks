@@ -3,6 +3,55 @@
 # Immich
 # Upgrade Immich photos management server
 ---
+- name: Get immich server current & latest version
+  become: true
+  block:
+    - name: Get immich server docker container information
+      community.docker.docker_container_info:
+        name: "{{ immich_server_docker_name }}"
+      register: immich_server_docker
+
+    - name: Ensure docker container is present
+      ansible.builtin.assert:
+        that: immich_server_docker.exists
+        fail_msg: Immich server docker container does not exist
+
+    - name: Get latest immich server release from github
+      community.general.github_release:
+        user: immich-app
+        repo: immich
+        action: latest_release
+      delegate_to: localhost
+      register: immich_github_release
+
+    - name: Extract current & latest immich server versions
+      ansible.builtin.set_fact:
+        immich_current_version: "{{ immich_server_docker.container.Config.Labels['org.opencontainers.image.version'] }}"
+        immich_latest_version: "{{ immich_github_release.tag }}"
+
+    - name: Stop play if immich has no updates
+      ansible.builtin.meta: end_play
+      when: immich_current_version == immich_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    task_list: snapshot
+
+    proxmox_api_host: "{{ proxmox_api_host }}"
+    proxmox_api_user: "{{ proxmox_api_user }}"
+    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
+    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
+    proxmox_snapshot_name: "{{ ('pre-upgrade-' + immich_current_version + '-to-' + immich_latest_version) | replace('.', '_')}}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of immich {{ immich_current_version }} before upgrading to {{ immich_latest_version }}"
+    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
+    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
+  delegate_to: localhost
+
 - name: Upgrade Immich photos management server
   become: true
   block:
