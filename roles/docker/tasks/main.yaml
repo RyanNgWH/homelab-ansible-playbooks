@@ -1,0 +1,5 @@
+# @format
+---
+- name: Get docker container image version
+  ansible.builtin.include_tasks: container-image-version.yaml
+  when: "'get_container_image_version' in task_list"

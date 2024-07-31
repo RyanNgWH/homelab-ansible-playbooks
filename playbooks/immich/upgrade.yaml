@@ -3,18 +3,16 @@
 # Immich
 # Upgrade Immich photos management server
 ---
-- name: Get immich server current & latest version
+- name: Check if immich requires update
   become: true
   block:
-    - name: Get immich server docker container information
-      community.docker.docker_container_info:
-        name: "{{ immich_server_docker_name }}"
-      register: immich_server_docker
-
-    - name: Ensure docker container is present
-      ansible.builtin.assert:
-        that: immich_server_docker.exists
-        fail_msg: Immich server docker container does not exist
+    - name: Get current immich server version
+      ansible.builtin.import_role:
+        name: docker
+        public: false
+      vars:
+        task_list: get_container_image_version
+        docker_container_name: "{{ immich_server_docker_name }}"
 
     - name: Get latest immich server release from github
       community.general.github_release:
@@ -24,14 +22,13 @@
       delegate_to: localhost
       register: immich_github_release
 
-    - name: Extract current & latest immich server versions
+    - name: Extract latest immich server version
       ansible.builtin.set_fact:
-        immich_current_version: "{{ immich_server_docker.container.Config.Labels['org.opencontainers.image.version'] }}"
         immich_latest_version: "{{ immich_github_release.tag }}"
 
     - name: Stop play if immich has no updates
       ansible.builtin.meta: end_play
-      when: immich_current_version == immich_latest_version
+      when: docker_container_image_version == immich_latest_version
 
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
