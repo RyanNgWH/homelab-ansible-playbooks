@@ -1,0 +1,6 @@
+# @format
+---
+proxmox_api_port: 443
+
+proxmox_snapshot_description: ""
+proxmox_snapshot_retention: 3

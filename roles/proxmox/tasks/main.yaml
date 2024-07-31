@@ -1,0 +1,5 @@
+# @format
+---
+- name: Manage snapshots
+  ansible.builtin.include_tasks: snapshot.yaml
+  when: "'snapshot' in task_list"

@@ -1,0 +1,17 @@
+# @format
+---
+- name: Create new snapshot
+  community.general.proxmox_snap:
+    api_host: "{{ proxmox_api_host }}"
+    api_port: "{{ proxmox_api_port }}"
+    api_user: "{{ proxmox_api_user }}"
+    api_token_id: "{{ proxmox_api_token_id }}"
+    api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    vmid: "{{ proxmox_snapshot_vmid }}"
+    snapname: "{{ proxmox_snapshot_name }}"
+    description: "{{ proxmox_snapshot_description }}"
+
+    vmstate: "{{ proxmox_snapshot_include_ram }}"
+    retention: "{{ proxmox_snapshot_retention }}"
+    state: present
