@@ -43,7 +43,7 @@
     proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
 
     proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (docker_container_image_version | regex_replace('[.|-]', '_')) + '-to-' + (bazarr_latest_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (docker_container_image_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of bazarr {{ docker_container_image_version }} before upgrading to {{ bazarr_latest_version }}"
     proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
     proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
