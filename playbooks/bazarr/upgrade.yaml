@@ -12,7 +12,7 @@
         public: false
       vars:
         task_list: get_container_image_version
-        docker_container_name: "{{ bazarr_server_docker_name }}"
+        docker_container_name: "{{ bazarr_docker_name }}"
 
     - name: Get latest bazarr container release from github
       community.general.github_release:

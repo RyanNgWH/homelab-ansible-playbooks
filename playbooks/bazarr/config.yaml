@@ -51,7 +51,7 @@ bazarr_anime_hostname: animesubs.tinynamoo.com
 bazarr_media_group_name: media
 bazarr_media_group_gid: 200
 
-bazarr_server_docker_name: bazarr
+bazarr_docker_name: bazarr
 
 ## Proxmox variables
 proxmox_api_host: server.tinynamoo.com
