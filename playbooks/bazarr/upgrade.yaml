@@ -3,6 +3,52 @@
 # Bazarr
 # Upgrade Bazarr subtitle management server
 ---
+- name: Check if bazarr requires update
+  become: true
+  block:
+    - name: Get current bazarr container version
+      ansible.builtin.import_role:
+        name: docker
+        public: false
+      vars:
+        task_list: get_container_image_version
+        docker_container_name: "{{ bazarr_server_docker_name }}"
+
+    - name: Get latest bazarr container release from github
+      community.general.github_release:
+        user: linuxserver
+        repo: docker-bazarr
+        action: latest_release
+      delegate_to: localhost
+      register: bazarr_github_release
+
+    - name: Extract latest bazarr container version
+      ansible.builtin.set_fact:
+        bazarr_latest_version: "{{ bazarr_github_release.tag }}"
+
+    - name: Stop play if bazarr has no updates
+      ansible.builtin.meta: end_play
+      when: docker_container_image_version == bazarr_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    task_list: snapshot
+
+    proxmox_api_host: "{{ proxmox_api_host }}"
+    proxmox_api_user: "{{ proxmox_api_user }}"
+    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
+    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (docker_container_image_version | regex_replace('[.|-]', '_')) + '-to-' + (bazarr_latest_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of bazarr {{ docker_container_image_version }} before upgrading to {{ bazarr_latest_version }}"
+    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
+    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
+  delegate_to: localhost
+
 - name: Upgrade Bazarr subtitle management server
   become: true
   block:
