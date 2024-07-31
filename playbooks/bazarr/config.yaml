@@ -59,4 +59,4 @@ proxmox_api_user: ansible@pam
 
 proxmox_snapshot_vmid: 17111
 proxmox_snapshot_retention: 3
-proxmox_snapshot_include_ram: true
+proxmox_snapshot_include_ram: false
