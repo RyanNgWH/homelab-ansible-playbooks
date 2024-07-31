@@ -31,13 +31,23 @@ nfs_mounts:
     mount_share: marilyn-databases-prowlarr
     mount_point: /srv/marilyn-databases-prowlarr
 
-## Prowlarr variables
-prowlarr_media_group_name: media
-prowlarr_media_group_gid: 200
-
 ## NGINX variables
 nginx_conf_files:
   - filename: prowlarr.conf
     path: templates/nginx.prowlarr.conf
 
 certbot_admin_email: admin@tinynamoo.com
+
+## Prowlarr variables
+prowlarr_media_group_name: media
+prowlarr_media_group_gid: 200
+
+prowlarr_docker_name: prowlarr
+
+## Proxmox variables
+proxmox_api_host: server.tinynamoo.com
+proxmox_api_user: ansible@pam
+
+proxmox_snapshot_vmid: 17114
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: true
