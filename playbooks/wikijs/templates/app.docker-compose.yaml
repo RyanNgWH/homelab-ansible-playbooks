@@ -1,6 +1,6 @@
 services:
   wikijs:
-    container_name: wikijs
+    container_name: {{ wikijs_docker_name }}
     image: lscr.io/linuxserver/wikijs:latest
     environment:
       DB_TYPE: postgres

@@ -34,3 +34,14 @@ nginx_conf_files:
     path: templates/nginx.wikijs.conf
 
 certbot_admin_email: admin@tinynamoo.com
+
+## Wikijs variables
+wikijs_docker_name: wikijs
+
+## Proxmox variables
+proxmox_api_host: server.tinynamoo.com
+proxmox_api_user: ansible@pam
+
+proxmox_snapshot_vmid: 20170
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
