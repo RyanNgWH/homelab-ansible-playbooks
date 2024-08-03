@@ -1,6 +1,6 @@
 services:
   sonarr:
-    container_name: sonarr
+    container_name: {{ sonarr_docker_name }}
     image: lscr.io/linuxserver/sonarr:latest
     environment:
       PUID: {{ nfs_user_id }}

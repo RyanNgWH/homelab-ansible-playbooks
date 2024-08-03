@@ -3,6 +3,52 @@
 # Sonarr
 # Upgrade Sonarr TV management server
 ---
+- name: Check if sonarr requires update
+  become: true
+  block:
+    - name: Get current sonarr container version
+      ansible.builtin.import_role:
+        name: docker
+        public: false
+      vars:
+        task_list: get_container_image_version
+        docker_container_name: "{{ sonarr_docker_name }}"
+
+    - name: Get latest sonarr container release from github
+      community.general.github_release:
+        user: linuxserver
+        repo: docker-sonarr
+        action: latest_release
+      delegate_to: localhost
+      register: sonarr_github_release
+
+    - name: Extract latest sonarr container version
+      ansible.builtin.set_fact:
+        sonarr_latest_version: "{{ sonarr_github_release.tag }}"
+
+    - name: Stop play if sonarr has no updates
+      ansible.builtin.meta: end_play
+      when: docker_container_image_version == sonarr_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    task_list: snapshot
+
+    proxmox_api_host: "{{ proxmox_api_host }}"
+    proxmox_api_user: "{{ proxmox_api_user }}"
+    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
+    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (docker_container_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of sonarr {{ docker_container_image_version }} before upgrading to {{ sonarr_latest_version }}"
+    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
+    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
+  delegate_to: localhost
+
 - name: Upgrade Sonarr TV management server
   become: true
   block:
