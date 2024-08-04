@@ -1,7 +1,7 @@
 ---
 services:
   qbittorrent:
-    container_name: qbittorrent
+    container_name: {{ qbittorrent_docker_name }}
     image: lscr.io/linuxserver/qbittorrent:latest
     environment:
       PUID: {{ nfs_user_id }}
@@ -15,10 +15,6 @@ services:
     ports:
       - 8080:8080
     restart: unless-stopped
-    healthcheck:
-      test: ["CMD-SHELL", "curl -s -o /dev/null -f http://localhost:8080"]
-      interval: 2s
-      timeout: 30s
 
   cross-seed:
     container_name: cross-seed
@@ -35,7 +31,7 @@ services:
     restart: unless-stopped
     depends_on:
       qbittorrent:
-        condition: service_healthy
+        condition: service_started
 
   qbit-manage:
     container_name: qbit-manage
@@ -53,4 +49,4 @@ services:
     restart: unless-stopped
     depends_on:
       qbittorrent:
-        condition: service_healthy
+        condition: service_started
