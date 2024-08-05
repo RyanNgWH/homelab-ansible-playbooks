@@ -13,6 +13,7 @@
       vars:
         task_list: get_container_image_version
         docker_container_name: "{{ wikijs_docker_name }}"
+        docker_fact_name: wikijs
 
     - name: Get latest wikijs container release from github
       community.general.github_release:
@@ -28,7 +29,7 @@
 
     - name: Stop play if wikijs has no updates
       ansible.builtin.meta: end_play
-      when: docker_container_image_version == wikijs_latest_version
+      when: wikijs_image_version == wikijs_latest_version
 
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
@@ -43,8 +44,8 @@
     proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
 
     proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (docker_container_image_version | regex_replace('[.|-]', '_')) }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of wikijs {{ docker_container_image_version }} before upgrading to {{ wikijs_latest_version }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (wikijs_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of wikijs {{ wikijs_image_version }} before upgrading to {{ wikijs_latest_version }}"
     proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
     proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
   delegate_to: localhost

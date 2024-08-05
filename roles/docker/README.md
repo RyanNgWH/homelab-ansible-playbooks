@@ -24,15 +24,16 @@ This role utilises modules from the following collections that is not part of `a
 
 ### Get container image version
 
-| Variable                | Description                            | Default | Example  |
-| ----------------------- | -------------------------------------- | ------- | -------- |
-| `docker_container_name` | Container name to get information from |         | `immich` |
+| Variable                | Description                                                                                | Default | Example  |
+| ----------------------- | ------------------------------------------------------------------------------------------ | ------- | -------- |
+| `docker_container_name` | Container name to get information from                                                     |         | `immich` |
+| `docker_fact_name`      | Fact prefix name to set (e.g a value of `immich` will set the fact `immich_image_version`) |         | `immich` |
 
 #### Outputs
 
-| Variable                         | Description                    |
-| -------------------------------- | ------------------------------ |
-| `docker_container_image_version` | Image version of the container |
+| Variable                               | Description                    | Example                |
+| -------------------------------------- | ------------------------------ | ---------------------- |
+| `{{ docker_fact_name }}_image_version` | Image version of the container | `immich_image_version` |
 
 ## Example Playbooks
 
