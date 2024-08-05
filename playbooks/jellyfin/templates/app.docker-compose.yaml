@@ -1,6 +1,6 @@
 services:
   jellyfin:
-    container_name: jellyfin
+    container_name: {{ jellyfin_docker_name }}
     image: jellyfin/jellyfin:latest
     volumes:
       - {{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/config:/config
@@ -22,7 +22,7 @@ services:
             - capabilities: [gpu]
 
   jellystat:
-    container_name: jellystat
+    container_name: {{ jellystat_docker_name }}
     image: cyfershepard/jellystat:latest
     environment:
       POSTGRES_DB: jellystat

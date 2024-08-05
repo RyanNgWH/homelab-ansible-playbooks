@@ -3,6 +3,46 @@
 # Jellyfin
 # Upgrade Jellyfin media streaming server
 ---
+- name: Get application current and latest versions
+  ansible.builtin.include_tasks: get-versions.yaml
+  loop:
+    - name: jellyfin
+      docker_name: "{{ jellyfin_docker_name }}"
+      docker_user: jellyfin
+      docker_repo: jellyfin
+
+- debug:
+    var: jellyfin_latest_version
+
+- name: Check if applications have updates
+  block:
+    - name: Check if applications have updates
+      ansible.builtin.set_fact:
+        jellyfin_has_updates: "{{ jellyfin_image_version != jellyfin_latest_version }}"
+
+    - name: Stop play if applications have no updates
+      ansible.builtin.meta: end_play
+      when: "not jellyfin_has_updates"
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    task_list: snapshot
+
+    proxmox_api_host: "{{ proxmox_api_host }}"
+    proxmox_api_user: "{{ proxmox_api_user }}"
+    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
+    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (jellyfin_latest_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of jellyfin {{ jellyfin_image_version }} - upgrading to jellyfin {{ jellyfin_latest_version }}"
+    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
+    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
+  delegate_to: localhost
+
 - name: Backup Jellyfin data directory
   ansible.builtin.import_tasks: backup.yaml
 
@@ -24,6 +64,9 @@
         remove_orphans: true
         pull: always
         state: present
+      loop:
+        - services: jellyfin
+          condition:
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
