@@ -3,6 +3,50 @@
 # Wallos
 # Upgrade Wallos subscription management server.
 ---
+- name: Check if wallos requires update
+  become: true
+  block:
+    - name: Get wallos version file
+      ansible.builtin.slurp:
+        src: /opt/wallos/includes/version.php
+      register: version_file
+
+    - name: Get latest wallos release from github
+      community.general.github_release:
+        user: ellite
+        repo: Wallos
+        action: latest_release
+      delegate_to: localhost
+      register: wallos_github_release
+
+    - name: Extract current & latest wallos version
+      ansible.builtin.set_fact:
+        wallos_current_version: '{{ version_file.content | b64decode | regex_search(''(?<=version = ")v.*.*(?=".*)'') }}'
+        wallos_latest_version: "{{ wallos_github_release.tag }}"
+
+    - name: Stop play if wallos has no updates
+      ansible.builtin.meta: end_play
+      when: wallos_current_version == wallos_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    task_list: snapshot
+
+    proxmox_api_host: "{{ proxmox_api_host }}"
+    proxmox_api_user: "{{ proxmox_api_user }}"
+    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
+    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (wallos_current_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of wallos {{ wallos_current_version }} before upgrading to {{ wallos_latest_version }}"
+    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
+    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
+  delegate_to: localhost
+
 - name: Update apt cache, upgrade packages and remove unused dependencies
   ansible.builtin.apt:
     update_cache: true

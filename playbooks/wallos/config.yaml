@@ -28,12 +28,20 @@ nfs_mounts:
     mount_share: sana
     mount_point: /srv/sana
 
-## PHP configurations
-php_version: 8.2
-
 ## NGINX variables
 nginx_conf_files:
   - filename: wallos.conf
     path: templates/nginx.wallos.conf
 
 certbot_admin_email: admin@tinynamoo.com
+
+## PHP configurations
+php_version: 8.2
+
+## Proxmox variables
+proxmox_api_host: server.tinynamoo.com
+proxmox_api_user: ansible@pam
+
+proxmox_snapshot_vmid: 20220
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
