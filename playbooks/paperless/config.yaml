@@ -34,3 +34,15 @@ nginx_conf_files:
     path: templates/nginx.paperless.conf
 
 certbot_admin_email: admin@tinynamoo.com
+
+## Paperless variables
+paperless_docker_name: paperless
+gotenberg_docker_name: gotenberg
+
+## Proxmox variables
+proxmox_api_host: server.tinynamoo.com
+proxmox_api_user: ansible@pam
+
+proxmox_snapshot_vmid: 20130
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false

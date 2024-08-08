@@ -3,6 +3,62 @@
 # Paperless-ngx
 # Upgrade paperless-ngx documents management server
 ---
+- name: Get application current and latest versions
+  ansible.builtin.include_tasks: get-versions.yaml
+  loop:
+    - name: paperless
+      docker_name: "{{ paperless_docker_name }}"
+      docker_user: paperless-ngx
+      docker_repo: paperless-ngx
+    - name: gotenberg
+      docker_name: "{{ gotenberg_docker_name }}"
+      docker_user: gotenberg
+      docker_repo: gotenberg
+
+- name: Check if applications have updates
+  block:
+    - name: Fix application docker image versionings in fact
+      ansible.builtin.set_fact:
+        paperless_image_version: "v{{ paperless_image_version }}"
+        gotenberg_image_version: "v{{ gotenberg_image_version }}"
+
+    - name: Check if applications have updates
+      ansible.builtin.set_fact:
+        paperless_has_updates: "{{ paperless_image_version != paperless_latest_version }}"
+        gotenberg_has_updates: "{{ gotenberg_image_version != gotenberg_latest_version }}"
+
+    - name: Stop play if applications have no updates
+      ansible.builtin.meta: end_play
+      when: "(not paperless_has_updates) and (not gotenberg_has_updates)"
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    task_list: snapshot
+
+    proxmox_api_host: "{{ proxmox_api_host }}"
+    proxmox_api_user: "{{ proxmox_api_user }}"
+    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
+    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (paperless_image_version | regex_replace('[.|-]', '_')) + '-' + (gotenberg_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_description: |
+      [Ansible] Working snapshot of paperless-ngx
+
+      Current:
+        paperless-ngx: {{ paperless_image_version }}
+        gotenberg: {{ gotenberg_image_version }}
+
+      New:
+        paperless-ngx: {{ paperless_latest_version }}
+        gotenberg: {{ gotenberg_latest_version }}
+    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
+    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
+  delegate_to: localhost
+
 - name: Upgrade paperless-ngx documents management server
   become: true
   block:
@@ -13,14 +69,25 @@
         autoremove: true
         purge: true
 
-    - name: Update & start paperless docker containers
+    - name: Update & start docker containers
       become: true
       community.docker.docker_compose_v2:
         project_name: paperless
         project_src: /opt/paperless
         remove_orphans: true
+        services: "{{ item.services }}"
         pull: always
         state: present
+      loop:
+        - services:
+            - paperless
+            - postgres
+            - redis
+            - tika
+          condition: "{{ paperless_has_updates }}"
+        - services: gotenberg
+          condition: "{{ gotenberg_has_updates }}"
+      when: item.condition
 
     - name: Prune unused docker objects
       community.docker.docker_prune:

@@ -1,6 +1,6 @@
 services:
   paperless:
-    container_name: paperless
+    container_name: {{ paperless_docker_name }}
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     env_file: paperless.env
     environment:
@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
 
   gotenberg:
-    container_name: gotenberg
+    container_name: {{ gotenberg_docker_name }}
     image: docker.io/gotenberg/gotenberg:8
     restart: unless-stopped
 
