@@ -16,7 +16,7 @@ The following softwares must be installed on the local machine before ansible ca
 
 The following python packages must be installed on the local machine before ansible can be used to manage the servers.
 
-- github3py
+- github3.py
 - pexpect
 - proxmoxer
 - pyjwt
