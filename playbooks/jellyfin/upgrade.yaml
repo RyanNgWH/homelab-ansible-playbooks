@@ -11,9 +11,6 @@
       docker_user: jellyfin
       docker_repo: jellyfin
 
-- debug:
-    var: jellyfin_latest_version
-
 - name: Check if applications have updates
   block:
     - name: Check if applications have updates
