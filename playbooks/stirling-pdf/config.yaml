@@ -17,3 +17,14 @@ nginx_conf_files:
     path: templates/nginx.stirling-pdf.conf
 
 certbot_admin_email: admin@tinynamoo.com
+
+# Striling-pdf variables
+stirling_pdf_docker_name: stirling-pdf
+
+## Proxmox variables
+proxmox_api_host: server.tinynamoo.com
+proxmox_api_user: ansible@pam
+
+proxmox_snapshot_vmid: 20020
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false

@@ -2,7 +2,7 @@
 ---
 services:
   stirling-pdf:
-    container_name: stirling-pdf
+    container_name: {{ stirling_pdf_docker_name }}
     image: frooodle/s-pdf:latest
     environment:
       DOCKER_ENABLE_SECURITY: false

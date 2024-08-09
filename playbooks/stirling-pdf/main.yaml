@@ -33,3 +33,7 @@
     - name: Install and configure Stirling PDF tools collection
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Stirling PDF tools collection
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade

@@ -1,0 +1,79 @@
+# @format
+
+# Stirling PDF
+# Upgrade Stirling PDF tools collection.
+---
+- name: Check if striling-pdf requires update
+  block:
+    - name: Get current striling-pdf container version
+      become: true
+      ansible.builtin.import_role:
+        name: docker
+        public: false
+      vars:
+        task_list: get_container_image_version
+        docker_container_name: "{{ stirling_pdf_docker_name }}"
+        docker_fact_name: stirling_pdf
+
+    - name: Get latest stirling-pdf container release from github
+      community.general.github_release:
+        user: Stirling-Tools
+        repo: Stirling-PDF
+        action: latest_release
+      delegate_to: localhost
+      register: stirling_pdf_github_release
+
+    - name: Extract latest stirling-pdf container version & fix image versioning
+      ansible.builtin.set_fact:
+        stirling_pdf_image_version: "v{{ stirling_pdf_image_version}}"
+        stirling_pdf_latest_version: "{{ stirling_pdf_github_release.tag }}"
+
+    - name: Stop play if stirling-pdf has no updates
+      ansible.builtin.meta: end_play
+      when: stirling_pdf_image_version == stirling_pdf_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    task_list: snapshot
+
+    proxmox_api_host: "{{ proxmox_api_host }}"
+    proxmox_api_user: "{{ proxmox_api_user }}"
+    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
+    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (stirling_pdf_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of stirling-pdf {{ stirling_pdf_image_version }} before upgrading to {{ stirling_pdf_latest_version }}"
+    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
+    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
+  delegate_to: localhost
+
+- name: Upgrade stirling-pdf pdf tools server
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Update & start stirling-pdf docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: stirling-pdf
+        project_src: /opt/stirling-pdf
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true

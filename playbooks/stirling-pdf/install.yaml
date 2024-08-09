@@ -14,8 +14,8 @@
 
 - name: Setup Stirling PDF docker compose file
   become: true
-  ansible.builtin.copy:
-    src: files/app.docker-compose.yaml
+  ansible.builtin.template:
+    src: templates/app.docker-compose.yaml
     dest: /opt/stirling-pdf/docker-compose.yaml
     owner: "{{ debian_user_name }}"
     group: "{{ debian_user_name }}"
