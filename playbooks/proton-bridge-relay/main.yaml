@@ -1,0 +1,24 @@
+# @format
+
+# Proton Bridge Relay
+# Manage the Proton Bridge relay.
+---
+- name: Install and configure the Proton Bridge relay
+  hosts: proton-bridge-relay
+
+  pre_tasks:
+    - name: Include playbook configuration
+      ansible.builtin.include_vars: "{{ item }}"
+      with_fileglob:
+        - "{{ playbook_dir }}/config.yaml"
+        - "{{ playbook_dir }}/credentials.yaml"
+      tags: always
+
+  roles:
+    - role: debian-12-setup
+      tags: install
+
+  tasks:
+    - name: Install and configure the Proton Bridge relay
+      ansible.builtin.import_tasks: install.yaml
+      tags: install

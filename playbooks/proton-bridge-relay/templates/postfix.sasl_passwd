@@ -1,0 +1,1 @@
+[127.0.0.1]:{{ proton_bridge_smtp_port }} {{ proton_smtp_email }}:{{ proton_bridge_smtp_pass }}

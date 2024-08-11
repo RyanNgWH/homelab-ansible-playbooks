@@ -1,0 +1,36 @@
+# See /usr/share/postfix/main.cf.dist for a commented, more complete version
+
+smtpd_banner = {{ debian_user_name | capitalize }} Proton bridge relay ESMTP $mail_name (Debian/GNU)
+biff = no
+
+# appending .domain is the MUA's job.
+append_dot_mydomain = no
+
+# Uncomment the next line to generate "delayed mail" warnings
+#delay_warning_time = 4h
+
+# See http://www.postfix.org/COMPATIBILITY_README.html -- default to 2 on
+# fresh installs.
+compatibility_level = 2
+
+# See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
+# information on enabling SSL in the smtp client.
+
+alias_maps = hash:/etc/aliases
+alias_database = hash:/etc/aliases
+mydestination = $myhostname, localhost.localdomain, localhost
+mynetworks = 127.0.0.0/8, 172.28.10.0/24, 172.28.14.0/24, 172.28.17.0/24, 172.28.20.0/24
+recipient_delimiter = +
+inet_interfaces = 127.0.0.1, {{ ansible_default_ipv4.address }}
+
+mydomain = {{ postfix_domain }}
+
+# ProtonMail Bridge listening on port {{ proton_bridge_smtp_port }}
+relayhost = [127.0.0.1]:{{ proton_bridge_smtp_port }}
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_CApath = /etc/ssl/certs
+smtp_use_tls = yes
+
+sender_canonical_maps = regexp:/etc/postfix/canonical

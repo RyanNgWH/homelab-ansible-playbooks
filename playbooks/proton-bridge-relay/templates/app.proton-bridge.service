@@ -1,0 +1,12 @@
+[Unit]
+Description=Protonmail bridge service
+
+[Service]
+Type=simple
+StandardOutput=journal
+ExecStart=/opt/proton-bridge/proton-bridge --noninteractive
+User={{ proton_user_name }}
+Group={{ proton_user_name }}
+
+[Install]
+WantedBy=default.target

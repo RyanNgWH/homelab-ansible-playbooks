@@ -1,0 +1,31 @@
+# @format
+---
+## General variables
+debian_architecture:
+  {
+    "armv6l": "armhf",
+    "armv7l": "armhf",
+    "aarch64": "arm64",
+    "x86_64": "amd64",
+    "i386": "i386",
+  }
+
+## Debian-12-setup variables
+# Date time configurations
+debian_datetime_ntp_server: 172.28.10.1
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User configurations
+debian_user_name: sunny
+debian_user_shell: /bin/bash
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIlo/hfCkUuuzqpSjRkVKXNLyogcC4jg3KzseCg87QId sunny@smtp.tinynamoo.com"
+
+## Proton bridge variables
+golang_version: "1.22.6"
+
+proton_user_name: proton
+proton_gpg_key_name: proton-bridge-key
+proton_smtp_email: sunny@mail.tinynamoo.com
+
+postfix_domain: tinynamoo.com

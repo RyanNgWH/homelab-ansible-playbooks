@@ -1,0 +1,286 @@
+# @format
+
+# Proton Bridge Relay
+# Install and configure the Proton Bridge relay.
+---
+- name: Gather facts
+  ansible.builtin.setup:
+    gather_subset:
+      - default_ipv4
+      - architecture
+
+- name: Setup prerequisites
+  become: true
+  block:
+    - name: Install prerequisites
+      ansible.builtin.apt:
+        name:
+          - gcc
+          - make
+          - libsecret-1-dev
+          - libsasl2-modules
+          - pkg-config
+          - git
+          - gnupg
+          - pass
+          - expect
+        update_cache: true
+        state: present
+
+    - name: Unpack golang binary
+      ansible.builtin.unarchive:
+        remote_src: true
+        src: "https://go.dev/dl/go{{ golang_version }}.linux-{{ debian_architecture[ansible_architecture] }}.tar.gz"
+        dest: /usr/local
+        owner: "{{ debian_user_name }}"
+        group: "{{ debian_user_name }}"
+
+    - name: Ensure proton group is present
+      ansible.builtin.group:
+        name: "{{ proton_user_name }}"
+        system: true
+        state: present
+
+    - name: Ensure proton user is present
+      ansible.builtin.user:
+        name: "{{ proton_user_name }}"
+        group: "{{ proton_user_name }}"
+        password: "*"
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+- name: Build proton bridge binary
+  become: true
+  block:
+    - name: Add git exception for proton bridge application directory
+      community.general.git_config:
+        name: safe.directory
+        value: /opt/proton-bridge
+        scope: global
+        state: present
+
+    - name: Clone proton bridge git repository
+      ansible.builtin.git:
+        repo: https://github.com/ProtonMail/proton-bridge.git
+        dest: /opt/proton-bridge # noqa: latest
+        force: true
+
+    - name: Ensure owner of proton bridge application directory is set
+      ansible.builtin.file:
+        path: /opt/proton-bridge
+        owner: "{{ proton_user_name }}"
+        group: "{{ proton_user_name }}"
+        mode: "0740"
+        recurse: true
+        follow: false
+        state: directory
+
+    - name: Get new tags from proton bridge git repo
+      ansible.builtin.command:
+        cmd: git fetch --tags
+        chdir: /opt/proton-bridge
+      changed_when: true
+
+    - name: Get latest tag commit from proton bridge repo
+      ansible.builtin.command:
+        cmd: git rev-list --tags --max-count=1
+        chdir: /opt/proton-bridge
+      register: latest_commit
+      changed_when: false
+
+    - name: Get latest tag name from proton bridge git repo
+      ansible.builtin.command:
+        argv:
+          - git
+          - describe
+          - --tags
+          - "{{ latest_commit.stdout }}"
+        chdir: /opt/proton-bridge
+      register: protonbridge_latest_tag
+      changed_when: false
+
+    - name: Checkout proton bridge to latest tag
+      ansible.builtin.git:
+        repo: https://github.com/ProtonMail/proton-bridge.git
+        dest: /opt/proton-bridge # noqa: latest
+        version: "{{ protonbridge_latest_tag.stdout }}"
+        force: true
+
+    - name: Build proton bridge
+      community.general.make:
+        chdir: /opt/proton-bridge
+        target: build-nogui
+      environment:
+        PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin"
+
+- name: Configure gpg & pass secrets service
+  become: true
+  block:
+    - name: Check if gpg key exists
+      ansible.builtin.command: su {{ proton_user_name }} -c "gpg --list-secret-keys '{{ proton_gpg_key_name }}'"
+      register: gpg_exists
+      changed_when: false
+      failed_when: gpg_exists.rc != 0 and gpg_exists.rc != 2
+
+    - name: Generate gpg key for proton bridge
+      ansible.builtin.command: su {{ proton_user_name }} -c "gpg --batch --passphrase '' --quick-gen-key '{{ proton_gpg_key_name }}' default default never"
+      changed_when: true
+      when: gpg_exists.rc == 2
+
+    - name: Check if pass is initiated
+      ansible.builtin.command: su {{ proton_user_name }} -c "pass ls"
+      register: pass_initiated
+      changed_when: false
+      failed_when: false
+
+    - name: Initialise pass secrets service
+      ansible.builtin.command: su {{ proton_user_name }} -c "pass init '{{ proton_gpg_key_name }}'"
+      changed_when: true
+      when: pass_initiated.rc == 1
+
+- name: Setup proton bridge
+  block:
+    # Only one instance of proton bridge can be running at a time (will always fail if existing instance exists)
+    - name: Kill existing proton bridge instances
+      become: true
+      ansible.builtin.command: pkill bridge
+      register: kill_proton_bridge
+      changed_when: kill_proton_bridge.rc == 0
+      failed_when: false
+
+    - name: List all logged in users in proton bridge
+      become: true
+      ansible.builtin.command: su {{ proton_user_name }} -c "echo 'list \n exit' | /opt/proton-bridge/proton-bridge --cli"
+      register: proton_bridge_list
+      changed_when: false
+
+    - name: Log user into proton bridge
+      become: true
+      when: not proton_bridge_list.stdout | regex_search(proton_login_username)
+      block:
+        - name: Prompt user for otp
+          ansible.builtin.pause:
+            echo: true
+            prompt: "Enter 2FA code for proton bridge"
+          register: proton_2fa_code
+
+        - name: Kill existing proton bridge instances
+          ansible.builtin.command: pkill bridge
+          register: kill_proton_bridge
+          changed_when: kill_proton_bridge.rc == 0
+          failed_when: false
+
+        - name: Setup proton bridge login script
+          ansible.builtin.template:
+            src: templates/app.proton-bridge-login.sh
+            dest: /tmp/proton-bridge-login.sh
+            owner: "{{ proton_user_name }}"
+            group: "{{ proton_user_name }}"
+            mode: "0770"
+
+        - name: Log user into proton bridge
+          ansible.builtin.command: su {{ proton_user_name }} -c "expect /tmp/proton-bridge-login.sh"
+          changed_when: true
+
+    - name: Get SMTP info from proton bridge
+      become: true
+      block:
+        - name: Kill existing proton bridge instances
+          ansible.builtin.command: pkill bridge
+          register: kill_proton_bridge
+          changed_when: kill_proton_bridge.rc == 0
+          failed_when: false
+
+        - name: Setup proton bridge info script
+          ansible.builtin.template:
+            src: templates/app.proton-bridge-info.sh
+            dest: /tmp/proton-bridge-info.sh
+            owner: "{{ proton_user_name }}"
+            group: "{{ proton_user_name }}"
+            mode: "0770"
+
+        - name: Get proton bridge info
+          ansible.builtin.command: su {{ proton_user_name }} -c "expect /tmp/proton-bridge-info.sh"
+          register: proton_bridge_info
+          changed_when: false
+
+        - debug:
+            var: proton_bridge_info.stdout
+
+        - name: Extract SMTP port
+          ansible.builtin.set_fact:
+            proton_bridge_smtp_port: "{{ proton_bridge_info.stdout | regex_search('(?<=SMTP port: )[^ ]*(?=\\r\\nUsername:  ' + proton_smtp_email + ')') }}"
+
+        - name: Extract SMTP password
+          ansible.builtin.set_fact:
+            proton_bridge_smtp_pass: "{{ proton_bridge_info.stdout | regex_search('(?<=SMTP port: ' + proton_bridge_smtp_port + '\\r\\nUsername:  ' + proton_smtp_email + '\\r\\nPassword:  )[^\\r]*') }}"
+
+        - name: Assert SMTP information is not empty
+          ansible.builtin.assert:
+            that: proton_bridge_smtp_port != "" and proton_bridge_smtp_pass != ""
+
+- name: Setup proton bridge systemd service
+  become: true
+  block:
+    - name: Setup proton bridge service file
+      ansible.builtin.template:
+        src: templates/app.proton-bridge.service
+        dest: /etc/systemd/system/proton-bridge.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Enable and start proton-bridge.service
+      ansible.builtin.systemd_service:
+        name: proton-bridge.service
+        daemon_reload: true
+        enabled: true
+        state: started
+
+- name: Setup postfix mail relay
+  become: true
+  block:
+    - name: Setup postfix main configuration
+      ansible.builtin.template:
+        src: templates/postfix.main.cf
+        dest: /etc/postfix/main.cf
+        owner: root
+        group: root
+        mode: "0644"
+
+    # Convert all incoming source email to email of protonmail - protonmail only allows email to be sent from registered email
+    - name: Setup postfix canonical configuration
+      ansible.builtin.template:
+        src: templates/postfix.canonical
+        dest: /etc/postfix/canonical
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Setup proton bridge smtp credentials
+      ansible.builtin.template:
+        src: templates/postfix.sasl_passwd
+        dest: /etc/postfix/sasl_passwd
+        owner: root
+        group: root
+        mode: "0400"
+
+    # Allow validation of proton bridge certificate since proton bridge requires connection with STARTSSL
+    - name: Link proton bridge certificate file
+      ansible.builtin.file:
+        src: "/home/{{ proton_user_name }}/.config/protonmail/bridge-v3/cert.pem"
+        path: /etc/ssl/certs/proton-bridge.pem
+        owner: "{{ proton_user_name }}"
+        group: "{{ proton_user_name }}"
+        mode: "0600"
+        state: link
+
+    - name: Generate postfix sasl database
+      ansible.builtin.command: postmap /etc/postfix/sasl_passwd
+      changed_when: true
+
+    - name: Restart postfix
+      ansible.builtin.systemd_service:
+        name: postfix.service
+        state: restarted

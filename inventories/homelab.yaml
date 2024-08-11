@@ -49,11 +49,14 @@ paperless:
 piped:
   hosts: tube.tinynamoo.com
 
-proxmox:
-  hosts: server.tinynamoo.com
+proton-bridge-relay:
+  hosts: smtp.tinynamoo.com
 
 prowlarr:
   hosts: indexers.tinynamoo.com
+
+proxmox:
+  hosts: server.tinynamoo.com
 
 qbittorrent:
   hosts: download.tinynamoo.com
@@ -112,6 +115,7 @@ debian:
     ntfy:
     paperless:
     piped:
+    proton-bridge-relay:
     proxmox:
     prowlarr:
     qbittorrent:
