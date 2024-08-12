@@ -1,6 +1,6 @@
 services:
   bazarr:
-    container_name: {{ bazarr_server_docker_name }}
+    container_name: {{ bazarr_docker_name }}
     image: lscr.io/linuxserver/bazarr:latest
     environment:
       PUID: {{ nfs_user_id }}

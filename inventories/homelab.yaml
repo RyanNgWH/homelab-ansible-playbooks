@@ -105,11 +105,13 @@ debian:
 
 nfs:
   hosts:
+    bazarr:
     radarr:
     sonarr:
 
 nginx:
   hosts:
+    bazarr:
     radarr:
     sonarr:
 

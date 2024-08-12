@@ -63,8 +63,8 @@
     - name: Update & start bazarr docker containers
       become: true
       community.docker.docker_compose_v2:
-        project_name: bazarr
-        project_src: /opt/bazarr
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         remove_orphans: true
         pull: always
         state: present

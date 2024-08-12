@@ -3,26 +3,19 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.17.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: bibi
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINQH72xuzepe9BY1Drq2VtBSygKH8uoAMwPW1N39D20F bibi@subtitles.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Bibi] Bazarr/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Bibi] Bazarr/user.keytab"
 
 # NFS
 nfs_user_name: bazarr
 nfs_user_id: 118
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   marilyn-media:
     mount_share: marilyn-media
@@ -43,8 +36,6 @@ nginx_conf_files:
   - filename: bazarr-anime.conf
     path: templates/nginx.bazarr-anime.conf
 
-certbot_admin_email: admin@tinynamoo.com
-
 ## Bazarr variables
 bazarr_4k_hostname: subtitles4k.tinynamoo.com
 bazarr_anime_hostname: animesubs.tinynamoo.com
@@ -60,3 +51,7 @@ proxmox_api_user: ansible@pam
 proxmox_snapshot_vmid: 17111
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: bazarr
+docker_project_src: /opt/bazarr
