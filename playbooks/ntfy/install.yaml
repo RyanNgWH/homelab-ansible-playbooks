@@ -8,7 +8,7 @@
   block:
     - name: Ensure Ntfy directory is present
       ansible.builtin.file:
-        path: /opt/ntfy
+        path: "{{ docker_project_src }}"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -17,14 +17,14 @@
     - name: Setup docker-compose file
       ansible.builtin.template:
         src: templates/app.docker-compose.yaml
-        dest: /opt/ntfy/docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
     - name: Setup ntfy directories
       ansible.builtin.file:
-        path: /opt/ntfy/{{ item }}
+        path: "{{ docker_project_src }}/{{ item }}"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -37,7 +37,7 @@
     - name: Setup ntfy configuration file
       ansible.builtin.template:
         src: templates/app.configuration.yml
-        dest: /opt/ntfy/config/server.yml
+        dest: "{{ docker_project_src }}/config/server.yml"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"
@@ -53,14 +53,14 @@
 
     - name: Ensure ntfy docker containers are stopped
       community.docker.docker_compose_v2:
-        project_name: ntfy
-        project_src: /opt/ntfy
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: absent
 
     - name: Sync cache & data directories from NFS server to local application directory
       ansible.posix.synchronize:
         src: "{{ nfs_mounts.karina.mount_point }}/{{ item }}"
-        dest: /opt/ntfy/
+        dest: "{{ docker_project_src }}/"
       delegate_to: "{{ inventory_hostname }}"
       loop:
         - cache
@@ -68,7 +68,7 @@
 
     - name: Ensure cache & data directories permissions is set
       ansible.builtin.file:
-        path: /opt/ntfy/{{ item }}
+        path: "{{ docker_project_src }}/{{ item }}"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -121,13 +121,13 @@
     task_list:
       - nginx
     nginx_tls_domains:
-      - "{{ inventory_hostname }}"
+      - "{{ ansible_host }}"
   ansible.builtin.include_role:
     name: debian-common
 
 - name: Start ntfy docker containers
   become: true
   community.docker.docker_compose_v2:
-    project_name: ntfy
-    project_src: /opt/ntfy
+    project_name: "{{ docker_project_name }}"
+    project_src: "{{ docker_project_src }}"
     state: present

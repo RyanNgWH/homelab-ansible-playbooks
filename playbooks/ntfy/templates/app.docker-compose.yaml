@@ -1,11 +1,11 @@
 services:
   ntfy:
-    container_name: ntfy
+    container_name: {{ ntfy_docker_name }}
     image: binwiederhier/ntfy:latest
     command:
       - serve
     environment:
-      TZ: Asia/Singapore
+      TZ: {{ debian_datetime_timezone }}
     volumes:
       - ./cache:/var/cache/ntfy
       - ./data:/var/lib/ntfy

@@ -14,13 +14,13 @@
 
     - name: Ensure ntfy docker containers are stopped
       community.docker.docker_compose_v2:
-        project_name: ntfy
-        project_src: /opt/ntfy
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: absent
 
     - name: Sync cache & data directories from local application directory to NFS server
       ansible.posix.synchronize:
-        src: /opt/ntfy/{{ item }}
+        src: "{{ docker_project_src }}/{{ item }}"
         dest: "{{ nfs_mounts.karina.mount_point }}/"
         owner: false
         group: false
@@ -31,6 +31,6 @@
 
     - name: Start ntfy docker containers
       community.docker.docker_compose_v2:
-        project_name: ntfy
-        project_src: /opt/ntfy
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: present
