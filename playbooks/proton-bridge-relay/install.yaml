@@ -3,12 +3,6 @@
 # Proton Bridge Relay
 # Install and configure the Proton Bridge relay.
 ---
-- name: Gather facts
-  ansible.builtin.setup:
-    gather_subset:
-      - default_ipv4
-      - architecture
-
 - name: Setup prerequisites
   become: true
   block:
@@ -56,19 +50,19 @@
     - name: Add git exception for proton bridge application directory
       community.general.git_config:
         name: safe.directory
-        value: /opt/proton-bridge
+        value: "{{ proton_bridge_project_src }}"
         scope: global
         state: present
 
     - name: Clone proton bridge git repository
       ansible.builtin.git:
         repo: https://github.com/ProtonMail/proton-bridge.git
-        dest: /opt/proton-bridge # noqa: latest
+        dest: "{{ proton_bridge_project_src }}" # noqa: latest
         force: true
 
     - name: Ensure owner of proton bridge application directory is set
       ansible.builtin.file:
-        path: /opt/proton-bridge
+        path: "{{ proton_bridge_project_src }}"
         owner: "{{ proton_user_name }}"
         group: "{{ proton_user_name }}"
         mode: "0740"
@@ -79,13 +73,13 @@
     - name: Get new tags from proton bridge git repo
       ansible.builtin.command:
         cmd: git fetch --tags
-        chdir: /opt/proton-bridge
+        chdir: "{{ proton_bridge_project_src }}"
       changed_when: true
 
     - name: Get latest tag commit from proton bridge repo
       ansible.builtin.command:
         cmd: git rev-list --tags --max-count=1
-        chdir: /opt/proton-bridge
+        chdir: "{{ proton_bridge_project_src }}"
       register: latest_commit
       changed_when: false
 
@@ -96,20 +90,20 @@
           - describe
           - --tags
           - "{{ latest_commit.stdout }}"
-        chdir: /opt/proton-bridge
+        chdir: "{{ proton_bridge_project_src }}"
       register: protonbridge_latest_tag
       changed_when: false
 
     - name: Checkout proton bridge to latest tag
       ansible.builtin.git:
         repo: https://github.com/ProtonMail/proton-bridge.git
-        dest: /opt/proton-bridge # noqa: latest
+        dest: "{{ proton_bridge_project_src }}" # noqa: latest
         version: "{{ protonbridge_latest_tag.stdout }}"
         force: true
 
     - name: Build proton bridge
       community.general.make:
-        chdir: /opt/proton-bridge
+        chdir: "{{ proton_bridge_project_src }}"
         target: build-nogui
       environment:
         PATH: "{{ ansible_env.PATH }}:/usr/local/go/bin"
@@ -151,7 +145,7 @@
 
     - name: List all logged in users in proton bridge
       become: true
-      ansible.builtin.command: su {{ proton_user_name }} -c "echo 'list \n exit' | /opt/proton-bridge/proton-bridge --cli"
+      ansible.builtin.command: su {{ proton_user_name }} -c "echo 'list \n exit' | {{ proton_bridge_project_src }}/proton-bridge --cli"
       register: proton_bridge_list
       changed_when: false
 
@@ -204,9 +198,6 @@
           ansible.builtin.command: su {{ proton_user_name }} -c "expect /tmp/proton-bridge-info.sh"
           register: proton_bridge_info
           changed_when: false
-
-        - debug:
-            var: proton_bridge_info.stdout
 
         - name: Extract SMTP port
           ansible.builtin.set_fact:
