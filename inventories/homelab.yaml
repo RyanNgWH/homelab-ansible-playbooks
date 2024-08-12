@@ -124,6 +124,7 @@ nfs:
     scrutiny:
     send:
     sonarr:
+    uptime_kuma:
 
 nginx:
   hosts:
@@ -146,8 +147,9 @@ nginx:
     radarr:
     scrutiny:
     send:
-    stirling_pdf:
     sonarr:
+    stirling_pdf:
+    uptime_kuma:
 
 recyclarr:
   hosts:

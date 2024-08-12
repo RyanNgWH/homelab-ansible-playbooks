@@ -14,13 +14,13 @@
 
     - name: Ensure uptime kuma docker containers are stopped
       community.docker.docker_compose_v2:
-        project_name: uptime-kuma
-        project_src: /opt/uptime-kuma
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: absent
 
     - name: Sync data directory from local application directory to NFS server
       ansible.posix.synchronize:
-        src: /opt/uptime-kuma/data
+        src: "{{ docker_project_src }}/data"
         dest: "{{ nfs_mounts.serene.mount_point }}/"
         owner: false
         group: false
@@ -28,6 +28,6 @@
 
     - name: Start uptime kuma docker containers
       community.docker.docker_compose_v2:
-        project_name: uptime-kuma
-        project_src: /opt/uptime-kuma
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: present

@@ -3,26 +3,19 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.10.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: serene
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFJciD1T2avmVzNaj99C0L2H3gpfznCPiZdNLw+6tOgv serene@status.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Serene] Uptime Kuma/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Serene] Uptime Kuma/user.keytab"
 
 # NFS
 nfs_user_name: uptime-kuma
 nfs_user_id: 290
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   serene:
     mount_share: serene
@@ -33,4 +26,9 @@ nginx_conf_files:
   - filename: uptime-kuma.conf
     path: templates/nginx.uptime-kuma.conf
 
-certbot_admin_email: admin@tinynamoo.com
+## Uptime kuma variables
+uptime_kuma_docker_name: uptime-kuma
+
+## Docker variables
+docker_project_name: uptime-kuma
+docker_project_src: /opt/uptime-kuma

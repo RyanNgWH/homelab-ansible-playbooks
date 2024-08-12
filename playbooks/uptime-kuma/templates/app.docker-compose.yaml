@@ -1,6 +1,6 @@
 services:
   uptime-kuma:
-    container_name: uptime-kuma
+    container_name: {{ uptime_kuma_docker_name }}
     image: louislam/uptime-kuma:1
     environment:
       PUID: {{ nfs_user_id }}
