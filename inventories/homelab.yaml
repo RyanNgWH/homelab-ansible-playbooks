@@ -112,6 +112,7 @@ nfs:
     homarr:
     immich:
     jellyfin:
+    jellyseerr:
     radarr:
     sonarr:
 
@@ -125,6 +126,7 @@ nginx:
     immich:
     it_tools:
     jellyfin:
+    jellyseerr:
     radarr:
     sonarr:
 

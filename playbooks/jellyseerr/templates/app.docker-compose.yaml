@@ -1,11 +1,11 @@
 ---
 services:
   jellyseerr:
-    container_name: jellyseerr
+    container_name: {{ jellyseerr_docker_name }}
     image: fallenbagel/jellyseerr:latest
     environment:
       LOG_LEVEL: debug
-      TZ: Asia/Singapore
+      TZ: {{ debian_datetime_timezone }}
     volumes:
       - {{ nfs_mounts["marilyn-configs-jellyseerr"].mount_point }}:/app/config
     ports:
