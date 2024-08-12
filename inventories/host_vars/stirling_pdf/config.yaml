@@ -3,12 +3,9 @@
 ## Debian-12-setup variables
 # Date time configurations
 debian_datetime_ntp_server: 172.28.20.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User configurations
 debian_user_name: danielle
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGivXxjmTnRB0aOrtWLRdW8vuyRfC/QKwoqtZYmS3hXT danielle@pdf.tinynamoo.com"
 
 ## NGINX variables
@@ -16,15 +13,14 @@ nginx_conf_files:
   - filename: stirling-pdf.conf
     path: templates/nginx.stirling-pdf.conf
 
-certbot_admin_email: admin@tinynamoo.com
-
 # Striling-pdf variables
 stirling_pdf_docker_name: stirling-pdf
 
 ## Proxmox variables
-proxmox_api_host: server.tinynamoo.com
-proxmox_api_user: ansible@pam
-
 proxmox_snapshot_vmid: 20020
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: stirling-pdf
+docker_project_src: /opt/stirling-pdf

@@ -146,6 +146,7 @@ nginx:
     radarr:
     scrutiny:
     send:
+    stirling_pdf:
     sonarr:
 
 recyclarr:
