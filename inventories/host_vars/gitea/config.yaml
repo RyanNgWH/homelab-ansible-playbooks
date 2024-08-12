@@ -3,38 +3,34 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.20.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: yena
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJMPB95ATnnMKunX74CtylHzGFDUevE4J+1RCsAqwZwQ yena@git.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Yena] Gitea/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Yena] Gitea/user.keytab"
 
 # NFS
 nfs_user_name: gitea
 nfs_user_id: 180
-nfs_user_shell: /bin/bash
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   yena:
     mount_share: yena
     mount_point: /srv/yena
-
-## Gitea configurations
-gitea_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIxW2NoBiOA/73caeYjYLvHpId88UOdJtERcz+d/r4S0 Gitea Host Key"
 
 ## NGINX variables
 nginx_conf_files:
   - filename: gitea.conf
     path: templates/nginx.gitea.conf
 
-certbot_admin_email: admin@tinynamoo.com
+## Gitea configurations
+gitea_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIxW2NoBiOA/73caeYjYLvHpId88UOdJtERcz+d/r4S0 Gitea Host Key"
+
+gitea_docker_name: gitea
+
+## Docker variables
+docker_project_name: gitea
+docker_project_src: /opt/gitea

@@ -108,6 +108,7 @@ nfs:
     bazarr:
     firefly:
     gamevault:
+    gitea:
     radarr:
     sonarr:
 
@@ -116,6 +117,7 @@ nginx:
     bazarr:
     firefly:
     gamevault:
+    gitea:
     radarr:
     sonarr:
 
