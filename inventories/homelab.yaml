@@ -107,6 +107,7 @@ nfs:
   hosts:
     bazarr:
     firefly:
+    gamevault:
     radarr:
     sonarr:
 
@@ -114,6 +115,7 @@ nginx:
   hosts:
     bazarr:
     firefly:
+    gamevault:
     radarr:
     sonarr:
 

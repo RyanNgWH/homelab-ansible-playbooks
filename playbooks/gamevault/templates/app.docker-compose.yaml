@@ -1,12 +1,12 @@
 
 ---
 services:
-  gamevault-backend:
-    container_name: gamevault-backend
+  gamevault:
+    container_name: {{ gamevault_docker_name }}
     image: phalcode/gamevault-backend:latest
     restart: unless-stopped
     environment:
-      DB_HOST: gamevault-db
+      DB_HOST: postgres
       DB_USERNAME: gamevault
       DB_PASSWORD: {{ gamevault_database_password }}
 
@@ -26,15 +26,15 @@ services:
       - 8080:8080
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
     depends_on:
-      - gamevault-db
+      - postgres
 
-  gamevault-db:
-    container_name: gamevault-db
+  postgres:
+    container_name: postgres
     image: postgres:16
     restart: unless-stopped
     environment:
       POSTGRES_USER: gamevault
-      POSTGRES_PASSWORD: gamevault_database_password
+      POSTGRES_PASSWORD: {{ gamevault_database_password }}
       POSTGRES_DB: gamevault
     volumes:
       # Mount the folder where your PostgreSQL database files should land
