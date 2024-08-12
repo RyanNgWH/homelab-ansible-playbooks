@@ -3,26 +3,19 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.14.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: petal
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBq8Ppb/cU7GVKl33KKfGt+qL+kPnoeyUM60DesVlL60 petal@photos.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Petal] Immich/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Petal] Immich/user.keytab"
 
 # NFS
 nfs_user_name: immich
 nfs_user_id: 120
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   petal:
     mount_share: petal
@@ -32,8 +25,6 @@ nfs_mounts:
 nginx_conf_files:
   - filename: immich.conf
     path: templates/nginx.immich.conf
-
-certbot_admin_email: admin@tinynamoo.com
 
 ## Immich variables
 immich_photos_group_name: photos
@@ -48,3 +39,7 @@ proxmox_api_user: ansible@pam
 proxmox_snapshot_vmid: 14120
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: immich
+docker_project_src: /opt/immich

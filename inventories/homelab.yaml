@@ -110,6 +110,7 @@ nfs:
     gamevault:
     gitea:
     homarr:
+    immich:
     radarr:
     sonarr:
 
@@ -120,6 +121,7 @@ nginx:
     gamevault:
     gitea:
     homarr:
+    immich:
     radarr:
     sonarr:
 
