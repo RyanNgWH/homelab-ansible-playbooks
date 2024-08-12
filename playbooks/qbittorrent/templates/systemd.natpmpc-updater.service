@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-ExecStart=/opt/qbittorrent/qbittorrent-natpmpc-updater.sh
+ExecStart={{ docker_project_src }}/qbittorrent-natpmpc-updater.sh
 Restart=always
 
 [Install]

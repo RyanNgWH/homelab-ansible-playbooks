@@ -17,7 +17,7 @@ services:
     restart: unless-stopped
 
   cross-seed:
-    container_name: cross-seed
+    container_name: {{ cross_seed_docker_name }}
     image: ghcr.io/cross-seed/cross-seed:latest
     volumes:
       - {{ nfs_mounts.marilyn.mount_point }}/configs/cross-seed:/config
@@ -34,7 +34,7 @@ services:
         condition: service_started
 
   qbit-manage:
-    container_name: qbit-manage
+    container_name: {{ qbit_manage_docker_name }}
     image: ghcr.io/stuffanthings/qbit_manage:latest
     volumes:
       - ./qbit-manage.config.yaml:/app/config.yml

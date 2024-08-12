@@ -9,7 +9,7 @@ getpublicip() {
 }
 
 findconfiguredport() {
-  curl -s -i --header "Referer: https://{{ inventory_hostname }}" --cookie "$1" "https://{{ inventory_hostname }}/api/v2/app/preferences" | grep -oP '(?<=\"listen_port\"\:)(\d{1,5})'
+  curl -s -i --header "Referer: https://{{ ansible_host }}" --cookie "$1" "https://{{ ansible_host }}/api/v2/app/preferences" | grep -oP '(?<=\"listen_port\"\:)(\d{1,5})'
 }
 
 findactiveport() {
@@ -17,12 +17,12 @@ findactiveport() {
 }
 
 qbt_login() {
-  qbt_sid=$(curl -s -i --header "Referer: https://{{ inventory_hostname }}" --data "username={{ qbit_username }}" --data-urlencode "password={{ natpmpc_qbit_password }}" "https://{{ inventory_hostname }}/api/v2/auth/login" | grep -oP '(?!set-cookie:.)SID=.*(?=\;.HttpOnly\;)')
+  qbt_sid=$(curl -s -i --header "Referer: https://{{ ansible_host }}" --data "username={{ qbit_username }}" --data-urlencode "password={{ natpmpc_qbit_password }}" "https://{{ ansible_host }}/api/v2/auth/login" | grep -oP '(?!set-cookie:.)SID=.*(?=\;.HttpOnly\;)')
   return $?
 }
 
 qbt_changeport(){
-  curl -s -i --header "Referer: https://{{ inventory_hostname }}" --cookie "$1" --data-urlencode "json={\"listen_port\":$2,\"random_port\":false,\"upnp\":false}" "https://{{ inventory_hostname }}/api/v2/app/setPreferences" > /dev/null 2>&1
+  curl -s -i --header "Referer: https://{{ ansible_host }}" --cookie "$1" --data-urlencode "json={\"listen_port\":$2,\"random_port\":false,\"upnp\":false}" "https://{{ ansible_host }}/api/v2/app/setPreferences" > /dev/null 2>&1
   return $?
 }
 
@@ -35,7 +35,7 @@ qbt_checksid(){
 }
 
 qbt_isreachable(){
-  http_code=$(curl -o /dev/null -s -w "%{http_code}" https://{{ inventory_hostname }})
+  http_code=$(curl -o /dev/null -s -w "%{http_code}" https://{{ ansible_host }})
   if [[ $http_code != 200 ]]; then
     return 1
   else
@@ -96,11 +96,11 @@ load_vals(){
     if qbt_login; then
       configured_port=$(findconfiguredport "${qbt_sid}")
     else
-      echo "$(timestamp) | Unable to login to qBittorrent at https://{{ inventory_hostname }}"
+      echo "$(timestamp) | Unable to login to qBittorrent at https://{{ ansible_host }}"
       exit 7
     fi
   else
-    echo "$(timestamp) | Unable to login to qBittorrent at https://{{ inventory_hostname }}"
+    echo "$(timestamp) | Unable to login to qBittorrent at https://{{ ansible_host }}"
     exit 6
   fi
   active_port=''

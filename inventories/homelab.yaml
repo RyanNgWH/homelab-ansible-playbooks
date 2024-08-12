@@ -119,6 +119,7 @@ nfs:
     paperless:
     piped:
     prowlarr:
+    qbittorrent:
     radarr:
     sonarr:
 
@@ -139,6 +140,7 @@ nginx:
     paperless:
     piped:
     prowlarr:
+    qbittorrent:
     radarr:
     sonarr:
 

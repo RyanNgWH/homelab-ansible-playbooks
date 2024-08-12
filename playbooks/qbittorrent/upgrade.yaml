@@ -37,17 +37,8 @@
     public: false
   vars:
     task_list: snapshot
-
-    proxmox_api_host: "{{ proxmox_api_host }}"
-    proxmox_api_user: "{{ proxmox_api_user }}"
-    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
-    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
-
-    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
     proxmox_snapshot_name: "{{ 'pre-upgrade-' + (qbittorrent_image_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of qbittorrent {{ qbittorrent_image_version }} before upgrading to {{ qbittorrent_latest_version }}"
-    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
-    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
   delegate_to: localhost
 
 - name: Upgrade qbittorrent downloads server
@@ -63,8 +54,8 @@
     - name: Update & start qBittorrent docker containers
       become: true
       community.docker.docker_compose_v2:
-        project_name: qbittorrent
-        project_src: /opt/qbittorrent
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         remove_orphans: true
         pull: always
         state: present
