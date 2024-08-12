@@ -117,6 +117,7 @@ nfs:
     nextcloud:
     ntfy:
     paperless:
+    piped:
     radarr:
     sonarr:
 
@@ -135,6 +136,7 @@ nginx:
     nextcloud:
     ntfy:
     paperless:
+    piped:
     radarr:
     sonarr:
 
