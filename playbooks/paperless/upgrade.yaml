@@ -80,12 +80,12 @@
         state: present
       loop:
         - services:
-            - paperless
+            - "{{ paperless_docker_name }}"
             - postgres
             - redis
             - tika
           condition: "{{ paperless_has_updates }}"
-        - services: gotenberg
+        - services: "{{ gotenberg_docker_name }}"
           condition: "{{ gotenberg_has_updates }}"
       when: item.condition
 
