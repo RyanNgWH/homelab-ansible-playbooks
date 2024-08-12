@@ -1,10 +1,10 @@
 services:
   miniflux:
-    container_name: miniflux
+    container_name: {{ miniflux_docker_name }}
     image: miniflux/miniflux:latest
     environment:
       DATABASE_URL: user=miniflux password={{ miniflux_postgres_pass }} dbname=miniflux host=postgres sslmode=disable
-      BASE_URL: https://{{ inventory_hostname }}
+      BASE_URL: https://{{ ansible_host }}
       RUN_MIGRATIONS: 1
     ports:
       - "8080:8080"

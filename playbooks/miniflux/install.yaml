@@ -8,7 +8,7 @@
   block:
     - name: Ensure Miniflux directory is present
       ansible.builtin.file:
-        path: /opt/miniflux
+        path: "{{ docker_project_src }}"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -17,7 +17,7 @@
     - name: Setup docker-compose file
       ansible.builtin.template:
         src: templates/app.docker-compose.yaml
-        dest: /opt/miniflux/docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"
@@ -27,13 +27,13 @@
     task_list:
       - nginx
     nginx_tls_domains:
-      - "{{ inventory_hostname }}"
+      - "{{ ansible_host }}"
   ansible.builtin.include_role:
     name: debian-common
 
 - name: Start miniflux docker containers
   become: true
   community.docker.docker_compose_v2:
-    project_name: miniflux
-    project_src: /opt/miniflux
+    project_name: "{{ docker_project_name }}"
+    project_src: "{{ docker_project_src }}"
     state: present

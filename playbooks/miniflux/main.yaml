@@ -7,13 +7,6 @@
   hosts: miniflux
 
   pre_tasks:
-    - name: Include playbook configuration
-      ansible.builtin.include_vars: "{{ item }}"
-      with_fileglob:
-        - "{{ playbook_dir }}/config.yaml"
-        - "{{ playbook_dir }}/credentials.yaml"
-      tags: always
-
     - name: Gather facts
       ansible.builtin.setup:
         gather_subset:

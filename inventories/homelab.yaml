@@ -113,6 +113,7 @@ nfs:
     immich:
     jellyfin:
     jellyseerr:
+    miniflux:
     radarr:
     sonarr:
 
@@ -127,6 +128,7 @@ nginx:
     it_tools:
     jellyfin:
     jellyseerr:
+    miniflux:
     radarr:
     sonarr:
 
