@@ -4,12 +4,12 @@ services:
     image: jellyfin/jellyfin:latest
     volumes:
       - {{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/config:/config
-      - /opt/jellyfin/data:/data
-      - /opt/jellyfin/cache:/cache
+      - {{ docker_project_src }}/data:/data
+      - {{ docker_project_src }}/cache:/cache
       - {{ nfs_mounts["marilyn-media"].mount_point }}:/media
     environment:
       JELLYFIN_DATA_DIR: /data
-      JELLYFIN_PublishedServerUrl: https://{{ inventory_hostname }}
+      JELLYFIN_PublishedServerUrl: https://{{ ansible_host }}
     ports:
       - "8096:8096"
     restart: unless-stopped

@@ -1,0 +1,4 @@
+# @format
+---
+proxmox_api_host: server.tinynamoo.com
+proxmox_api_user: ansible@pam

@@ -8,7 +8,7 @@
   block:
     - name: Ensure application directory is present
       ansible.builtin.file:
-        path: /opt/jellyfin
+        path: "{{ docker_project_src }}"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -17,14 +17,14 @@
     - name: Setup docker-compose file
       ansible.builtin.template:
         src: templates/app.docker-compose.yaml
-        dest: /opt/jellyfin/docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
     - name: Setup cache directory
       ansible.builtin.file:
-        path: /opt/jellyfin/cache
+        path: "{{ docker_project_src }}/cache"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -32,7 +32,7 @@
 
     - name: Setup data directory
       ansible.builtin.file:
-        path: /opt/jellyfin/data
+        path: "{{ docker_project_src }}/data"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -219,19 +219,19 @@
 
     - name: Ensure jellyfin docker containers are stopped
       community.docker.docker_compose_v2:
-        project_name: jellyfin
-        project_src: /opt/jellyfin
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: absent
 
     - name: Sync data directory from NFS server to local application directory
       ansible.posix.synchronize:
         src: '{{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/data/jellyfin/'
-        dest: /opt/jellyfin/data
+        dest: "{{ docker_project_src }}/data"
       delegate_to: "{{ inventory_hostname }}"
 
     - name: Ensure data directory permissions is set
       ansible.builtin.file:
-        path: /opt/jellyfin/data
+        path: "{{ docker_project_src }}/data"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -244,7 +244,7 @@
     task_list:
       - nginx
     nginx_tls_domains:
-      - "{{ inventory_hostname }}"
+      - "{{ ansible_host }}"
       - "{{ jellystat_hostname }}"
   ansible.builtin.include_role:
     name: debian-common
@@ -252,6 +252,6 @@
 - name: Start Jellyfin docker containers
   become: true
   community.docker.docker_compose_v2:
-    project_name: jellyfin
-    project_src: /opt/jellyfin
+    project_name: "{{ docker_project_name }}"
+    project_src: "{{ docker_project_src }}"
     state: present

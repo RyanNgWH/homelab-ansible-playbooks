@@ -111,6 +111,7 @@ nfs:
     gitea:
     homarr:
     immich:
+    jellyfin:
     radarr:
     sonarr:
 
@@ -123,6 +124,7 @@ nginx:
     homarr:
     immich:
     it_tools:
+    jellyfin:
     radarr:
     sonarr:
 

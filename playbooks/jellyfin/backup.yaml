@@ -14,13 +14,13 @@
 
     - name: Ensure jellyfin docker containers are stopped
       community.docker.docker_compose_v2:
-        project_name: jellyfin
-        project_src: /opt/jellyfin
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: absent
 
     - name: Sync data directory from local application directory to NFS server
       ansible.posix.synchronize:
-        src: /opt/jellyfin/data/
+        src: "{{ docker_project_src }}/data/"
         dest: '{{ nfs_mounts["marilyn-configs-jellyfin"].mount_point }}/data/jellyfin'
         owner: false
         group: false
@@ -28,7 +28,7 @@
 
     - name: Start jellyfin docker containers
       community.docker.docker_compose_v2:
-        project_name: jellyfin
-        project_src: /opt/jellyfin
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: present
       when: "'backup' in ansible_run_tags"
