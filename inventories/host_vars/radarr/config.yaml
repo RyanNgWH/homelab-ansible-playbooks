@@ -39,8 +39,7 @@ radarr_media_group_gid: 200
 radarr_docker_name: radarr
 
 ## Proxmox variables
-proxmox_vmid: 17115
-
+proxmox_snapshot_vmid: 17115
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
 

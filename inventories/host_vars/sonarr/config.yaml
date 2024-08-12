@@ -39,8 +39,7 @@ sonarr_media_group_gid: 200
 sonarr_docker_name: sonarr
 
 ## Proxmox variables
-proxmox_vmid: 17113
-
+proxmox_snapshot_vmid: 17113
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
 

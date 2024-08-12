@@ -37,13 +37,6 @@
     public: false
   vars:
     task_list: snapshot
-
-    proxmox_api_host: "{{ proxmox_api_host }}"
-    proxmox_api_user: "{{ proxmox_api_user }}"
-    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
-    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
-
-    proxmox_snapshot_vmid: "{{ proxmox_vmid }}"
     proxmox_snapshot_name: "{{ 'pre-upgrade-radarr' + (radarr_image_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of radarr {{ radarr_image_version }} before upgrading to {{ radarr_latest_version }}"
   delegate_to: localhost

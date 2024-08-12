@@ -45,9 +45,6 @@ bazarr_media_group_gid: 200
 bazarr_docker_name: bazarr
 
 ## Proxmox variables
-proxmox_api_host: server.tinynamoo.com
-proxmox_api_user: ansible@pam
-
 proxmox_snapshot_vmid: 17111
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
