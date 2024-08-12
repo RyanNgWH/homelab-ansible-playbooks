@@ -61,7 +61,7 @@
         autoremove: true
         purge: true
 
-    - name: Update & start recyclarr docker containers
+    - name: Update & start recyclarr docker container
       become: true
       community.docker.docker_compose_v2:
         project_name: "{{ docker_project_name }}"

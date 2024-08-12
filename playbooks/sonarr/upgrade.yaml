@@ -43,8 +43,8 @@
     proxmox_api_token_id: "{{ proxmox_api_token_id }}"
     proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
 
-    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (sonarr_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_vmid: "{{ proxmox_vmid }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-sonarr' + (sonarr_image_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of sonarr {{ sonarr_image_version }} before upgrading to {{ sonarr_latest_version }}"
     proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
     proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
@@ -63,9 +63,14 @@
     - name: Update & start Sonarr docker containers
       become: true
       community.docker.docker_compose_v2:
-        project_name: sonarr
-        project_src: /opt/sonarr
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         remove_orphans: true
+        services:
+          - "{{ sonarr_docker_name }}"
+          - "{{ sonarr_docker_name }}4k"
+          - "{{ sonarr_docker_name }}-anime"
+          - postgres
         pull: always
         state: present
 
