@@ -18,7 +18,7 @@ services:
         condition: service_healthy
 
   sonarr4k:
-    container_name: sonarr4k
+    container_name: {{ sonarr_docker_name }}4k
     image: lscr.io/linuxserver/sonarr:latest
     environment:
       PUID: {{ nfs_user_id }}
@@ -36,7 +36,7 @@ services:
         condition: service_healthy
 
   sonarr-anime:
-    container_name: sonarr-anime
+    container_name: {{ sonarr_docker_name }}-anime
     image: lscr.io/linuxserver/sonarr:latest
     environment:
       PUID: {{ nfs_user_id }}
@@ -54,7 +54,7 @@ services:
         condition: service_healthy
 
   recyclarr:
-    container_name: recyclarr
+    container_name: {{ recyclarr_docker_name }}
     image: ghcr.io/recyclarr/recyclarr:latest
     environment:
       TZ: {{ debian_datetime_timezone }}

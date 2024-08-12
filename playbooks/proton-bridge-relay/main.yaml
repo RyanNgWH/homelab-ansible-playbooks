@@ -4,7 +4,7 @@
 # Manage the Proton Bridge relay.
 ---
 - name: Install and configure the Proton Bridge relay
-  hosts: proton-bridge-relay
+  hosts: proton_bridge_relay
 
   pre_tasks:
     - name: Include playbook configuration

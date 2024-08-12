@@ -46,12 +46,3 @@ radarr_media_group_name: media
 radarr_media_group_gid: 200
 
 radarr_docker_name: radarr
-recyclarr_docker_name: recyclarr
-
-## Proxmox variables
-proxmox_api_host: server.tinynamoo.com
-proxmox_api_user: ansible@pam
-
-proxmox_snapshot_vmid: 17115
-proxmox_snapshot_retention: 3
-proxmox_snapshot_include_ram: false

@@ -49,7 +49,7 @@ paperless:
 piped:
   hosts: tube.tinynamoo.com
 
-proton-bridge-relay:
+proton_bridge_relay:
   hosts: smtp.tinynamoo.com
 
 prowlarr:
@@ -115,7 +115,45 @@ debian:
     ntfy:
     paperless:
     piped:
-    proton-bridge-relay:
+    proton_bridge_relay:
+    proxmox:
+    prowlarr:
+    qbittorrent:
+    radarr:
+    scrutiny:
+    send:
+    sonarr:
+    stirling_pdf:
+    uptime_kuma:
+    vikunja:
+    wallos:
+    wikijs:
+    your_spotify:
+
+recyclarr:
+  children:
+    radarr:
+    sonarr:
+
+sierra_proxmox:
+  children:
+    ansible_lxc:
+    ansible_vm:
+    bazarr:
+    firefly:
+    gamevault:
+    gitea:
+    homarr:
+    immich:
+    it_tools:
+    jellyfin:
+    jellyseerr:
+    miniflux:
+    nextcloud:
+    ntfy:
+    paperless:
+    piped:
+    proton_bridge_relay:
     proxmox:
     prowlarr:
     qbittorrent:

@@ -1,0 +1,12 @@
+# @format
+
+# Recyclarr
+# Configure & manage Recyclarr trash guide sync service.
+---
+- name: Configure & manage Recyclarr trash guide sync service
+  hosts: recyclarr
+
+  tasks:
+    - name: Upgrade Recyclarr trash guide sync services
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade

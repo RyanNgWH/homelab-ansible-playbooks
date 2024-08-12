@@ -46,11 +46,3 @@ sonarr_media_group_name: media
 sonarr_media_group_gid: 200
 
 sonarr_docker_name: sonarr
-
-## Proxmox variables
-proxmox_api_host: server.tinynamoo.com
-proxmox_api_user: ansible@pam
-
-proxmox_snapshot_vmid: 17113
-proxmox_snapshot_retention: 3
-proxmox_snapshot_include_ram: false

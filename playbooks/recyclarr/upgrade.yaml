@@ -1,0 +1,80 @@
+# @format
+
+# Recyclarr
+# Upgrade Recyclarr trash guide sync service.
+---
+- name: Check if recyclarr requires update
+  become: true
+  block:
+    - name: Get current recyclarr container version
+      ansible.builtin.import_role:
+        name: docker
+        public: false
+      vars:
+        task_list: get_container_image_version
+        docker_container_name: "{{ recyclarr_docker_name }}"
+        docker_fact_name: recyclarr
+
+    - name: Get latest recyclarr container release from github
+      community.general.github_release:
+        user: recyclarr
+        repo: recyclarr
+        action: latest_release
+      delegate_to: localhost
+      register: recyclarr_github_release
+
+    - name: Extract latest recyclarr container version & fix current version formatting
+      ansible.builtin.set_fact:
+        recyclarr_image_version: "v{{ recyclarr_image_version }}"
+        recyclarr_latest_version: "{{ recyclarr_github_release.tag }}"
+
+    - name: Stop play if recyclarr has no updates
+      ansible.builtin.meta: end_play
+      when: recyclarr_image_version == recyclarr_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    task_list: snapshot
+
+    proxmox_api_host: "{{ proxmox_api_host }}"
+    proxmox_api_user: "{{ proxmox_api_user }}"
+    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
+    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    proxmox_snapshot_vmid: "{{ proxmox_vmid }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-recyclarr' + (recyclarr_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of recyclarr {{ recyclarr_image_version }} before upgrading to {{ recyclarr_latest_version }}"
+    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
+    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
+  delegate_to: localhost
+
+- name: Upgrade recyclarr trash guide sync service
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Update & start recyclarr docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        services: "{{ recyclarr_docker_name }}"
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true
