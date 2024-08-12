@@ -1,6 +1,6 @@
 services:
   radarr:
-    container_name: radarr
+    container_name: {{ radarr_docker_name }}
     image: lscr.io/linuxserver/radarr:latest
     environment:
       PUID: {{ nfs_user_id }}
@@ -18,7 +18,7 @@ services:
         condition: service_healthy
 
   radarr4k:
-    container_name: radarr4k
+    container_name: {{ radarr_docker_name }}4k
     image: lscr.io/linuxserver/radarr:latest
     environment:
       PUID: {{ nfs_user_id }}
@@ -36,7 +36,7 @@ services:
         condition: service_healthy
 
   radarr-anime:
-    container_name: radarr-anime
+    container_name: {{ radarr_docker_name }}-anime
     image: lscr.io/linuxserver/radarr:latest
     environment:
       PUID: {{ nfs_user_id }}
@@ -54,7 +54,7 @@ services:
         condition: service_healthy
 
   recyclarr:
-    container_name: recyclarr
+    container_name: {{ recyclarr_docker_name }}
     image: ghcr.io/recyclarr/recyclarr:latest
     environment:
       TZ: {{ debian_datetime_timezone }}

@@ -3,6 +3,60 @@
 # Radarr
 # Upgrade Radarr movies management server
 ---
+- name: Get application current and latest versions
+  ansible.builtin.include_tasks: get-versions.yaml
+  loop:
+    - name: radarr
+      docker_name: "{{ radarr_docker_name }}"
+      docker_user: linuxserver
+      docker_repo: docker-radarr
+    - name: recyclarr
+      docker_name: "{{ recyclarr_docker_name }}"
+      docker_user: recyclarr
+      docker_repo: recyclarr
+
+- name: Check if application have updates
+  become: true
+  block:
+    - name: Fix application docker image versionings in fact
+      ansible.builtin.set_fact:
+        recyclarr_image_version: "v{{ recyclarr_image_version }}"
+
+    - name: Check if applications have updates
+      ansible.builtin.set_fact:
+        radarr_has_updates: "{{ radarr_image_version != radarr_latest_version }}"
+        recyclarr_has_updates: "{{ recyclarr_image_version != recyclarr_latest_version }}"
+
+    - name: Stop play if applications have no updates
+      ansible.builtin.meta: end_play
+      when: "(not radarr_has_updates) and (not recyclarr_has_updates)"
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    task_list: snapshot
+
+    proxmox_api_host: "{{ proxmox_api_host }}"
+    proxmox_api_user: "{{ proxmox_api_user }}"
+    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
+    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
+
+    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (radarr_image_version | regex_replace('[.|-]', '_')) + '-' + (recyclarr_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_description: |
+      [Ansible] Working snapshot of radarr & recyclarr
+
+      Current:
+        radarr: {{ radarr_image_version }}
+        recyclarr: {{ recyclarr_image_version }}
+
+      New:
+        radarr: {{ radarr_latest_version }}
+        recyclarr: {{ recyclarr_latest_version }}
+  delegate_to: localhost
+
 - name: Upgrade Radarr movies management server
   become: true
   block:
@@ -13,14 +67,24 @@
         autoremove: true
         purge: true
 
-    - name: Update & start Radarr docker containers
+    - name: Update & start docker containers
       become: true
       community.docker.docker_compose_v2:
         project_name: radarr
         project_src: /opt/radarr
         remove_orphans: true
+        services: "{{ item.services }}"
         pull: always
         state: present
+      loop:
+        - services:
+            - "{{ radarr_docker_name }}"
+            - "{{ radarr_docker_name }}4k"
+            - "{{ radarr_docker_name }}-anime"
+            - postgres
+          condition: "{{ radarr_has_updates }}"
+        - services: "{{ recyclarr_docker_name }}"
+          condition: "{{ radarr_has_updates }}"
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
