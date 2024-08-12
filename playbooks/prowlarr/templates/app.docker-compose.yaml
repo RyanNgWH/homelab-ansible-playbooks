@@ -1,7 +1,7 @@
 ---
 services:
   prowlarr:
-    container_name: prowlarr
+    container_name: {{ prowlarr_docker_name }}
     image: lscr.io/linuxserver/prowlarr:latest
     environment:
       PUID: {{ nfs_user_id }}
@@ -18,10 +18,10 @@ services:
         condition: service_healthy
 
   flaresolverr:
-    container_name: flaresolverr
+    container_name: {{ flaresolverr_docker_name }}
     image: ghcr.io/flaresolverr/flaresolverr:latest
     environment:
-      TZ: Asia/Singapore
+      TZ: {{ debian_datetime_timezone }}
     restart: unless-stopped
 
   postgres:

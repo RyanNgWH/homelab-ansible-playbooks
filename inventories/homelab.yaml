@@ -118,6 +118,7 @@ nfs:
     ntfy:
     paperless:
     piped:
+    prowlarr:
     radarr:
     sonarr:
 
@@ -137,6 +138,7 @@ nginx:
     ntfy:
     paperless:
     piped:
+    prowlarr:
     radarr:
     sonarr:
 

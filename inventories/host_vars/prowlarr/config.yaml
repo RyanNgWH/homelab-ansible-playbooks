@@ -3,26 +3,19 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.17.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: pearl
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEDnben/dwVnDdzc0hJqGpZsEbb9r4HyFTajVIY/Ig1o pearl@indexer.media.tinynamoo.me"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Pearl] Prowlarr/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Pearl] Prowlarr/user.keytab"
 
 # NFS
 nfs_user_name: prowlarr
 nfs_user_id: 286
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   marilyn-configs-prowlarr:
     mount_share: marilyn-configs-prowlarr
@@ -36,18 +29,18 @@ nginx_conf_files:
   - filename: prowlarr.conf
     path: templates/nginx.prowlarr.conf
 
-certbot_admin_email: admin@tinynamoo.com
-
 ## Prowlarr variables
 prowlarr_media_group_name: media
 prowlarr_media_group_gid: 200
 
 prowlarr_docker_name: prowlarr
+flaresolverr_docker_name: flaresolverr
 
 ## Proxmox variables
-proxmox_api_host: server.tinynamoo.com
-proxmox_api_user: ansible@pam
-
 proxmox_snapshot_vmid: 17114
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: prowlarr
+docker_project_src: /opt/prowlarr
