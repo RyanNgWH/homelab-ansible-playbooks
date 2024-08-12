@@ -1,8 +1,8 @@
 services:
   firefly:
+    container_name: {{ firefly_docker_name }}
     image: fireflyiii/core:latest
     hostname: firefly
-    container_name: firefly
     restart: unless-stopped
     volumes:
       - ./uploads:/var/www/html/storage/upload

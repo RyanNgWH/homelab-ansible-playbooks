@@ -16,8 +16,8 @@
     - name: Update & start firefly docker containers
       become: true
       community.docker.docker_compose_v2:
-        project_name: firefly
-        project_src: /opt/firefly
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         remove_orphans: true
         pull: always
         state: present

@@ -106,12 +106,14 @@ debian:
 nfs:
   hosts:
     bazarr:
+    firefly:
     radarr:
     sonarr:
 
 nginx:
   hosts:
     bazarr:
+    firefly:
     radarr:
     sonarr:
 

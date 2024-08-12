@@ -2,7 +2,7 @@
 Description=Checks if firefly uploads directory have changed
 
 [Path]
-PathChanged=/opt/firefly/uploads
+PathChanged={{ docker_project_src }}/uploads
 
 [Install]
 WantedBy=default.target
