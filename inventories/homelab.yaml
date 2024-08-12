@@ -116,6 +116,7 @@ nfs:
     miniflux:
     nextcloud:
     ntfy:
+    paperless:
     radarr:
     sonarr:
 
@@ -133,6 +134,7 @@ nginx:
     miniflux:
     nextcloud:
     ntfy:
+    paperless:
     radarr:
     sonarr:
 

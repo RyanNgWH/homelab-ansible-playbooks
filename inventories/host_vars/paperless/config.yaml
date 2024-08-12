@@ -3,26 +3,19 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.20.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: alyssa
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIvqIroYxmHf2FlFtDBRACUkmCT+LfU774UA7+D37Xf3 alyssa@archive.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Alyssa] Paperless/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Alyssa] Paperless/user.keytab"
 
 # NFS
 nfs_user_name: paperless
 nfs_user_id: 130
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   alyssa:
     mount_share: alyssa
@@ -33,16 +26,15 @@ nginx_conf_files:
   - filename: paperless.conf
     path: templates/nginx.paperless.conf
 
-certbot_admin_email: admin@tinynamoo.com
-
 ## Paperless variables
 paperless_docker_name: paperless
 gotenberg_docker_name: gotenberg
 
 ## Proxmox variables
-proxmox_api_host: server.tinynamoo.com
-proxmox_api_user: ansible@pam
-
 proxmox_snapshot_vmid: 20130
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: paperless
+docker_project_src: /opt/paperless
