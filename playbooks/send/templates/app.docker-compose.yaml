@@ -1,6 +1,6 @@
 services:
   send:
-    container_name: send
+    container_name: {{ send_docker_name }}
     image: registry.gitlab.com/timvisee/send:latest
     restart: unless-stopped
     ports:
@@ -8,7 +8,7 @@ services:
     volumes:
       - {{ nfs_mounts.stevie.mount_point }}:/uploads
     environment:
-      - BASE_URL=https://{{ inventory_hostname }}
+      - BASE_URL=https://{{ ansible_host }}
 
       # For local uploads storage
       - FILE_DIR=/uploads
@@ -24,7 +24,7 @@ services:
 
   redis:
     container_name: redis
-    image: 'redis:alpine'
+    image: redis:alpine
     restart: unless-stopped
     volumes:
       - send-redis:/data
