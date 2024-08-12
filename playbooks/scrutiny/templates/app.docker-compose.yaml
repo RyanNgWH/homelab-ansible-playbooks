@@ -13,7 +13,7 @@ services:
       timeout: 20s
 
   scrutiny:
-    container_name: scrutiny
+    container_name: {{ scrutiny_docker_name }}
     image: ghcr.io/analogj/scrutiny:master-web
     volumes:
       - ./config:/opt/scrutiny/config

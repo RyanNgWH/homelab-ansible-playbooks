@@ -121,6 +121,7 @@ nfs:
     prowlarr:
     qbittorrent:
     radarr:
+    scrutiny:
     sonarr:
 
 nginx:
@@ -142,6 +143,7 @@ nginx:
     prowlarr:
     qbittorrent:
     radarr:
+    scrutiny:
     sonarr:
 
 recyclarr:
