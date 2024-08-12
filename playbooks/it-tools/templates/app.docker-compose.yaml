@@ -2,8 +2,8 @@
 ---
 services:
   it-tools:
+    container_name: {{ it_tools_docker_name }}
     image: "ghcr.io/corentinth/it-tools:latest"
     ports:
       - "8080:80"
     restart: unless-stopped
-    container_name: it-tools

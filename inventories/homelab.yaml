@@ -122,6 +122,7 @@ nginx:
     gitea:
     homarr:
     immich:
+    it_tools:
     radarr:
     sonarr:
 

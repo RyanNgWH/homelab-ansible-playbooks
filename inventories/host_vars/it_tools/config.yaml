@@ -3,12 +3,9 @@
 ## Debian-12-setup variables
 # Date time configurations
 debian_datetime_ntp_server: 172.28.20.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User configurations
 debian_user_name: jamie
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBgXD2HjtRSUZwgKwesZZe3BWRrGFUVpuNL/k3cWgw5O jamie@tools.tinynamoo.com"
 
 ## NGINX variables
@@ -16,4 +13,9 @@ nginx_conf_files:
   - filename: it-tools.conf
     path: templates/nginx.it-tools.conf
 
-certbot_admin_email: admin@tinynamoo.com
+## IT-tools variables
+it_tools_docker_name: it-tools
+
+## Docker variables
+docker_project_name: it-tools
+docker_project_src: /opt/it-tools
