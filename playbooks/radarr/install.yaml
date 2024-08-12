@@ -52,7 +52,7 @@
     task_list:
       - nginx
     nginx_tls_domains:
-      - "{{ inventory_hostname }}"
+      - "{{ ansible_host }}"
       - "{{ radarr_4k_hostname }}"
       - "{{ radarr_anime_hostname }}"
   ansible.builtin.include_role:

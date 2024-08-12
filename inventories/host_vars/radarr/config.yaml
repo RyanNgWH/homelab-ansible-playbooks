@@ -3,26 +3,19 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.17.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: rainbow
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID6UG07TkAmCqX+P1GaYdY5psF7QWm36LxISOcC/R4Z6 rainbow@movies.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Rainbow] Radarr/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Rainbow] Radarr/user.keytab"
 
 # NFS
 nfs_user_name: radarr
 nfs_user_id: 283
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   marilyn:
     mount_share: marilyn
@@ -37,8 +30,6 @@ nginx_conf_files:
   - filename: radarr-anime.conf
     path: templates/nginx.radarr-anime.conf
 
-certbot_admin_email: admin@tinynamoo.com
-
 ## Radarr variables
 radarr_4k_hostname: movies4k.tinynamoo.com
 radarr_anime_hostname: anime.tinynamoo.com
@@ -46,3 +37,13 @@ radarr_media_group_name: media
 radarr_media_group_gid: 200
 
 radarr_docker_name: radarr
+
+## Proxmox variables
+proxmox_vmid: 17115
+
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: radarr
+docker_project_src: /opt/radarr

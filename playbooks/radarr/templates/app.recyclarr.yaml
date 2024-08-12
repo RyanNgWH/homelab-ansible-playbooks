@@ -10,7 +10,7 @@
 # Instance Definition: https://recyclarr.dev/wiki/yaml/config-reference/basic/
 radarr:
   hd-bluray-web:
-    base_url: https://{{ inventory_hostname }}
+    base_url: https://{{ ansible_host }}
     api_key: {{ radarr_api_key }}
 
     include:
