@@ -3,26 +3,19 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.20.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: hanni
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO0ifHhaZ9X916D5ACA8uRl27HMyHIkcbBbHlfLGC1+b hanni@tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Hanni] Homarr/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Hanni] Homarr/user.keytab"
 
 # NFS
 nfs_user_name: homarr
 nfs_user_id: 140
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   hanni:
     mount_share: hanni
@@ -33,7 +26,11 @@ nginx_conf_files:
   - filename: homarr.conf
     path: templates/nginx.homarr.conf
 
-certbot_admin_email: admin@tinynamoo.com
-
 ## Homarr variables
 jellyseerr_hostname: media.tinynamoo.com
+
+homarr_docker_name: homarr
+
+## Docker variables
+docker_project_name: homarr
+docker_project_src: /opt/homarr

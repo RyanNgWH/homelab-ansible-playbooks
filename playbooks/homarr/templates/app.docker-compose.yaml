@@ -1,9 +1,9 @@
 services:
   homarr:
-    container_name: homarr
+    container_name: {{ homarr_docker_name }}
     image: ghcr.io/ajnart/homarr:latest
     environment:
-      BASE_URL: {{ inventory_hostname }}
+      BASE_URL: {{ ansible_host }}
       TZ: Asia/Singapore
       DISABLE_ANALYTICS: true
     volumes:
