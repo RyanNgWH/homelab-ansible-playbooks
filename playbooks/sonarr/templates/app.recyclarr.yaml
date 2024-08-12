@@ -11,7 +11,7 @@
 # Instance Definition: https://recyclarr.dev/wiki/yaml/config-reference/basic/
 sonarr:
   web-1080p-v4:
-    base_url: https://{{ inventory_hostname }}
+    base_url: https://{{ ansible_host }}
     api_key: {{ sonarr_api_key }}
 
     include:
