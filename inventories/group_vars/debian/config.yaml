@@ -1,0 +1,9 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_timezone: Asia/Singapore
+debian_datetime_hardware_clock: UTC
+
+# User
+debian_user_shell: /bin/bash

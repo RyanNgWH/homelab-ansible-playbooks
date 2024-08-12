@@ -1,104 +1,77 @@
 # @format
 ---
 # Hosts
-ansible_lxc:
-  hosts: ansible-lxc.tinynamoo.com
-
-ansible_vm:
-  hosts: ansible.tinynamoo.com
-
-bazarr:
-  hosts: subtitles.tinynamoo.com
-
-firefly:
-  hosts: finance.tinynamoo.com
-
-gamevault:
-  hosts: games.tinynamoo.com
-
-gitea:
-  hosts: git.tinynamoo.com
-
-homarr:
-  hosts: tinynamoo.com
-
-immich:
-  hosts: photos.tinynamoo.com
-
-it_tools:
-  hosts: tools.tinynamoo.com
-
-jellyfin:
-  hosts: filme.tinynamoo.com
-
-jellyseerr:
-  hosts: media.tinynamoo.com
-
-miniflux:
-  hosts: feeds.tinynamoo.com
-
-nextcloud:
-  hosts: cloud.tinynamoo.com
-
-ntfy:
-  hosts: push.tinynamoo.com
-
-paperless:
-  hosts: archive.tinynamoo.com
-
-piped:
-  hosts: tube.tinynamoo.com
-
-proton_bridge_relay:
-  hosts: smtp.tinynamoo.com
-
-prowlarr:
-  hosts: indexers.tinynamoo.com
-
-proxmox:
-  hosts: server.tinynamoo.com
-
-qbittorrent:
-  hosts: download.tinynamoo.com
-
-radarr:
-  hosts: movies.tinynamoo.com
-
-scrutiny:
-  hosts: smart.tinynamoo.com
-
-send:
-  hosts: send.tinynamoo.com
-
-sonarr:
-  hosts: tv.tinynamoo.com
-
-stirling_pdf:
-  hosts: pdf.tinynamoo.com
-
-uptime_kuma:
-  hosts: status.tinynamoo.com
-
-vikunja:
-  hosts: tasks.tinynamoo.com
-
-wallos:
-  hosts: subs.tinynamoo.com
-
-wikijs:
-  hosts: wiki.tinynamoo.com
-
-your_spotify:
-  hosts: spotify.tinynamoo.com
+all:
+  hosts:
+    sonarr:
+      ansible_host: tv.tinynamoo.com
+    ansible_lxc:
+      ansible_host: ansible-lxc.tinynamoo.com
+    ansible_vm:
+      ansible_host: ansible.tinynamoo.com
+    bazarr:
+      ansible_host: subtitles.tinynamoo.com
+    firefly:
+      ansible_host: finance.tinynamoo.com
+    gamevault:
+      ansible_host: games.tinynamoo.com
+    gitea:
+      ansible_host: git.tinynamoo.com
+    homarr:
+      ansible_host: tinynamoo.com
+    immich:
+      ansible_host: photos.tinynamoo.com
+    it_tools:
+      ansible_host: tools.tinynamoo.com
+    jellyfin:
+      ansible_host: filme.tinynamoo.com
+    jellyseerr:
+      ansible_host: media.tinynamoo.com
+    miniflux:
+      ansible_host: feeds.tinynamoo.com
+    nextcloud:
+      ansible_host: cloud.tinynamoo.com
+    ntfy:
+      ansible_host: push.tinynamoo.com
+    paperless:
+      ansible_host: archive.tinynamoo.com
+    piped:
+      ansible_host: tube.tinynamoo.com
+    proton_bridge_relay:
+      ansible_host: smtp.tinynamoo.com
+    prowlarr:
+      ansible_host: indexers.tinynamoo.com
+    proxmox:
+      ansible_host: server.tinynamoo.com
+    qbittorrent:
+      ansible_host: download.tinynamoo.com
+    radarr:
+      ansible_host: movies.tinynamoo.com
+    scrutiny:
+      ansible_host: smart.tinynamoo.com
+    send:
+      ansible_host: send.tinynamoo.com
+    stirling_pdf:
+      ansible_host: pdf.tinynamoo.com
+    uptime_kuma:
+      ansible_host: status.tinynamoo.com
+    vikunja:
+      ansible_host: tasks.tinynamoo.com
+    wallos:
+      ansible_host: subs.tinynamoo.com
+    wikijs:
+      ansible_host: wiki.tinynamoo.com
+    your_spotify:
+      ansible_host: spotify.tinynamoo.com
 
 # Groups
 ansible:
-  children:
+  hosts:
     ansible_vm:
     ansible_lxc:
 
 debian:
-  children:
+  hosts:
     ansible_lxc:
     ansible_vm:
     bazarr:
@@ -130,13 +103,21 @@ debian:
     wikijs:
     your_spotify:
 
+nfs:
+  hosts:
+    sonarr:
+
+nginx:
+  hosts:
+    sonarr:
+
 recyclarr:
-  children:
+  hosts:
     radarr:
     sonarr:
 
 sierra_proxmox:
-  children:
+  hosts:
     ansible_lxc:
     ansible_vm:
     bazarr:

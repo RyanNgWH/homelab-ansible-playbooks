@@ -1,0 +1,4 @@
+# @format
+---
+## NGINX variables
+certbot_admin_email: admin@tinynamoo.com
