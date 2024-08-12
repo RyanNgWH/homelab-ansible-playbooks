@@ -114,6 +114,7 @@ nfs:
     jellyfin:
     jellyseerr:
     miniflux:
+    nextcloud:
     radarr:
     sonarr:
 
@@ -129,6 +130,7 @@ nginx:
     jellyfin:
     jellyseerr:
     miniflux:
+    nextcloud:
     radarr:
     sonarr:
 

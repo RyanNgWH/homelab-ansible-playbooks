@@ -3,26 +3,19 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.14.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: wendy
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOap5QSvaoLanWbb/HtkCZCrsUc5V4AX/0fzat6MtoNP wendy@cloud.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Wendy] Nextcloud/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Wendy] Nextcloud/user.keytab"
 
 # NFS
 nfs_user_name: nextcloud
 nfs_user_id: 233
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   wendy:
     mount_share: wendy
@@ -37,8 +30,6 @@ nginx_conf_files:
   - filename: collabora.conf
     path: templates/nginx.collabora.conf
 
-certbot_admin_email: admin@tinynamoo.com
-
 ## Nextcloud variables
 nextcloud_smtp_host: smtp.tinynamoo.com
 nextcloud_smtp_port: "25"
@@ -47,3 +38,9 @@ nextcloud_smtp_from_address: sunny@mail.tinynamoo.com
 nextcloud_smtp_mail_domain: tinynamoo.com
 
 nextcloud_collabora_hostname: office.tinynamoo.com
+
+nextcloud_docker_name: nextcloud
+
+## Docker variables
+docker_project_name: nextcloud
+docker_project_src: /opt/nextcloud

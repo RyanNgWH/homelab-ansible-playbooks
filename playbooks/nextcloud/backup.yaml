@@ -14,13 +14,13 @@
 
     - name: Ensure nextcloud docker containers are stopped
       community.docker.docker_compose_v2:
-        project_name: nextcloud
-        project_src: /opt/nextcloud
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: absent
 
     - name: Sync directories from local application directory to NFS server
       ansible.posix.synchronize:
-        src: /opt/nextcloud/{{ item.src }}
+        src: "{{ docker_project_src }}/{{ item.src }}"
         dest: "{{ nfs_mounts.wendy.mount_point }}/{{ item.dest }}"
         owner: false
         group: false
@@ -33,7 +33,7 @@
 
     - name: Start nextcloud docker containers
       community.docker.docker_compose_v2:
-        project_name: nextcloud
-        project_src: /opt/nextcloud
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         state: present
       when: "'backup' in ansible_run_tags"

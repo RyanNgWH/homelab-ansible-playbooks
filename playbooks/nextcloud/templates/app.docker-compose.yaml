@@ -1,6 +1,6 @@
 services:
   nextcloud:
-    container_name: nextcloud
+    container_name: {{ nextcloud_docker_name }}
     image: nextcloud:fpm
     environment:
       POSTGRES_HOST: postgres
@@ -11,7 +11,7 @@ services:
       REDIS_HOST: redis
 
       NEXTCLOUD_DATA_DIR: /srv/nextcloud/data
-      NEXTCLOUD_TRUSTED_DOMAINS: {{ inventory_hostname }}
+      NEXTCLOUD_TRUSTED_DOMAINS: {{ ansible_host }}
 
       SMTP_HOST: {{ nextcloud_smtp_host }}
       SMTP_PORT: {{ nextcloud_smtp_port }}
@@ -85,9 +85,9 @@ services:
 
   collabora:
     container_name: collabora
-    image: collabora/code
+    image: collabora/code:latest
     environment:
-      aliasgroup1: https://{{ inventory_hostname }}
+      aliasgroup1: https://{{ ansible_host }}
       username: {{ nextcloud_collabora_admin_username }}
       password: {{ nextcloud_collabora_admin_pass }}
     ports:
