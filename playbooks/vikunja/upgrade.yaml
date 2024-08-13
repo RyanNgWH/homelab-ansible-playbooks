@@ -3,6 +3,31 @@
 # Vikunja
 # Upgrade Vikunja tasks mangement server
 ---
+# - name: Check if vikunja requires update
+#   become: true
+#   block:
+#     - name: Get current vikunja container version
+#       ansible.builtin.import_role:
+#         name: docker
+#         public: false
+#       vars:
+#         task_list: get_container_image_version
+#         docker_container_name: "{{ vikunja_docker_name }}"
+#         docker_fact_name: vikunja
+
+#     - name: Get all vikunja releases from gitea
+#       ansible.builtin.uri:
+#         url: https://kolaente.dev/api/v1/repos/vikunja/vikunja/releases
+#       register: vikunja_releases
+
+#     - name: Extract latest vikunja version
+#       ansible.builtin.set_fact:
+#         vikunja_latest_version: "{{ vikunja_releases.json[0].tag_name }}"
+
+#     - name: Stop play if sonarr has no updates
+#       ansible.builtin.meta: end_play
+#       when: sonarr_image_version == sonarr_latest_version
+
 - name: Upgrade Vikunja tasks management server
   become: true
   block:
@@ -16,8 +41,8 @@
     - name: Update & start Vikunja docker containers
       become: true
       community.docker.docker_compose_v2:
-        project_name: vikunja
-        project_src: /opt/vikunja
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         remove_orphans: true
         pull: always
         state: present

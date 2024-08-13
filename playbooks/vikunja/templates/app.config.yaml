@@ -1,8 +1,8 @@
 ---
 service:
-  publicurl: https://{{ inventory_hostname }}
+  publicurl: https://{{ ansible_host }}
   enableregistration: true
-  timezone: Asia/Singapore
+  timezone: {{ debian_datetime_timezone }}
 mailer:
   enabled: true
   host: {{ vikunja_mail_server }}

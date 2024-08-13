@@ -1,6 +1,6 @@
 services:
   vikunja:
-    container_name: vikunja
+    container_name: {{ vikunja_docker_name }}
     image: vikunja/vikunja
     environment:
       VIKUNJA_DATABASE_HOST: db
@@ -8,9 +8,9 @@ services:
       VIKUNJA_DATABASE_TYPE: postgres
       VIKUNJA_DATABASE_USER: vikunja
       VIKUNJA_DATABASE_DATABASE: vikunja
-      VIKUNJA_SERVICE_JWTSECRET: {{ vikunja_service_jwtsecret }}
+      VIKUNJA_SERVICE_JWTSECRET: "{{ vikunja_service_jwtsecret }}"
       VIKUNJA_REDIS_ENABLED: 1
-      VIKUNJA_REDIS_HOST: 'redis:6379'
+      VIKUNJA_REDIS_HOST: redis:6379
       VIKUNJA_CACHE_ENABLED: 1
       VIKUNJA_CACHE_TYPE: 1
     ports:
@@ -35,12 +35,12 @@ services:
       POSTGRES_DB: vikunja
     volumes:
       - {{ nfs_mounts.tiffany.mount_point }}/db:/var/lib/postgresql/data
-    restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER"]
+      test: ["CMD", "pg_isready", "-U", "vikunja"]
       interval: 2s
-      timeout: 10s
+      timeout: 20s
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
 
   redis:
     container_name: redis

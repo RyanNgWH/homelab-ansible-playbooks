@@ -125,6 +125,7 @@ nfs:
     send:
     sonarr:
     uptime_kuma:
+    vikunja:
 
 nginx:
   hosts:
@@ -150,6 +151,7 @@ nginx:
     sonarr:
     stirling_pdf:
     uptime_kuma:
+    vikunja:
 
 recyclarr:
   hosts:
