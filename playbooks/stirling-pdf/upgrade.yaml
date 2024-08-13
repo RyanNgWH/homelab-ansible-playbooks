@@ -25,7 +25,7 @@
 
     - name: Extract latest stirling-pdf container version & fix image versioning
       ansible.builtin.set_fact:
-        stirling_pdf_image_version: "v{{ stirling_pdf_image_version}}"
+        stirling_pdf_image_version: "v{{ stirling_pdf_image_version }}"
         stirling_pdf_latest_version: "{{ stirling_pdf_github_release.tag }}"
 
     - name: Stop play if stirling-pdf has no updates
@@ -37,7 +37,7 @@
     name: proxmox
     public: false
   vars:
-    task_list: snapshot
+    proxmox_task_list: snapshot
     proxmox_snapshot_name: "{{ 'pre-upgrade-' + (stirling_pdf_image_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of stirling-pdf {{ stirling_pdf_image_version }} before upgrading to {{ stirling_pdf_latest_version }}"
   delegate_to: localhost

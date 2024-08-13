@@ -30,7 +30,7 @@
     name: proxmox
     public: false
   vars:
-    task_list: snapshot
+    proxmox_task_list: snapshot
     proxmox_snapshot_name: "{{ 'pre-upgrade-' + (jellyfin_image_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of jellyfin {{ jellyfin_image_version }} - upgrading to jellyfin {{ jellyfin_latest_version }}"
   delegate_to: localhost

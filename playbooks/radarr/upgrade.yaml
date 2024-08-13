@@ -36,7 +36,7 @@
     name: proxmox
     public: false
   vars:
-    task_list: snapshot
+    proxmox_task_list: snapshot
     proxmox_snapshot_name: "{{ 'pre-upgrade-radarr' + (radarr_image_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of radarr {{ radarr_image_version }} before upgrading to {{ radarr_latest_version }}"
   delegate_to: localhost

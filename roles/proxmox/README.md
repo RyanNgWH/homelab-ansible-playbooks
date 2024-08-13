@@ -25,7 +25,7 @@ The following requirements are needed on the host that executes this role
 
 | Variable                   | Description              | Default | Example                                |
 | -------------------------- | ------------------------ | ------- | -------------------------------------- |
-| `task_list`                | List of tasks to execute | `[]`    | `[ "snapshot" ]`                       |
+| `proxmox_task_list`        | List of tasks to execute | `[]`    | `[ "snapshot" ]`                       |
 | `proxmox_api_host`         | Proxmox host             |         | `server.tinynamoo.com`                 |
 | `proxmox_api_port`         | Proxmox api port         | `443`   | `443`                                  |
 | `proxmox_api_user`         | User on Proxmox host     |         | `ansible`                              |
@@ -51,7 +51,7 @@ This example takes a snapshot of VM (including RAM) `20100` and keeps the latest
 ```
 - hosts: proxmox
   vars:
-    task_list:
+    proxmox_task_list:
       - snapshot
     proxmox_api_host: server.tinynamoo.com
     proxmox_api_user: ansible
