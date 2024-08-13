@@ -107,16 +107,12 @@
         line: "{{ item.line }}"
         state: present
       loop:
-        - {
-            regex: "deb .*debian {{ ansible_distribution_release }} .*$",
-            line: "deb https://deb.debian.org/debian {{ ansible_distribution_release }} main contrib non-free non-free-firmware",
-          }
-        - {
-            regex: "deb-src .*debian {{ ansible_distribution_release }} .*$",
-            line: "deb-src https://deb.debian.org/debian {{ ansible_distribution_release }} main contrib non-free non-free-firmware",
-          }
+        - regex: "deb .*debian {{ ansible_distribution_release }} .*$"
+          line: "deb https://deb.debian.org/debian {{ ansible_distribution_release }} main contrib non-free non-free-firmware"
+        - regex: "deb-src .*debian {{ ansible_distribution_release }} .*$"
+          line: "deb-src https://deb.debian.org/debian {{ ansible_distribution_release }} main contrib non-free non-free-firmware"
 
-    - name: Install NVIDIA drivers & firmware
+    - name: Install NVIDIA drivers & firmware # noqa: ignore-errors
       ansible.builtin.apt:
         name:
           - nvidia-driver

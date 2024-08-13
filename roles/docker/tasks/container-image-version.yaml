@@ -1,17 +1,15 @@
 # @format
 ---
-- name: Get {{ docker_container_name }} docker container information
+- name: Get docker container information - {{ docker_container_name }}
   community.docker.docker_container_info:
     name: "{{ docker_container_name }}"
   register: docker_container
 
-- name: Ensure {{ docker_container_name }} docker container is present
+- name: Ensure docker container is present - {{ docker_container_name }}
   ansible.builtin.assert:
     that: docker_container.exists
     fail_msg: "Docker container '{{ docker_container_name }}' does not exist"
 
-- name: Extract {{ docker_container_name }} docker container image version
+- name: Extract docker container image version - {{ docker_container_name }}
   ansible.builtin.set_fact:
-    {
-      "{{ docker_fact_name }}_image_version": "{{ docker_container.container.Config.Labels['org.opencontainers.image.version'] }}",
-    }
+    "{{ docker_fact_name }}_image_version": "{{ docker_container.container.Config.Labels['org.opencontainers.image.version'] }}" # noqa: var-naming[no-jinja]

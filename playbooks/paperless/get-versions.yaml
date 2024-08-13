@@ -5,7 +5,7 @@
 ---
 - name: Get application current and latest versions
   block:
-    - name: Get current {{ item.docker_name }} docker container version
+    - name: Get current docker container version - {{ item.docker_name }}
       become: true
       ansible.builtin.import_role:
         name: docker
@@ -15,7 +15,7 @@
         docker_container_name: "{{ item.docker_name }}"
         docker_fact_name: "{{ item.name }}"
 
-    - name: Get latest {{ item.name }} release from github
+    - name: Get latest release from github - {{ item.name }}
       community.general.github_release:
         user: "{{ item.docker_user }}"
         repo: "{{ item.docker_repo }}"
@@ -25,4 +25,4 @@
 
     - name: Extract latest containers versions
       ansible.builtin.set_fact:
-        "{{ item.name }}_latest_version": "{{ github_release.tag }}"
+        "{{ item.name }}_latest_version": "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
