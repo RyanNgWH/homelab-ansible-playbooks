@@ -1,15 +1,15 @@
 services:
   server:
-    container_name: your_spotify_api
+    container_name: {{ yourspotify_api_docker_name }}
     image: yooooomi/your_spotify_server:latest
     environment:
       API_ENDPOINT: https://{{ yourspotify_api_hostname }}
-      CLIENT_ENDPOINT: https://{{ inventory_hostname }}
+      CLIENT_ENDPOINT: https://{{ ansible_host }}
       SPOTIFY_PUBLIC: {{ yourspotify_public_token }}
       SPOTIFY_SECRET: {{ yourspotify_private_secret }}
       MONGO_ENDPOINT: mongodb://mongodb:27017/your_spotify
-      TIMEZONE: Asia/Singapore
-      CORS: https://{{ inventory_hostname }}
+      TIMEZONE: {{ debian_datetime_timezone }}
+      CORS: https://{{ ansible_host }}
     ports:
       - "8080:8080"
     restart: unless-stopped
@@ -20,7 +20,7 @@ services:
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
 
   web:
-    container_name: your_spotify_web
+    container_name: your-spotify-web
     image: yooooomi/your_spotify_client
     environment:
       API_ENDPOINT: https://{{ yourspotify_api_hostname }}

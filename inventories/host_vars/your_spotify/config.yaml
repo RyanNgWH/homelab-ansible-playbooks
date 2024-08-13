@@ -3,34 +3,23 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.20.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: melodee
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAefJPHQibt5vwoyZvRQje/criUNtilTzA5/aQTC5uf7 melodee@spotify.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Melodee] YourSpotify/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Melodee] YourSpotify/user.keytab"
 
 # NFS
 nfs_user_name: yourspotify
 nfs_user_id: 217
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   melodee:
     mount_share: melodee
     mount_point: /srv/melodee
-
-## Your-Spotify variables
-yourspotify_api_hostname: spotifyapi.tinynamoo.com
-yourspotify_public_token: 45603d7c85c34913bd4d2c9788aaa4a7
 
 ## NGINX variables
 nginx_conf_files:
@@ -39,4 +28,12 @@ nginx_conf_files:
   - filename: your-spotify-api.conf
     path: templates/nginx.your-spotify-api.conf
 
-certbot_admin_email: admin@tinynamoo.com
+## Your-Spotify variables
+yourspotify_api_hostname: spotifyapi.tinynamoo.com
+yourspotify_public_token: 45603d7c85c34913bd4d2c9788aaa4a7
+
+yourspotify_api_docker_name: your-spotify-api
+
+## Docker variables
+docker_project_name: your-spotify
+docker_project_src: /opt/your-spotify
