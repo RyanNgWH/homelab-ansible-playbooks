@@ -11,7 +11,7 @@
         name: docker
         public: false
       vars:
-        task_list: get_container_image_version
+        docker_task_list: get_container_image_version
         docker_container_name: "{{ prowlarr_docker_name }}"
         docker_fact_name: prowlarr
 

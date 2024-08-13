@@ -18,9 +18,9 @@ This role utilises modules from the following collections that is not part of `a
 
 ### Required
 
-| Variable    | Description              | Default | Example                             |
-| ----------- | ------------------------ | ------- | ----------------------------------- |
-| `task_list` | List of tasks to execute | `[]`    | `[ "get_container_image_version" ]` |
+| Variable           | Description              | Default | Example                             |
+| ------------------ | ------------------------ | ------- | ----------------------------------- |
+| `docker_task_list` | List of tasks to execute | `[]`    | `[ "get_container_image_version" ]` |
 
 ### Get container image version
 
@@ -42,7 +42,7 @@ This example gets version number of the container image `immich-server`.
 ```
 - hosts: immich
   vars:
-    task_list:
+    docker_task_list:
       - get_container_image_version
     docker_container_name: immich-server
 
