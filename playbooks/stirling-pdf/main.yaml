@@ -19,7 +19,7 @@
     - role: debian-common
       tags: install
       vars:
-        task_list:
+        debian_common_task_list:
           - docker
 
   tasks:

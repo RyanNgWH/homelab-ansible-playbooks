@@ -48,7 +48,7 @@
 
 - name: Install and configure nginx
   vars:
-    task_list:
+    debian_common_task_list:
       - nginx
     nginx_tls_domains:
       - "{{ ansible_host }}"

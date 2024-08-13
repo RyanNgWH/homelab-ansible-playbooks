@@ -1,6 +1,6 @@
 # @format
 ---
-task_list: []
+debian_common_task_list: []
 
 nginx_user: www-data
 nginx_group: www-data

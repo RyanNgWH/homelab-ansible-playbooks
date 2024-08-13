@@ -20,7 +20,7 @@
       tags: install
     - role: debian-common
       vars:
-        task_list:
+        debian_common_task_list:
           - docker
       tags: install
 

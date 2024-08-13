@@ -20,9 +20,9 @@ This role utilises modules from the following collections that is not part of `a
 
 ### Required
 
-| Variable    | Description              | Default | Example               |
-| ----------- | ------------------------ | ------- | --------------------- |
-| `task_list` | List of tasks to execute | `[]`    | `[ "git", "docker" ]` |
+| Variable                  | Description              | Default | Example               |
+| ------------------------- | ------------------------ | ------- | --------------------- |
+| `debian_common_task_list` | List of tasks to execute | `[]`    | `[ "git", "docker" ]` |
 
 ### Nginx
 
@@ -45,7 +45,7 @@ This example installs both git and docker on the remote systems.
 ```
 - hosts: debian
   vars:
-    task_list:
+    debian_common_task_list:
       - git
       - docker
 
@@ -58,7 +58,7 @@ This example installs only docker on the remote systems.
 ```
 - hosts: debian
   vars:
-    task_list:
+    debian_common_task_list:
       - docker
 
   roles:
@@ -72,7 +72,7 @@ This example installs and configures nginx with tls certification
 ```
 - hosts: debian
   vars:
-    task_list:
+    debian_common_task_list:
       - nginx
     nginx_conf_files:
       - filename: site1.conf

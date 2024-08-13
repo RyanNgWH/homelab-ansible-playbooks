@@ -183,12 +183,12 @@
 
 - name: Install and configure nginx
   vars:
-    task_list:
+    debian_common_task_list:
       - nginx
-    nginx_tls_domains:
+    debian_common_nginx_tls_domains:
       - "{{ ansible_host }}"
-    nginx_user: "{{ nfs_user_name }}"
-    nginx_group: "{{ nfs_user_name }}"
+    debian_common_nginx_user: "{{ nfs_user_name }}"
+    debian_common_nginx_group: "{{ nfs_user_name }}"
   ansible.builtin.include_role:
     name: debian-common
 
