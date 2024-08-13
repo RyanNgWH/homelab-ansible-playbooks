@@ -127,6 +127,7 @@ nfs:
     uptime_kuma:
     vikunja:
     wallos:
+    wikijs:
 
 nginx:
   hosts:
@@ -154,6 +155,7 @@ nginx:
     uptime_kuma:
     vikunja:
     wallos:
+    wikijs:
 
 recyclarr:
   hosts:

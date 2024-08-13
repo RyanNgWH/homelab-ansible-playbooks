@@ -3,26 +3,19 @@
 ## Debian-12-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.20.1
-debian_datetime_timezone: Asia/Singapore
-debian_datetime_hardware_clock: UTC
 
 # User
 debian_user_name: winter
-debian_user_shell: /bin/bash
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIK5P943ZRtRZc8vTe15cgSawyUbZZSUk4mb893WYUbiE winter@wiki.tinynamoo.com"
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_realm: TINYNAMOO.COM
-nfs_krb5_kdc: storage.tinynamoo.com
-nfs_krb5_admin_server: storage.tinynamoo.com
 nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Winter] Wikijs/host.keytab"
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Winter] Wikijs/user.keytab"
 
 # NFS
 nfs_user_name: wikijs
 nfs_user_id: 170
-nfs_mount_server: storage.tinynamoo.com
 nfs_mounts:
   winter:
     mount_share: winter
@@ -33,15 +26,14 @@ nginx_conf_files:
   - filename: wikijs.conf
     path: templates/nginx.wikijs.conf
 
-certbot_admin_email: admin@tinynamoo.com
-
 ## Wikijs variables
 wikijs_docker_name: wikijs
 
 ## Proxmox variables
-proxmox_api_host: server.tinynamoo.com
-proxmox_api_user: ansible@pam
-
 proxmox_snapshot_vmid: 20170
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: wikijs
+docker_project_src: /opt/wikijs

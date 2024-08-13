@@ -37,17 +37,8 @@
     public: false
   vars:
     task_list: snapshot
-
-    proxmox_api_host: "{{ proxmox_api_host }}"
-    proxmox_api_user: "{{ proxmox_api_user }}"
-    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
-    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
-
-    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
     proxmox_snapshot_name: "{{ 'pre-upgrade-' + (wikijs_image_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of wikijs {{ wikijs_image_version }} before upgrading to {{ wikijs_latest_version }}"
-    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
-    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
   delegate_to: localhost
 
 - name: Upgrade Wikijs wiki engine server
@@ -63,8 +54,8 @@
     - name: Update & start wikijs docker containers
       become: true
       community.docker.docker_compose_v2:
-        project_name: wikijs
-        project_src: /opt/wikijs
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
         remove_orphans: true
         pull: always
         state: present

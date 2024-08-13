@@ -11,7 +11,7 @@ services:
       DB_NAME: wikijs
       PUID: {{ nfs_user_id }}
       PGID: {{ nfs_user_id }}
-      TZ: Asia/Singapore
+      TZ: {{ debian_datetime_timezone }}
     ports:
       - "3000:3000"
     restart: unless-stopped

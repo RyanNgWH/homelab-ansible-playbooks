@@ -8,7 +8,7 @@
   block:
     - name: Ensure application directory is present
       ansible.builtin.file:
-        path: /opt/wikijs
+        path: "{{ docker_project_src }}"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -17,14 +17,14 @@
     - name: Setup docker-compose file
       ansible.builtin.template:
         src: templates/app.docker-compose.yaml
-        dest: /opt/wikijs/docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
     - name: Ensure git directory is present
       ansible.builtin.file:
-        path: /opt/wikijs/git
+        path: "{{ docker_project_src }}/git"
         owner: "{{ nfs_user_id }}"
         group: "{{ nfs_user_id }}"
         mode: "0750"
@@ -51,13 +51,13 @@
     task_list:
       - nginx
     nginx_tls_domains:
-      - "{{ inventory_hostname }}"
+      - "{{ ansible_host }}"
   ansible.builtin.include_role:
     name: debian-common
 
 - name: Start wikijs docker containers
   become: true
   community.docker.docker_compose_v2:
-    project_name: wikijs
-    project_src: /opt/wikijs
+    project_name: "{{ docker_project_name }}"
+    project_src: "{{ docker_project_src }}"
     state: present
