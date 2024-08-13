@@ -58,6 +58,7 @@ adduser ansible
 
 An API token with the following permissions has to be created on your Proxmox instance. Stricter permissions might be possible but these playbooks have only been tested with the following proxmox privileges:
 
+- VM.Audit
 - VM.Snapshot
 
 ## Setup
@@ -86,10 +87,6 @@ An API token with the following permissions has to be created on your Proxmox in
    ```bash
    ansible-playbook playbooks/<application>/main.yaml [-K --ask-become-pass] [-J --ask-vault-pass] --tags "[tags]"
    ```
-
-# Configuration
-
-Each playbook has an associated configuration file `playbooks/<application>/config.yaml`
 
 # Playbooks
 
