@@ -8,7 +8,7 @@
   block:
     - name: Get wallos version file
       ansible.builtin.slurp:
-        src: /opt/wallos/includes/version.php
+        src: "{{ wallos_project_src }}/includes/version.php"
       register: version_file
 
     - name: Get latest wallos release from github
@@ -34,17 +34,8 @@
     public: false
   vars:
     task_list: snapshot
-
-    proxmox_api_host: "{{ proxmox_api_host }}"
-    proxmox_api_user: "{{ proxmox_api_user }}"
-    proxmox_api_token_id: "{{ proxmox_api_token_id }}"
-    proxmox_api_token_secret: "{{ proxmox_api_token_secret }}"
-
-    proxmox_snapshot_vmid: "{{ proxmox_snapshot_vmid }}"
     proxmox_snapshot_name: "{{ 'pre-upgrade-' + (wallos_current_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of wallos {{ wallos_current_version }} before upgrading to {{ wallos_latest_version }}"
-    proxmox_snapshot_retention: "{{ proxmox_snapshot_retention }}"
-    proxmox_snapshot_include_ram: "{{ proxmox_snapshot_include_ram }}"
   delegate_to: localhost
 
 - name: Update apt cache, upgrade packages and remove unused dependencies
@@ -57,12 +48,12 @@
 - name: Pull Wallos git repository
   ansible.builtin.git:
     repo: https://github.com/ellite/Wallos.git
-    dest: /opt/wallos # noqa: latest
+    dest: "{{ wallos_project_src }}" # noqa: latest
     force: true
 
 - name: Ensure owner of wallos application directory is set
   ansible.builtin.file:
-    path: /opt/wallos
+    path: "{{ wallos_project_src }}"
     owner: "{{ nfs_user_name }}"
     group: "{{ nfs_user_name }}"
     mode: "0740"
@@ -72,7 +63,7 @@
 
 - name: Run wallos migration
   ansible.builtin.command:
-    chdir: /opt/wallos/endpoints/db
+    chdir: "{{ wallos_project_src }}/endpoints/db"
     cmd: php migrate.php
   register: wallos_migration
   changed_when: "'No migrations to run.' not in wallos_migration.stdout_lines"

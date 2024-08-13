@@ -81,19 +81,19 @@
     - name: Add git exception for wallos application directory
       community.general.git_config:
         name: safe.directory
-        value: /opt/wallos
+        value: "{{ wallos_project_src }}"
         scope: global
         state: present
 
     - name: Clone wallos git repository
       ansible.builtin.git:
         repo: https://github.com/ellite/Wallos.git
-        dest: /opt/wallos # noqa: latest
+        dest: "{{ wallos_project_src }}" # noqa: latest
         force: true
 
     - name: Ensure owner of wallos application directory is set
       ansible.builtin.file:
-        path: /opt/wallos
+        path: "{{ wallos_project_src }}"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0740"
@@ -104,7 +104,7 @@
     - name: Link database file
       ansible.builtin.file:
         src: "{{ nfs_mounts.sana.mount_point }}/wallos/db/wallos.db"
-        path: /opt/wallos/db/wallos.db
+        path: "{{ wallos_project_src }}/db/wallos.db"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"
@@ -113,7 +113,7 @@
     - name: Link uploads directory
       ansible.builtin.file:
         src: "{{ nfs_mounts.sana.mount_point }}/wallos/logos"
-        path: /opt/wallos/images/uploads/logos
+        path: "{{ wallos_project_src }}/images/uploads/logos"
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0750"
@@ -130,7 +130,7 @@
             day: "*"
             month: "*"
             weekday: "*"
-            job: php /opt/wallos/endpoints/cronjobs/updatenextpayment.php >> /var/log/cron/updatenextpayment.log 2>&1
+            job: "php {{ wallos_project_src }}/endpoints/cronjobs/updatenextpayment.php >> /var/log/cron/updatenextpayment.log 2>&1"
             state: present
 
         - name: Setup exchange cron job
@@ -142,7 +142,7 @@
             day: "*"
             month: "*"
             weekday: "*"
-            job: php /opt/wallos/endpoints/cronjobs/updateexchange.php >> /var/log/cron/updateexchange.log 2>&1
+            job: "php {{ wallos_project_src }}/endpoints/cronjobs/updateexchange.php >> /var/log/cron/updateexchange.log 2>&1"
             state: present
 
         - name: Setup notifications cron job
@@ -154,7 +154,7 @@
             day: "*"
             month: "*"
             weekday: "*"
-            job: php /opt/wallos/endpoints/cronjobs/sendnotifications.php >> /var/log/cron/sendnotifications.log 2>&1
+            job: "php {{ wallos_project_src }}/endpoints/cronjobs/sendnotifications.php >> /var/log/cron/sendnotifications.log 2>&1"
             state: present
 
         - name: Setup verification emails cron job
@@ -166,7 +166,7 @@
             day: "*"
             month: "*"
             weekday: "*"
-            job: php /opt/wallos/html/endpoints/cronjobs/sendverificationemails.php >> /var/log/cron/sendverificationemail.log 2>&1
+            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/sendverificationemails.php >> /var/log/cron/sendverificationemail.log 2>&1"
             state: present
 
         - name: Setup reset passwords cron job
@@ -178,7 +178,7 @@
             day: "*"
             month: "*"
             weekday: "*"
-            job: php /opt/wallos/html/endpoints/cronjobs/sendresetpasswordemails.php >> /var/log/cron/sendresetpasswordemails.log 2>&1
+            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/sendresetpasswordemails.php >> /var/log/cron/sendresetpasswordemails.log 2>&1"
             state: present
 
 - name: Install and configure nginx
@@ -186,7 +186,7 @@
     task_list:
       - nginx
     nginx_tls_domains:
-      - "{{ inventory_hostname }}"
+      - "{{ ansible_host }}"
     nginx_user: "{{ nfs_user_name }}"
     nginx_group: "{{ nfs_user_name }}"
   ansible.builtin.include_role:
@@ -195,7 +195,7 @@
 - name: Run wallos migration
   become: true
   ansible.builtin.command:
-    chdir: /opt/wallos/endpoints/db
+    chdir: "{{ wallos_project_src }}/endpoints/db"
     cmd: php migrate.php
   register: wallos_migration
   changed_when: "'No migrations to run.' not in wallos_migration.stdout_lines"
