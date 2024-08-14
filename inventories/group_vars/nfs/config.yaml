@@ -5,8 +5,6 @@
 nfs_krb5_realm: TINYNAMOO.COM
 nfs_krb5_kdc: storage.tinynamoo.com
 nfs_krb5_admin_server: storage.tinynamoo.com
-nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sapphire] Sonarr/host.keytab"
-nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sapphire] Sonarr/user.keytab"
 
 # NFS
 nfs_mount_server: storage.tinynamoo.com
