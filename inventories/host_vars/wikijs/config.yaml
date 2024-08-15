@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Winter] Wikijs/hos
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Winter] Wikijs/user.keytab"
 
 # NFS
-nfs_user_name: wikijs
-nfs_user_id: "{{ wikijs_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['wikijs'].name }}"
+nfs_user_id: "{{ nfs_clients['wikijs'].uid }}"
 nfs_mounts:
   winter:
-    mount_share: winter
+    mount_share: /winter
     mount_point: /srv/winter
 
 ## NGINX variables

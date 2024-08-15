@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Alora] Firefly/hos
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Alora] Firefly/user.keytab"
 
 # NFS
-nfs_user_name: firefly
-nfs_user_id: "{{ firefly_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['firefly'].name }}"
+nfs_user_id: "{{ nfs_clients['firefly'].uid }}"
 nfs_mounts:
   alora:
-    mount_share: alora
+    mount_share: /alora
     mount_point: /srv/alora
 
 ## NGINX variables

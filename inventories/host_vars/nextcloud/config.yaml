@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Wendy] Nextcloud/h
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Wendy] Nextcloud/user.keytab"
 
 # NFS
-nfs_user_name: nextcloud
-nfs_user_id: "{{ nextcloud_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['nextcloud'].name }}"
+nfs_user_id: "{{ nfs_clients['nextcloud'].uid }}"
 nfs_mounts:
   wendy:
-    mount_share: wendy
+    mount_share: /wendy
     mount_point: /srv/wendy
 
 ## NGINX variables

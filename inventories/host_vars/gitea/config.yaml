@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Yena] Gitea/host.k
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Yena] Gitea/user.keytab"
 
 # NFS
-nfs_user_name: gitea
-nfs_user_id: "{{ gitea_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['gitea'].name }}"
+nfs_user_id: "{{ nfs_clients['gitea'].uid }}"
 nfs_mounts:
   yena:
-    mount_share: yena
+    mount_share: /yena
     mount_point: /srv/yena
 
 ## NGINX variables

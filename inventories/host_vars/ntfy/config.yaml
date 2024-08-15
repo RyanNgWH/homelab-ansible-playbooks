@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Karina] Ntfy/host.
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Karina] Ntfy/user.keytab"
 
 # NFS
-nfs_user_name: ntfy
-nfs_user_id: "{{ ntfy_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['ntfy'].name }}"
+nfs_user_id: "{{ nfs_clients['ntfy'].uid }}"
 nfs_mounts:
   karina:
-    mount_share: karina
+    mount_share: /karina
     mount_point: /srv/karina
 
 ## NGINX variables

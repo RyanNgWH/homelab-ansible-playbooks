@@ -11,27 +11,78 @@ nfs_mount_server: storage.tinynamoo.com
 nfs_idmapd_domain: tinynamoo.com
 
 # NFS client variables
-bazarr_nfs_uid: 118
-firefly_nfs_uid: 160
-gamevault_nfs_uid: 230
-gitea_nfs_uid: 180
-homarr_nfs_uid: 140
-immich_nfs_uid: 120
-jellyfin_nfs_uid: 281
-miniflux_nfs_uid: 250
-nextcloud_nfs_uid: 233
-ntfy_nfs_uid: 270
-paperless_nfs_uid: 130
-piped_nfs_uid: 204
-prowlarr_nfs_uid: 286
-qbittorrent_nfs_uid: 284
-radarr_nfs_uid: 283
-scrutiny_nfs_uid: 150
-sonarr_nfs_uid: 282
-vikunjs_nfs_uid: 240
-uptimekuma_nfs_uid: 290
-wallos_nfs_uid: 220
-wikijs_nfs_uid: 170
-yourspotify_nfs_uid: 217
+nfs_clients:
+  bazarr:
+    name: bazarr
+    uid: 118
+  firefly:
+    name: firefly
+    uid: 160
+  gamevault:
+    name: gamevault
+    uid: 230
+  gitea:
+    name: gitea
+    uid: 180
+  homarr:
+    name: homarr
+    uid: 140
+  immich:
+    name: immich
+    uid: 120
+  jellyfin:
+    name: jellyfin
+    uid: 281
+  miniflux:
+    name: miniflux
+    uid: 250
+  nextcloud:
+    name: nextcloud
+    uid: 233
+  ntfy:
+    name: ntfy
+    uid: 270
+  paperless:
+    name: paperless
+    uid: 130
+  piped:
+    name: piped
+    uid: 204
+  prowlarr:
+    name: prowlarr
+    uid: 286
+  qbittorrent:
+    name: qbit
+    uid: 284
+  radarr:
+    name: radarr
+    uid: 283
+  scrutiny:
+    name: scrutiny
+    uid: 150
+  send:
+    name: send
+    uid: 210
+  sonarr:
+    name: sonarr
+    uid: 282
+  vikunja:
+    name: vikunja
+    uid: 240
+  uptime-kuma:
+    name: uptime-kuma
+    uid: 290
+  wallos:
+    name: wallos
+    uid: 220
+  wikijs:
+    name: wikijs
+    uid: 170
+  your-spotify:
+    name: yourspotify
+    uid: 217
 
-media_nfs_gid: 200
+nfs_groups:
+  media:
+    name: media
+    gid: 200

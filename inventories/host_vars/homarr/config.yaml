@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Hanni] Homarr/host
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Hanni] Homarr/user.keytab"
 
 # NFS
-nfs_user_name: homarr
-nfs_user_id: "{{ homarr_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['homarr'].name }}"
+nfs_user_id: "{{ nfs_clients['homarr'].uid }}"
 nfs_mounts:
   hanni:
-    mount_share: hanni
+    mount_share: /hanni
     mount_point: /srv/hanni
 
 ## NGINX variables

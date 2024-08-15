@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Alyssa] Paperless/
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Alyssa] Paperless/user.keytab"
 
 # NFS
-nfs_user_name: paperless
-nfs_user_id: "{{ paperless_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['paperless'].name }}"
+nfs_user_id: "{{ nfs_clients['paperless'].uid }}"
 nfs_mounts:
   alyssa:
-    mount_share: alyssa
+    mount_share: /alyssa
     mount_point: /srv/alyssa
 
 ## NGINX variables

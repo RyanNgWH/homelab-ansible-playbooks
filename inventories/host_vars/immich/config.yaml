@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Petal] Immich/host
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Petal] Immich/user.keytab"
 
 # NFS
-nfs_user_name: immich
-nfs_user_id: "{{ immich_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['immich'].name }}"
+nfs_user_id: "{{ nfs_clients['immich'].uid }}"
 nfs_mounts:
   petal:
-    mount_share: petal
+    mount_share: /petal
     mount_point: /srv/petal
 
 ## NGINX variables

@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sakura] Gamevault/
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sakura] Gamevault/user.keytab"
 
 # NFS
-nfs_user_name: gamevault
-nfs_user_id: "{{ gamevault_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['gamevault'].name }}"
+nfs_user_id: "{{ nfs_clients['gamevault'].uid }}"
 nfs_mounts:
   sakura:
-    mount_share: sakura
+    mount_share: /sakura
     mount_point: /srv/sakura
 
 ## NGINX variables

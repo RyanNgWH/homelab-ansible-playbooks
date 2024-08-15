@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Florence] Miniflux
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Florence] Miniflux/user.keytab"
 
 # NFS
-nfs_user_name: miniflux
-nfs_user_id: "{{ miniflux_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['miniflux'].name }}"
+nfs_user_id: "{{ nfs_clients['miniflux'].uid }}"
 nfs_mounts:
   florence:
-    mount_share: florence
+    mount_share: /florence
     mount_point: /srv/florence
 
 ## NGINX variables

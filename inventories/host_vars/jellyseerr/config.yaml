@@ -18,7 +18,7 @@ nfs_user_name: jellyseerr
 nfs_user_id: 285
 nfs_mounts:
   marilyn-configs-jellyseerr:
-    mount_share: marilyn-configs-jellyseerr
+    mount_share: /marilyn-configs-jellyseerr
     mount_point: /srv/marilyn-configs-jellyseerr
 
 ## NGINX variables
@@ -28,7 +28,7 @@ nginx_conf_files:
 
 ## Jellyseerr variables
 jellyseerr_media_group_name: media
-jellyseerr_media_group_gid: "{{ media_nfs_gid }}"
+jellyseerr_media_group_gid: "{{ nfs_groups['media'].gid }}"
 
 jellyseerr_docker_name: jellyseerr
 

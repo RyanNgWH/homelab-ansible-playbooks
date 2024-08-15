@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sana] Wallos/host.
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sana] Wallos/user.keytab"
 
 # NFS
-nfs_user_name: wallos
-nfs_user_id: "{{ wallos_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['wallos'].name }}"
+nfs_user_id: "{{ nfs_clients['wallos'].uid }}"
 nfs_mounts:
   sana:
-    mount_share: sana
+    mount_share: /sana
     mount_point: /srv/sana
 
 ## NGINX variables

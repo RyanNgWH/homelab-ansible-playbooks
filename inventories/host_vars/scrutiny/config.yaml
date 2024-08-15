@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Solar] Scrutiny/ho
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Solar] Scrutiny/user.keytab"
 
 # NFS
-nfs_user_name: scrutiny
-nfs_user_id: "{{ scrutiny_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['scrutiny'].name }}"
+nfs_user_id: "{{ nfs_clients['scrutiny'].uid }}"
 nfs_mounts:
   solar:
-    mount_share: solar
+    mount_share: /solar
     mount_point: /srv/solar
 
 ## NGINX variables

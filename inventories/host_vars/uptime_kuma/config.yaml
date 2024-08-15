@@ -14,11 +14,11 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Serene] Uptime Kum
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Serene] Uptime Kuma/user.keytab"
 
 # NFS
-nfs_user_name: uptime-kuma
-nfs_user_id: "{{ uptimekuma_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['uptime-kuma'].name }}"
+nfs_user_id: "{{ nfs_clients['uptime-kuma'].uid }}"
 nfs_mounts:
   serene:
-    mount_share: serene
+    mount_share: /serene
     mount_point: /srv/serene
 
 ## NGINX variables

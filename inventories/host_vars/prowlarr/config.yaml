@@ -14,14 +14,14 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Pearl] Prowlarr/ho
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Pearl] Prowlarr/user.keytab"
 
 # NFS
-nfs_user_name: prowlarr
-nfs_user_id: "{{ prowlarr_nfs_uid }}"
+nfs_user_name: "{{ nfs_clients['prowlarr'].name }}"
+nfs_user_id: "{{ nfs_clients['prowlarr'].uid }}"
 nfs_mounts:
   marilyn-configs-prowlarr:
-    mount_share: marilyn-configs-prowlarr
+    mount_share: /marilyn-configs-prowlarr
     mount_point: /srv/marilyn-configs-prowlarr
   marilyn-databases-prowlarr:
-    mount_share: marilyn-databases-prowlarr
+    mount_share: /marilyn-databases-prowlarr
     mount_point: /srv/marilyn-databases-prowlarr
 
 ## NGINX variables
@@ -31,7 +31,7 @@ nginx_conf_files:
 
 ## Prowlarr variables
 prowlarr_media_group_name: media
-prowlarr_media_group_gid: "{{ media_nfs_gid }}"
+prowlarr_media_group_gid: "{{ nfs_groups['media'].gid }}"
 
 prowlarr_docker_name: prowlarr
 flaresolverr_docker_name: flaresolverr
