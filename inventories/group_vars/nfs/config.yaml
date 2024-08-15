@@ -15,6 +15,7 @@ nfs_clients:
   bazarr:
     name: bazarr
     uid: 118
+    groups: media
   firefly:
     name: firefly
     uid: 160
@@ -33,9 +34,11 @@ nfs_clients:
   jellyfin:
     name: jellyfin
     uid: 281
+    groups: media
   jellyseerr:
     name: jellyseerr
     uid: 285
+    groups: media
   miniflux:
     name: miniflux
     uid: 250
@@ -54,12 +57,15 @@ nfs_clients:
   prowlarr:
     name: prowlarr
     uid: 286
+    groups: media
   qbittorrent:
     name: qbit
     uid: 284
+    groups: media
   radarr:
     name: radarr
     uid: 283
+    groups: media
   scrutiny:
     name: scrutiny
     uid: 150
@@ -69,6 +75,7 @@ nfs_clients:
   sonarr:
     name: sonarr
     uid: 282
+    groups: media
   vikunja:
     name: vikunja
     uid: 240
