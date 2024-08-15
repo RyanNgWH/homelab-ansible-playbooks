@@ -1,0 +1,197 @@
+# @format
+
+# Network Attached Storage
+# Install and configure the Network Attached Storage server.
+---
+- name: Setup ZFS
+  become: true
+  block:
+    - name: Install linux headers package
+      ansible.builtin.apt:
+        name: linux-headers-amd64
+        update_cache: true
+        state: present
+
+    # Ensures upstream stable patches is tracked and compatibility is always maintained
+    - name: Install zfs utils package from debian backports
+      ansible.builtin.apt:
+        name: zfsutils-linux
+        default_release: stable-backports
+        update_cache: true
+        state: present
+      notify: Reboot system
+
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+    - name: Ensure root secrets directory is present
+      ansible.builtin.file:
+        path: /root/.secrets
+        owner: root
+        group: root
+        mode: "0700"
+        state: directory
+
+    - name: Setup zfs dataset keyfiles
+      ansible.builtin.copy:
+        content: "{{ item.password }}"
+        dest: "/root/.secrets/{{ item.pool }}-{{ item.dataset }}"
+        owner: root
+        group: root
+        mode: "0400"
+      loop: "{{ zfs_datasets }}"
+      no_log: true
+
+    - name: Create systemd service for loading zfs keys
+      ansible.builtin.template:
+        src: templates/zfs.load-key.service
+        dest: /etc/systemd/system/zfs-load-key@.service
+        owner: root
+        group: root
+        mode: "0766"
+
+    - name: Check if zpool is imported
+      ansible.builtin.command: "zpool list {{ zfs_zpool_name }}"
+      register: zpool_import_check
+      changed_when: false
+      failed_when: zpool_import_check.rc != 0 and zpool_import_check.rc != 1
+
+    - name: Import zpool if required
+      ansible.builtin.command: "zpool import -d /dev/disk/by-id {{ zfs_zpool_name }}"
+      changed_when: true
+      when: zpool_import_check.rc == 1
+
+    - name: Enable and start zfs keys loading service
+      ansible.builtin.systemd_service:
+        name: "zfs-load-key@{{ item.pool }}-{{ item.dataset }}.service"
+        daemon_reload: true
+        enabled: true
+        state: started
+      loop: "{{ zfs_datasets }}"
+      no_log: true
+
+    - name: Ensure all datasets are mounted
+      ansible.builtin.command: zfs mount -a
+      changed_when: true
+
+- name: Setup NFSv4 server
+  become: true
+  block:
+    - name: Install NFS & Kerberos packages
+      ansible.builtin.apt:
+        name:
+          - nfs-kernel-server
+          - nfs-common
+          - krb5-kdc
+          - krb5-admin-server
+          - gssproxy
+        update_cache: true
+        state: present
+
+    - name: Setup kerberos configuration file (krb5.conf)
+      ansible.builtin.template:
+        src: templates/kerberos.krb5.conf
+        dest: /etc/krb5.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Setup kdc configuration file (kdc.conf)
+      ansible.builtin.template:
+        src: templates/kerberos.kdc.conf
+        dest: /etc/krb5kdc/kdc.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Setup kdc access control list
+      ansible.builtin.template:
+        src: templates/kerberos.kadm5.acl
+        dest: /etc/krb5kdc/kadm5.acl
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Copy kdc stash file to server
+      ansible.builtin.copy:
+        src: "{{ krb5_key_stash_file }}"
+        dest: /etc/krb5kdc/stash
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Copy keytab file to server
+      ansible.builtin.copy:
+        src: "{{ nfs_krb5_host_keytab_file }}"
+        dest: /etc/krb5.keytab
+        owner: root
+        group: root
+        mode: "0600"
+
+    - name: Ensure domain is set in idmapd.conf
+      ansible.builtin.lineinfile:
+        path: /etc/idmapd.conf
+        line: "Domain = {{ nfs_idmapd_domain }}"
+        regexp: ".*Domain = .*"
+        state: present
+
+    - name: Setup export mountpoints
+      ansible.posix.mount:
+        src: "{{ item.src }}"
+        path: "{{ item.dest }}"
+        fstype: none
+        opts: "bind,nofail,_netdev"
+        state: mounted
+      loop: "{{ nfs_exports }}"
+
+    - name: Setup exports
+      ansible.builtin.template:
+        src: templates/nfs.exports
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Restart krb5-kdc service
+      ansible.builtin.systemd_service:
+        name: krb5-kdc.service
+        state: restarted
+
+    - name: Disable NFSv3
+      ansible.builtin.lineinfile:
+        path: /etc/nfs.conf
+        line: "vers3=n"
+        regexp: ".*vers3.*"
+        state: present
+
+    - name: Ensure NFS groups are present
+      ansible.builtin.group:
+        name: "{{ item.value.name }}"
+        gid: "{{ item.value.gid }}"
+        system: true
+        state: present
+      loop: "{{ nfs_groups | dict2items }}"
+
+    - name: Ensure NFS client groups are present
+      ansible.builtin.group:
+        name: "{{ item.value.name }}"
+        gid: "{{ item.value.uid }}"
+        system: true
+        state: present
+      loop: "{{ nfs_clients | dict2items }}"
+
+    - name: Ensure NFS client users are present
+      ansible.builtin.user:
+        name: "{{ item.value.name }}"
+        group: "{{ item.value.name }}"
+        password: "*"
+        shell: /usr/sbin/nologin
+        create_home: false
+        uid: "{{ item.value.uid }}"
+        state: present
+      loop: "{{ nfs_clients | dict2items }}"
+
+    - name: Restart nfs server
+      ansible.builtin.systemd_service:
+        name: nfs-server.service
+        state: restarted

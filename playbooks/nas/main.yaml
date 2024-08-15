@@ -1,0 +1,20 @@
+# @format
+
+# Network Attached Storage
+# Install and configure the Network Attached Storage server.
+---
+- name: Install and the Network Attached Storage server
+  hosts: nas
+
+  handlers:
+    - name: Import handlers
+      ansible.builtin.import_tasks: handlers/main.yaml
+
+  roles:
+    - role: debian-12-setup
+      tags: install
+
+  tasks:
+    - name: Install and configure the Network Attached Storage server
+      ansible.builtin.import_tasks: install.yaml
+      tags: install

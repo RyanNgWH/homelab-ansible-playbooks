@@ -1,0 +1,66 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.10.1
+
+# User
+debian_user_name: seori
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILf0cCNktgr1pTFDrlikgYX9q/JGAvhrWA3OobQZKnfq seori@storage.tinynamoo.com"
+
+## NFSv4 variables
+# Kerberos
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Seori] NAS/host.keytab"
+
+# Exports
+nfs_exports:
+  - src: /aspen/alora/
+    dest: /export/alora
+  - src: /aspen/alyssa/
+    dest: /export/alyssa
+  - src: /aspen/florence/
+    dest: /export/florence
+  - src: /aspen/hanni/
+    dest: /export/hanni
+  - src: /aspen/karina/
+    dest: /export/karina
+  - src: /aspen/marilyn/
+    dest: /export/marilyn
+  - src: /aspen/marilyn/configs/
+    dest: /export/marilyn-configs
+  - src: /aspen/marilyn/configs/jellyfin/
+    dest: /export/marilyn-configs-jellyfin
+  - src: /aspen/marilyn/configs/jellyseerr/
+    dest: /export/marilyn-configs-jellyseerr
+  - src: /aspen/marilyn/configs/prowlarr/
+    dest: /export/marilyn-configs-prowlarr
+  - src: /aspen/marilyn/databases/bazarr/
+    dest: /export/marilyn-databases-bazarr
+  - src: /aspen/marilyn/databases/prowlarr/
+    dest: /export/marilyn-databases-prowlarr
+  - src: /aspen/marilyn/media/
+    dest: /export/marilyn-media
+  - src: /aspen/melodee/
+    dest: /export/melodee
+  - src: /aspen/petal/
+    dest: /export/petal
+  - src: /aspen/sakura/
+    dest: /export/sakura
+  - src: /aspen/sana/
+    dest: /export/sana
+  - src: /aspen/serene/
+    dest: /export/serene
+  - src: /aspen/solar/
+    dest: /export/solar
+  - src: /aspen/stevie/
+    dest: /export/stevie
+  - src: /aspen/tiffany/
+    dest: /export/tiffany
+  - src: /aspen/twyla/
+    dest: /export/twyla
+  - src: /aspen/wendy/
+    dest: /export/wendy
+  - src: /aspen/winter/
+    dest: /export/winter
+  - src: /aspen/yena/
+    dest: /export/yena

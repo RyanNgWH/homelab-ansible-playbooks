@@ -1,0 +1,5 @@
+# @format
+---
+- name: Reboot system
+  become: true
+  ansible.builtin.reboot:
