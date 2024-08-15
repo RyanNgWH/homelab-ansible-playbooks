@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Wendy] Nextcloud/u
 
 # NFS
 nfs_user_name: nextcloud
-nfs_user_id: 233
+nfs_user_id: "{{ nextcloud_nfs_uid }}"
 nfs_mounts:
   wendy:
     mount_share: wendy

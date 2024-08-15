@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Karina] Ntfy/user.
 
 # NFS
 nfs_user_name: ntfy
-nfs_user_id: 270
+nfs_user_id: "{{ ntfy_nfs_uid }}"
 nfs_mounts:
   karina:
     mount_share: karina

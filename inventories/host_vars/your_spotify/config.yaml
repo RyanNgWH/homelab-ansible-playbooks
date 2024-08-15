@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Melodee] YourSpoti
 
 # NFS
 nfs_user_name: yourspotify
-nfs_user_id: 217
+nfs_user_id: "{{ yourspotify_nfs_uid }}"
 nfs_mounts:
   melodee:
     mount_share: melodee

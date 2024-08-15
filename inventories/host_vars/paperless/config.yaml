@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Alyssa] Paperless/
 
 # NFS
 nfs_user_name: paperless
-nfs_user_id: 130
+nfs_user_id: "{{ paperless_nfs_uid }}"
 nfs_mounts:
   alyssa:
     mount_share: alyssa

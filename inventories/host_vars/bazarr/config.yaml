@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Bibi] Bazarr/user.
 
 # NFS
 nfs_user_name: bazarr
-nfs_user_id: 118
+nfs_user_id: "{{ bazarr_nfs_uid }}"
 nfs_mounts:
   marilyn-media:
     mount_share: marilyn-media
@@ -40,7 +40,7 @@ nginx_conf_files:
 bazarr_4k_hostname: subtitles4k.tinynamoo.com
 bazarr_anime_hostname: animesubs.tinynamoo.com
 bazarr_media_group_name: media
-bazarr_media_group_gid: 200
+bazarr_media_group_gid: "{{ media_nfs_gid }}"
 
 bazarr_docker_name: bazarr
 

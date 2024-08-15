@@ -8,3 +8,30 @@ nfs_krb5_admin_server: storage.tinynamoo.com
 
 # NFS
 nfs_mount_server: storage.tinynamoo.com
+nfs_idmapd_domain: tinynamoo.com
+
+# NFS client variables
+bazarr_nfs_uid: 118
+firefly_nfs_uid: 160
+gamevault_nfs_uid: 230
+gitea_nfs_uid: 180
+homarr_nfs_uid: 140
+immich_nfs_uid: 120
+jellyfin_nfs_uid: 281
+miniflux_nfs_uid: 250
+nextcloud_nfs_uid: 233
+ntfy_nfs_uid: 270
+paperless_nfs_uid: 130
+piped_nfs_uid: 204
+prowlarr_nfs_uid: 286
+qbittorrent_nfs_uid: 284
+radarr_nfs_uid: 283
+scrutiny_nfs_uid: 150
+sonarr_nfs_uid: 282
+vikunjs_nfs_uid: 240
+uptimekuma_nfs_uid: 290
+wallos_nfs_uid: 220
+wikijs_nfs_uid: 170
+yourspotify_nfs_uid: 217
+
+media_nfs_gid: 200

@@ -28,7 +28,7 @@ nginx_conf_files:
 
 ## Jellyseerr variables
 jellyseerr_media_group_name: media
-jellyseerr_media_group_gid: 200
+jellyseerr_media_group_gid: "{{ media_nfs_gid }}"
 
 jellyseerr_docker_name: jellyseerr
 

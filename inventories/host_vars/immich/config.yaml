@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Petal] Immich/user
 
 # NFS
 nfs_user_name: immich
-nfs_user_id: 120
+nfs_user_id: "{{ immich_nfs_uid }}"
 nfs_mounts:
   petal:
     mount_share: petal

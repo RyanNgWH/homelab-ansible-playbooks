@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Rainbow] Radarr/us
 
 # NFS
 nfs_user_name: radarr
-nfs_user_id: 283
+nfs_user_id: "{{ radarr_nfs_uid }}"
 nfs_mounts:
   marilyn:
     mount_share: marilyn
@@ -34,7 +34,7 @@ nginx_conf_files:
 radarr_4k_hostname: movies4k.tinynamoo.com
 radarr_anime_hostname: anime.tinynamoo.com
 radarr_media_group_name: media
-radarr_media_group_gid: 200
+radarr_media_group_gid: "{{ media_nfs_gid }}"
 
 radarr_docker_name: radarr
 

@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Hanni] Homarr/user
 
 # NFS
 nfs_user_name: homarr
-nfs_user_id: 140
+nfs_user_id: "{{ homarr_nfs_uid }}"
 nfs_mounts:
   hanni:
     mount_share: hanni

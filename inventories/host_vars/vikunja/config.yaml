@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Tiffany] Vikunja/u
 
 # NFS
 nfs_user_name: vikunja
-nfs_user_id: 240
+nfs_user_id: "{{ vikunja_nfs_uid }}"
 nfs_mounts:
   tiffany:
     mount_share: tiffany

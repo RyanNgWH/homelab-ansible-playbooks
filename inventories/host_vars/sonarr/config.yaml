@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sapphire] Sonarr/u
 
 # NFS
 nfs_user_name: sonarr
-nfs_user_id: 282
+nfs_user_id: "{{ sonarr_nfs_uid }}"
 nfs_mounts:
   marilyn:
     mount_share: marilyn
@@ -34,7 +34,7 @@ nginx_conf_files:
 sonarr_4k_hostname: tv4k.tinynamoo.com
 sonarr_anime_hostname: animetv.tinynamoo.com
 sonarr_media_group_name: media
-sonarr_media_group_gid: 200
+sonarr_media_group_gid: "{{ media_nfs_gid }}"
 
 sonarr_docker_name: sonarr
 

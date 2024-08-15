@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Yena] Gitea/user.k
 
 # NFS
 nfs_user_name: gitea
-nfs_user_id: 180
+nfs_user_id: "{{ gitea_nfs_uid }}"
 nfs_mounts:
   yena:
     mount_share: yena

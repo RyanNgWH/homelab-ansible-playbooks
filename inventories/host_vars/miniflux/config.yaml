@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Florence] Miniflux
 
 # NFS
 nfs_user_name: miniflux
-nfs_user_id: 250
+nfs_user_id: "{{ miniflux_nfs_uid }}"
 nfs_mounts:
   florence:
     mount_share: florence

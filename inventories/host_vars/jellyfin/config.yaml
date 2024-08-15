@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Marilyn] Jellyfin/
 
 # NFS
 nfs_user_name: jellyfin
-nfs_user_id: 281
+nfs_user_id: "{{ jellyfin_nfs_uid }}"
 nfs_mounts:
   marilyn-media:
     mount_share: marilyn-media
@@ -33,7 +33,7 @@ nginx_conf_files:
 
 ## Jellyfin variables
 jellyfin_media_group_name: media
-jellyfin_media_group_gid: 200
+jellyfin_media_group_gid: "{{ media_nfs_gid }}"
 
 jellyfin_docker_name: jellyfin
 

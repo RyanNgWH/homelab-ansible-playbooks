@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Winter] Wikijs/use
 
 # NFS
 nfs_user_name: wikijs
-nfs_user_id: 170
+nfs_user_id: "{{ wikijs_nfs_uid }}"
 nfs_mounts:
   winter:
     mount_share: winter

@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Serene] Uptime Kum
 
 # NFS
 nfs_user_name: uptime-kuma
-nfs_user_id: 290
+nfs_user_id: "{{ uptimekuma_nfs_uid }}"
 nfs_mounts:
   serene:
     mount_share: serene

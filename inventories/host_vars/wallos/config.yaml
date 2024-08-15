@@ -15,7 +15,7 @@ nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sana] Wallos/user.
 
 # NFS
 nfs_user_name: wallos
-nfs_user_id: 220
+nfs_user_id: "{{ wallos_nfs_uid }}"
 nfs_mounts:
   sana:
     mount_share: sana
