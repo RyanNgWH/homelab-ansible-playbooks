@@ -37,6 +37,7 @@ This role utilises modules from the following collections that is not part of `a
 | `nfs_user_id`                  | UID & GID of the NFS user.       |                     | `170`                   |
 | `nfs_user_shell`               | UID & GID of the NFS user.       | `/usr/sbin/nologin` | `170`                   |
 | `nfs_mount_server`             | NFS server domain name.          |                     | `storage.tinynamoo.com` |
+| `nfs_idmapd_domain`            | Domain of idmapd service.        |                     | `tinynamoo.com`         |
 | `nfs_mounts`                   | Dictionary of NFS mounts.        |                     | -                       |
 | `nfs_mounts.<key>.mount_share` | NFS share to be mounted          |                     | `winter`                |
 | `nfs_mounts.<key>.mount_point` | Directory to mount the NFS share |                     | `/srv/winter`           |
@@ -56,7 +57,7 @@ This role utilises modules from the following collections that is not part of `a
     nfs_mount_server: storage.tinynamoo.com
     nfs_mounts:
       my_mount:
-        mount_share: winter
+        mount_share: /winter
         mount_point: /srv/winter
 
   roles:

@@ -70,6 +70,13 @@
             enabled: true
             state: started
 
+        - name: Ensure domain is set in idmapd.conf
+          ansible.builtin.lineinfile:
+            path: /etc/idmapd.conf
+            line: "Domain = {{ nfs_idmapd_domain }}"
+            regexp: ".*Domain = .*"
+            state: present
+
         - name: Create systemd service for automated kinit of the user principal
           ansible.builtin.template:
             src: templates/nfs-kinit.service
@@ -102,7 +109,7 @@
 
     - name: Configure NFS mounts
       ansible.posix.mount:
-        src: "{{ nfs_mount_server }}:/{{ item.value.mount_share }}"
+        src: "{{ nfs_mount_server }}:{{ item.value.mount_share }}"
         path: "{{ item.value.mount_point }}"
         fstype: nfs
         opts: "nfsvers=4,proto=tcp,port=2049,sec=krb5p,lazytime,auto,_netdev"
