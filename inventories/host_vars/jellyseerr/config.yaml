@@ -14,8 +14,8 @@ nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Juliette] Jellysee
 nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Juliette] Jellyseerr/user.keytab"
 
 # NFS
-nfs_user_name: jellyseerr
-nfs_user_id: 285
+nfs_user_name: "{{ nfs_clients['jellyseerr'].name }}"
+nfs_user_id: "{{ nfs_clients['jellyseerr'].uid }}"
 nfs_mounts:
   marilyn-configs-jellyseerr:
     mount_share: /marilyn-configs-jellyseerr

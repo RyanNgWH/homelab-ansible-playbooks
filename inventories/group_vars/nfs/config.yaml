@@ -33,6 +33,9 @@ nfs_clients:
   jellyfin:
     name: jellyfin
     uid: 281
+  jellyseerr:
+    name: jellyseerr
+    uid: 285
   miniflux:
     name: miniflux
     uid: 250
