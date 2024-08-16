@@ -7,3 +7,10 @@ debian_datetime_ntp_server: 172.28.10.1
 # User
 debian_user_name: sierra
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILjYx0p1edQncP3TXu+a1lhy9hDRsQgXRGHRnmORCYIn sierra@server.tinynamoo.com"
+
+## Scrutiny variables
+scrutiny_spoke_docker_name: scrutiny-spoke
+scrutiny_spoke_project_src: /opt/scrutiny-spoke
+
+scrutiny_spoke_collector_host_id: "[Sierra] Proxmox"
+scrutiny_spoke_collector_cron: "*/15 * * * *" # Every 15 minutes

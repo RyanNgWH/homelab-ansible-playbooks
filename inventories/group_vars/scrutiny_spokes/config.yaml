@@ -1,0 +1,4 @@
+# @format
+---
+scrutiny_spoke_docker_project_name: scrutiny-spoke
+scrutiny_spoke_collector_api_endpoint: https://smart.tinynamoo.com

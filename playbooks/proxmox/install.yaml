@@ -29,6 +29,7 @@
         owner: root
         group: root
         mode: "0644"
+      register: disable_subscription
 
     - name: Reinstall proxmox-widget toolkit
       ansible.builtin.shell:
@@ -36,6 +37,7 @@
       environment:
         DEBIAN_FRONTEND: noninteractive
       changed_when: true
+      when: disable_subscription.changed
 
     - name: Update apt cache, upgrade packages and remove unused dependencies
       ansible.builtin.apt:
@@ -104,3 +106,6 @@
         owner: root
         group: root
         mode: "0644"
+
+- name: Setup scrutiny spoke for disk SMART monitoring
+  ansible.builtin.import_tasks: ../scrutiny/deploy.yaml

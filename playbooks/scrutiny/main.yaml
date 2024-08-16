@@ -32,3 +32,11 @@
     - name: Install and configure the Scrutiny SMART monitoring server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+- name: Deploy and configure the Scrutiny spokes
+  hosts: scrutiny_spokes
+
+  tasks:
+    - name: Deploy and configure the Scrutiny spokes
+      ansible.builtin.import_tasks: deploy.yaml
+      tags: deploy

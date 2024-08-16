@@ -1,0 +1,37 @@
+# @format
+
+# Scrutiny
+# Deploy and configure the Scrutiny spokes
+---
+- name: Ensure docker is installed
+  ansible.builtin.import_role:
+    name: debian-common
+  vars:
+    debian_common_task_list:
+      - docker
+
+- name: Setup scrutiny spoke application files
+  become: true
+  block:
+    - name: Ensure scrutiny spoke directory is present
+      ansible.builtin.file:
+        path: "{{ scrutiny_spoke_project_src }}"
+        owner: root
+        group: root
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/spoke.docker-compose.yaml
+        dest: "{{ scrutiny_spoke_project_src }}/docker-compose.yaml"
+        owner: root
+        group: root
+        mode: "0640"
+
+- name: Start scrutiny spoke docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: "{{ scrutiny_spoke_docker_project_name }}"
+    project_src: "{{ scrutiny_spoke_project_src }}"
+    state: present

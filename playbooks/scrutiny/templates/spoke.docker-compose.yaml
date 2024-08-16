@@ -1,0 +1,15 @@
+---
+services:
+  collector:
+    container_name: {{ scrutiny_spoke_docker_name }}
+    image: ghcr.io/analogj/scrutiny:master-collector
+    environment:
+      COLLECTOR_API_ENDPOINT: "{{ scrutiny_spoke_collector_api_endpoint }}"
+      COLLECTOR_HOST_ID: "{{ scrutiny_spoke_collector_host_id }}"
+      COLLECTOR_CRON_SCHEDULE: "{{ scrutiny_spoke_collector_cron }}"
+    volumes:
+      - /run/udev:/run/udev:ro
+    cap_add:
+      - SYS_RAWIO
+    devices: {{ scrutiny_spoke_devices }}
+    restart: unless-stopped

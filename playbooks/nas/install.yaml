@@ -196,3 +196,6 @@
       ansible.builtin.systemd_service:
         name: nfs-server.service
         state: restarted
+
+- name: Setup scrutiny spoke for disk SMART monitoring
+  ansible.builtin.import_tasks: ../scrutiny/deploy.yaml

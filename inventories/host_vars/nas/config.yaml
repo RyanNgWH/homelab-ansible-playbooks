@@ -64,3 +64,10 @@ nfs_exports:
     dest: /export/winter
   - src: /aspen/yena/
     dest: /export/yena
+
+## Scrutiny variables
+scrutiny_spoke_docker_name: scrutiny-spoke
+scrutiny_spoke_project_src: /opt/scrutiny-spoke
+
+scrutiny_spoke_collector_host_id: "[Seori] NAS"
+scrutiny_spoke_collector_cron: "*/15 * * * *" # Every 15 minutes
