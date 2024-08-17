@@ -9,9 +9,11 @@ Playbook for installing and configuring the Proxmox host
 Certain tasks are not supported by this playbook (or using the opentofu infrastructure management system) and have to be configured manually.
 
 1. Execute the playbook
-1. Setup the following manual configurations
+1. Setup the following manual configurations (Until `API tokens`)
 1. Execute the Packer VM templates
 1. Execute the OpenTofu infrastructure management templates
+1. Setup the remaining manual configurations (From `Datacenter firewall options`)
+1. Execute the Ansible playbooks for the various services
 
 ## Manual configurations
 

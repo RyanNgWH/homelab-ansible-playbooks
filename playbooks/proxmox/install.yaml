@@ -14,10 +14,18 @@
         group: root
         mode: "0644"
 
-    - name: Disable enterprise respository
+    - name: Disable pve enterprise respository
       ansible.builtin.copy:
         content: "# deb https://enterprise.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-enterprise"
         dest: /etc/apt/sources.list.d/pve-enterprise.list
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Disable ceph enterprise respository
+      ansible.builtin.copy:
+        content: "# deb https://enterprise.proxmox.com/debian/ceph-quincy {{ ansible_distribution_release }} enterprise"
+        dest: /etc/apt/sources.list.d/ceph.list
         owner: root
         group: root
         mode: "0644"
@@ -37,6 +45,10 @@
         upgrade: dist
         autoremove: true
         purge: true
+
+- name: Execute debian 12 setup
+  ansible.builtin.import_role:
+    name: debian-12-setup
 
 - name: Install Intel microcode updates
   become: true
@@ -215,12 +227,22 @@
 
 - name: Setup notifications
   become: true
-  ansible.builtin.copy:
-    src: files/proxmox.notifications.cfg
-    dest: /etc/pve/notifications.cfg
-    owner: root
-    group: www-data
-    mode: "0640"
+  block:
+    - name: Create notifications file
+      ansible.builtin.file:
+        path: /etc/pve/notifications.cfg
+        owner: root
+        group: www-data
+        mode: "0640"
+        state: touch
+
+    - name: Setup notifications configuration
+      ansible.builtin.copy:
+        src: files/proxmox.notifications.cfg
+        dest: /etc/pve/notifications.cfg
+        owner: root
+        group: www-data
+        mode: "0640"
 
 - name: Install and configure nginx reverse proxy
   vars:

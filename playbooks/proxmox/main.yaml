@@ -17,10 +17,6 @@
     - name: Import handlers
       ansible.builtin.import_tasks: handlers/main.yaml
 
-  roles:
-    - role: debian-12-setup
-      tags: install
-
   tasks:
     - name: Install and configure the Proxmox hypervisor
       ansible.builtin.import_tasks: install.yaml
