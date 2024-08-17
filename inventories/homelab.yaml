@@ -151,6 +151,7 @@ nginx:
     paperless:
     piped:
     prowlarr:
+    proxmox:
     qbittorrent:
     radarr:
     scrutiny:

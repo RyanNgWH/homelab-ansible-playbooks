@@ -29,15 +29,7 @@
         owner: root
         group: root
         mode: "0644"
-      register: disable_subscription
-
-    - name: Reinstall proxmox-widget toolkit
-      ansible.builtin.shell:
-        cmd: apt-get --reinstall install proxmox-widget-toolkit
-      environment:
-        DEBIAN_FRONTEND: noninteractive
-      changed_when: true
-      when: disable_subscription.changed
+      notify: Reinstall proxmox-widget toolkit
 
     - name: Update apt cache, upgrade packages and remove unused dependencies
       ansible.builtin.apt:
@@ -46,7 +38,14 @@
         autoremove: true
         purge: true
 
-- name: Setup PCIe passthrough in Proxmox
+- name: Install Intel microcode updates
+  become: true
+  ansible.builtin.apt:
+    name: intel-microcode
+    update_cache: true
+    state: present
+
+- name: Enable PCIe passthrough
   become: true
   block:
     - name: Check if IMMOU is enabled in grub
@@ -106,6 +105,131 @@
         owner: root
         group: root
         mode: "0644"
+
+- name: Setup cpu frequency scaling governor
+  become: true
+  ansible.builtin.cron:
+    name: set-cpufreq-governor
+    job: echo "{{ cpufreq_governor }}" | tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+    special_time: reboot
+    user: root
+    state: present
+
+- name: Setup networking
+  become: true
+  block:
+    - name: Install Open vSwitch
+      ansible.builtin.apt:
+        name: openvswitch-switch
+        update_cache: true
+        state: present
+
+    - name: Configure network interfaces
+      ansible.builtin.copy:
+        src: files/host.interfaces
+        dest: /etc/network/interfaces
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Reload network configuration
+
+- name: Setup users
+  become: true
+  block:
+    - name: Create groups
+      ansible.builtin.group:
+        name: "{{ item.name }}"
+        state: present
+      loop: "{{ proxmox_host_users }}"
+      no_log: true
+
+    - name: Create users
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        group: "{{ item.name }}"
+        groups: "{{ item.groups if item.groups is defined }}"
+        password: "{{ item.pass }}"
+        shell: "{{ item.shell }}"
+        comment: "{{ item.name }}"
+        create_home: true
+        state: present
+      loop: "{{ proxmox_host_users }}"
+      no_log: true
+
+    - name: "Add SSH authorised key for users"
+      ansible.posix.authorized_key:
+        user: "{{ item.name }}"
+        key: "{{ item.ssh_public_key }}"
+        state: present
+      loop: "{{ proxmox_host_users }}"
+      no_log: true
+
+    - name: Add users sudoers rules
+      community.general.sudoers:
+        name: "{{ item.sudo.name }}"
+        user: "{{ item.sudo.user }}"
+        host: "{{ item.sudo.host }}"
+        runas: "{{ item.sudo.runas }}"
+        nopassword: "{{ item.sudo.nopassword }}"
+        commands: "{{ item.sudo.commands }}"
+        state: present
+      loop: "{{ proxmox_host_users }}"
+      no_log: true
+
+- name: Setup proxmox managment interface access
+  become: true
+  block:
+    - name: Setup groups
+      ansible.builtin.command: pveum group add {{ item.name }} --comment "[Ansible] {{ item.comment }}"
+      loop: "{{ proxmox_ve_groups }}"
+      register: pve_groups
+      changed_when: pve_groups.rc == 0
+      failed_when: pve_groups.rc != 0 and pve_groups.rc != 255
+
+    - name: Setup users
+      ansible.builtin.command: pveum user add {{ item.name }}@{{ item.realm }} --comment "[Ansible] {{ item.comment }}" {{ '--email ' + '"' + item.email + '"' if item.email is defined }} --enable {{ item.enable }} --groups {{ item.groups}} --password "{{ item.pass }}" # noqa: yaml[line-length]
+      loop: "{{ proxmox_ve_users }}"
+      register: pve_users
+      changed_when: pve_users.rc == 0
+      failed_when: pve_users.rc != 0 and pve_users.rc != 2
+      no_log: true
+
+    - name: Modify & disable root user
+      ansible.builtin.command: pveum user modify root@pam --comment "[Ansible] [Sierra] Proxmox root user" --email "admin@tinynamoo.com" --enable false --groups admins # noqa: yaml[line-length]
+      register: pve_user_root
+      changed_when: pve_user_root.rc == 0
+
+    - name: Setup access roles
+      ansible.builtin.command: pveum role add {{ item.name }} --privs "{{ item.privileges }}"
+      loop: "{{ proxmox_ve_roles }}"
+      register: pve_roles
+      changed_when: pve_roles.rc == 0
+      failed_when: pve_roles.rc != 0 and pve_roles.rc != 255
+
+    - name: Setup permissions
+      ansible.builtin.command: pveum acl modify "{{ item.path }}" --roles "{{ item.roles }}" --groups "{{ item.groups }}" --propagate {{ item.propagate }}
+      loop: "{{ proxmox_ve_permissions }}"
+      register: pve_permissions
+      changed_when: pve_permissions.rc == 0
+      failed_when: pve_permissions.rc != 0
+
+- name: Setup notifications
+  become: true
+  ansible.builtin.copy:
+    src: files/proxmox.notifications.cfg
+    dest: /etc/pve/notifications.cfg
+    owner: root
+    group: www-data
+    mode: "0640"
+
+- name: Install and configure nginx reverse proxy
+  vars:
+    debian_common_task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ ansible_host }}"
+  ansible.builtin.include_role:
+    name: debian-common
 
 - name: Setup scrutiny spoke for disk SMART monitoring
   ansible.builtin.import_tasks: ../scrutiny/deploy.yaml

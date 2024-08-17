@@ -6,6 +6,17 @@
 - name: Configure & manage the Proxmox hypervisor
   hosts: proxmox
 
+  pre_tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
+  handlers:
+    - name: Import handlers
+      ansible.builtin.import_tasks: handlers/main.yaml
+
   roles:
     - role: debian-12-setup
       tags: install

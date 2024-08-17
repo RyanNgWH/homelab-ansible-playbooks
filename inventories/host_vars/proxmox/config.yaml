@@ -8,6 +8,96 @@ debian_datetime_ntp_server: 172.28.10.1
 debian_user_name: sierra
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILjYx0p1edQncP3TXu+a1lhy9hDRsQgXRGHRnmORCYIn sierra@server.tinynamoo.com"
 
+## NGINX variables
+nginx_conf_files:
+  - filename: proxmox.conf
+    path: templates/nginx.proxmox.conf
+
+## Proxmox variables
+# Refer to https://www.kernel.org/doc/html/latest/admin-guide/pm/cpufreq.html#generic-scaling-governors for more information
+cpufreq_governor: ondemand
+
+proxmox_ve_groups:
+  - name: admins
+    comment: "[Proxmox] Proxmox administrators group"
+  - name: ansible
+    comment: "[Ansible] Ansible administration group"
+  - name: opentofu
+    comment: "[Opentofu] Opentofu infrastructure management group"
+  - name: packer
+    comment: "[Packer] Packer VM templating group"
+
+proxmox_ve_roles:
+  - name: Ansible
+    privileges: >-
+      VM.Audit
+      VM.Snapshot
+  - name: OpenTofu
+    privileges: >-
+      Datastore.Allocate
+      Datastore.AllocateSpace
+      Datastore.AllocateTemplate
+      Datastore.Audit
+      Mapping.Modify
+      Mapping.Use
+      Pool.Allocate
+      SDN.Use
+      Sys.Audit
+      Sys.Console
+      Sys.Modify
+      User.Modify
+      VM.Allocate
+      VM.Audit
+      VM.Clone
+      VM.Config.CDROM
+      VM.Config.Cloudinit
+      VM.Config.CPU
+      VM.Config.Disk
+      VM.Config.HWType
+      VM.Config.Memory
+      VM.Config.Network
+      VM.Config.Options
+      VM.Migrate
+      VM.Monitor
+      VM.PowerMgmt
+  - name: Packer
+    privileges: >-
+      Datastore.Allocate
+      Datastore.AllocateSpace
+      Datastore.AllocateTemplate
+      Datastore.Audit
+      SDN.Audit
+      SDN.Use
+      VM.Allocate
+      VM.Audit
+      VM.Config.CDROM
+      VM.Config.CPU
+      VM.Config.Cloudinit
+      VM.Config.Disk
+      VM.Config.HWType
+      VM.Config.Memory
+      VM.Config.Network
+      VM.Config.Options
+      VM.PowerMgmt
+
+proxmox_ve_permissions:
+  - path: /
+    groups: admins
+    roles: Administrator
+    propagate: true
+  - path: /
+    groups: ansible
+    roles: Ansible
+    propagate: true
+  - path: /
+    groups: opentofu
+    roles: OpenTofu
+    propagate: true
+  - path: /
+    groups: packer
+    roles: Packer
+    propagate: true
+
 ## Scrutiny variables
 scrutiny_spoke_docker_name: scrutiny-spoke
 scrutiny_spoke_project_src: /opt/scrutiny-spoke
