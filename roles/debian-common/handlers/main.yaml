@@ -1,0 +1,8 @@
+# @format
+---
+- name: Restart docker daemon
+  become: true
+  ansible.builtin.systemd_service:
+    name: docker.service
+    daemon_reload: true
+    state: restarted

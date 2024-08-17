@@ -55,6 +55,7 @@
 - name: Fix iptables issue introduced by docker to allow for VM networking to work
   become: true
   when: inventory_hostname == 'proxmox'
+  notify: Restart docker daemon
   block:
     - name: Ensure docker override directory is present
       ansible.builtin.file:
@@ -71,9 +72,3 @@
         owner: root
         group: root
         mode: "0644"
-
-    - name: Restart docker daemon
-      ansible.builtin.systemd_service:
-        name: docker.service
-        daemon_reload: true
-        state: restarted
