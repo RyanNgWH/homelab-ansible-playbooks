@@ -3,8 +3,6 @@
 # Hosts
 all:
   hosts:
-    sonarr:
-      ansible_host: tv.tinynamoo.com
     ansible_lxc:
       ansible_host: ansible-lxc.tinynamoo.com
     ansible_vm:
@@ -53,6 +51,8 @@ all:
       ansible_host: smart.tinynamoo.com
     send:
       ansible_host: send.tinynamoo.com
+    sonarr:
+      ansible_host: tv.tinynamoo.com
     stirling_pdf:
       ansible_host: pdf.tinynamoo.com
     uptime_kuma:
