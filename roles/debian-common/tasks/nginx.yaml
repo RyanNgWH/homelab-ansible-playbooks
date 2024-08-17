@@ -11,6 +11,7 @@
 
 - name: Copy nginx configuration files
   become: true
+  notify: Reload nginx configuration
   block:
     - name: Copy nginx https configuration file
       ansible.builtin.copy:
@@ -114,8 +115,3 @@
       register: certbot_output
       changed_when: "'Successfully received certificate.' in certbot_output.stdout_lines"
       loop: "{{ nginx_tls_domains }}"
-
-    - name: Reload nginx configuration
-      ansible.builtin.command:
-        cmd: nginx -s reload
-      changed_when: true

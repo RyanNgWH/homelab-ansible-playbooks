@@ -6,3 +6,8 @@
     name: docker.service
     daemon_reload: true
     state: restarted
+
+- name: Reload nginx configuration
+  become: true
+  ansible.builtin.command: nginx -s reload
+  changed_when: true
