@@ -191,19 +191,36 @@
 - name: Setup proxmox managment interface access
   become: true
   block:
-    - name: Setup groups
+    - name: Create groups
       ansible.builtin.command: pveum group add {{ item.name }} --comment "[Ansible] {{ item.comment }}"
       loop: "{{ proxmox_ve_groups }}"
-      register: pve_groups
-      changed_when: pve_groups.rc == 0
-      failed_when: pve_groups.rc != 0 and pve_groups.rc != 255
+      register: pve_groups_create
+      changed_when: pve_groups_create.rc == 0
+      failed_when: pve_groups_create.rc != 0 and pve_groups_create.rc != 255
+
+    - name: Setup groups details
+      ansible.builtin.command: pveum group modify {{ item.name }} --comment "[Ansible] {{ item.comment }}"
+      loop: "{{ proxmox_ve_groups }}"
+      register: pve_groups_modify
+      changed_when: pve_groups_modify.rc == 0
+      failed_when: pve_groups_modify.rc != 0
+      when: not pve_groups_create.changed
 
     - name: Setup users
       ansible.builtin.command: pveum user add {{ item.name }}@{{ item.realm }} --comment "[Ansible] {{ item.comment }}" {{ '--email ' + '"' + item.email + '"' if item.email is defined }} --enable {{ item.enable }} --groups {{ item.groups}} --password "{{ item.pass }}" # noqa: yaml[line-length]
       loop: "{{ proxmox_ve_users }}"
-      register: pve_users
-      changed_when: pve_users.rc == 0
-      failed_when: pve_users.rc != 0 and pve_users.rc != 2
+      register: pve_users_create
+      changed_when: pve_users_create.rc == 0
+      failed_when: pve_users_create.rc != 0 and pve_users_create.rc != 2
+      no_log: true
+
+    - name: Setup users details
+      ansible.builtin.command: pveum user modify {{ item.name }}@{{ item.realm }} --comment "[Ansible] {{ item.comment }}" {{ '--email ' + '"' + item.email + '"' if item.email is defined }} --enable {{ item.enable }} --groups {{ item.groups}} # noqa: yaml[line-length]
+      loop: "{{ proxmox_ve_users }}"
+      register: pve_users_modify
+      changed_when: pve_users_modify.rc == 0
+      failed_when: pve_users_modify.rc != 0
+      when: not pve_users_create.changed
       no_log: true
 
     - name: Modify & disable root user
@@ -214,9 +231,17 @@
     - name: Setup access roles
       ansible.builtin.command: pveum role add {{ item.name }} --privs "{{ item.privileges }}"
       loop: "{{ proxmox_ve_roles }}"
-      register: pve_roles
-      changed_when: pve_roles.rc == 0
-      failed_when: pve_roles.rc != 0 and pve_roles.rc != 255
+      register: pve_roles_create
+      changed_when: pve_roles_create.rc == 0
+      failed_when: pve_roles_create.rc != 0 and pve_roles_create.rc != 255
+
+    - name: Setup access roles details
+      ansible.builtin.command: pveum role modify {{ item.name }} --privs "{{ item.privileges }}"
+      loop: "{{ proxmox_ve_roles }}"
+      register: pve_roles_modify
+      changed_when: pve_roles_modify.rc == 0
+      failed_when: pve_roles_modify.rc != 0
+      when: not pve_roles_create.changed
 
     - name: Setup permissions
       ansible.builtin.command: pveum acl modify "{{ item.path }}" --roles "{{ item.roles }}" --groups "{{ item.groups }}" --propagate {{ item.propagate }}

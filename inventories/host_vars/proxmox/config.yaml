@@ -79,6 +79,7 @@ proxmox_ve_roles:
       VM.Config.Network
       VM.Config.Options
       VM.Console
+      VM.Monitor
       VM.PowerMgmt
 
 proxmox_ve_permissions:
