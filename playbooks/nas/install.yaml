@@ -57,7 +57,7 @@
       failed_when: zpool_import_check.rc != 0 and zpool_import_check.rc != 1
 
     - name: Import zpool if required
-      ansible.builtin.command: "zpool import -d /dev/disk/by-id {{ zfs_zpool_name }}"
+      ansible.builtin.command: "zpool import -f -d /dev/disk/by-id {{ zfs_zpool_name }}"
       changed_when: true
       when: zpool_import_check.rc == 1
 
