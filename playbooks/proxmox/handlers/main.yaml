@@ -12,4 +12,3 @@
   become: true
   ansible.builtin.command: ifreload -a
   changed_when: true
-  when: network_interfaces.changed
