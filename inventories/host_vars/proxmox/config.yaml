@@ -100,6 +100,18 @@ proxmox_ve_permissions:
     roles: Packer
     propagate: true
 
+proxmox_ve_storages:
+  - storage: local
+    content:
+      - backup
+      - iso
+      - vztmpl
+      - snippets
+  - storage: local-zfs
+    content:
+      - images
+      - rootdir
+
 ## Scrutiny variables
 scrutiny_spoke_docker_name: scrutiny-spoke
 scrutiny_spoke_project_src: /opt/scrutiny-spoke

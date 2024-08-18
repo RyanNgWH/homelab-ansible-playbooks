@@ -250,6 +250,14 @@
       changed_when: pve_permissions.rc == 0
       failed_when: pve_permissions.rc != 0
 
+- name: Setup storage
+  become: true
+  ansible.builtin.command: pvesm set {{ item.storage }} --content "{{ item.content | join(',') }}"
+  loop: "{{ proxmox_ve_storages }}"
+  register: pve_storages
+  changed_when: pve_storages.rc == 0
+  failed_when: pve_storages.rc != 0
+
 - name: Setup notifications
   become: true
   block:
