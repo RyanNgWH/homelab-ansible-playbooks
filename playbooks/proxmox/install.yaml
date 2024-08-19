@@ -207,7 +207,7 @@
       when: not pve_groups_create.changed
 
     - name: Setup users
-      ansible.builtin.command: pveum user add {{ item.name }}@{{ item.realm }} --comment "[Ansible] {{ item.comment }}" {{ '--email ' + '"' + item.email + '"' if item.email is defined }} --enable {{ item.enable }} --groups {{ item.groups}} --password "{{ item.pass }}" # noqa: yaml[line-length]
+      ansible.builtin.command: pveum user add {{ item.name }}@{{ item.realm }} --comment "[Ansible] {{ item.comment }}" {{ '--email ' + '"' + item.email + '"' if item.email is defined }} --enable {{ item.enable }} --groups {{ item.groups}} {{ '--password "' + item.pass + '"' if item.pass is defined }} # noqa: yaml[line-length]
       loop: "{{ proxmox_ve_users }}"
       register: pve_users_create
       changed_when: pve_users_create.rc == 0
