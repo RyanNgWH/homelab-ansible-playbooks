@@ -286,5 +286,8 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
 - name: Setup scrutiny spoke for disk SMART monitoring
   ansible.builtin.import_tasks: ../scrutiny/deploy.yaml
