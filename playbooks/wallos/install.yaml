@@ -185,7 +185,7 @@
   vars:
     debian_common_task_list:
       - nginx
-    debian_common_nginx_tls_domains:
+    nginx_tls_domains:
       - "{{ ansible_host }}"
     debian_common_nginx_user: "{{ nfs_user_name }}"
     debian_common_nginx_group: "{{ nfs_user_name }}"
