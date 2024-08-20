@@ -32,6 +32,7 @@
 
 - name: Configure nginx user and group
   become: true
+  notify: Reload nginx configuration
   ansible.builtin.lineinfile:
     path: /etc/nginx/nginx.conf
     line: "user {{ nginx_user }} {{ nginx_group }};"
