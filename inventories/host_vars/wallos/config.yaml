@@ -22,6 +22,8 @@ nfs_mounts:
     mount_point: /srv/sana
 
 ## NGINX variables
+nginx_user: wallos
+nginx_group: wallos
 nginx_conf_files:
   - filename: wallos.conf
     path: templates/nginx.wallos.conf
