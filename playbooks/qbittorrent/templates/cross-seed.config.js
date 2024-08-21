@@ -23,6 +23,7 @@ module.exports = {
     "https://{{ cross_seed_prowlarr_hostname }}/5/api?apikey={{ cross_seed_prowlarr_api_key }}", // Upload.cx
     "https://{{ cross_seed_prowlarr_hostname }}/6/api?apikey={{ cross_seed_prowlarr_api_key }}", // JPTV
     "https://{{ cross_seed_prowlarr_hostname }}/7/api?apikey={{ cross_seed_prowlarr_api_key }}", // LST
+    "https://{{ cross_seed_prowlarr_hostname }}/9/api?apikey={{ cross_seed_prowlarr_api_key }}", // DigitalCore
   ],
   /**
    * To search with downloaded data, you can pass in directories to your downloaded torrent
