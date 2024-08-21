@@ -338,7 +338,7 @@ share_limits:
     max_seeding_time: 30d
     cleanup: true
   digitalcore:
-    priority: 11
+    priority: 12
     include_all_tags:
       - digitalcore
     categories:
