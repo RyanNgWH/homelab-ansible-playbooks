@@ -27,6 +27,8 @@ nfs_exports:
   - src: /aspen/marilyn/
     dest: /export/marilyn
   - src: /aspen/marilyn/configs/
+    dest: /export/marilyn/configs
+  - src: /aspen/marilyn/configs/
     dest: /export/marilyn-configs
   - src: /aspen/marilyn/configs/jellyfin/
     dest: /export/marilyn-configs-jellyfin
@@ -34,6 +36,8 @@ nfs_exports:
     dest: /export/marilyn-configs-jellyseerr
   - src: /aspen/marilyn/configs/prowlarr/
     dest: /export/marilyn-configs-prowlarr
+  - src: /aspen/marilyn/databases/
+    dest: /export/marilyn/databases
   - src: /aspen/marilyn/databases/bazarr/
     dest: /export/marilyn-databases-bazarr
   - src: /aspen/marilyn/databases/prowlarr/

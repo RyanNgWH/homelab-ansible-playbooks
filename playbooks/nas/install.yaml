@@ -43,12 +43,12 @@
       no_log: true
 
     - name: Create systemd service for loading zfs keys
-      ansible.builtin.template:
-        src: templates/zfs.load-key.service
+      ansible.builtin.copy:
+        src: files/zfs.load-key.service
         dest: /etc/systemd/system/zfs-load-key@.service
         owner: root
         group: root
-        mode: "0766"
+        mode: "0644"
 
     - name: Check if zpool is imported
       ansible.builtin.command: "zpool list {{ zfs_zpool_name }}"
@@ -196,6 +196,62 @@
       ansible.builtin.systemd_service:
         name: nfs-server.service
         state: restarted
+
+- name: Setup sanoid/syncoid zfs backup orchestration
+  become: true
+  block:
+    - name: Install sanoid
+      ansible.builtin.apt:
+        name: sanoid
+        update_cache: true
+        state: present
+
+    - name: Ensure sanoid configuration folder is present
+      ansible.builtin.file:
+        path: /etc/sanoid
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+
+    - name: Setup sanoid configuration file
+      ansible.builtin.copy:
+        src: files/sanoid.sanoid.conf
+        dest: /etc/sanoid/sanoid.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Setup sanoid group
+      ansible.builtin.group:
+        name: "{{ sanoid_user_name }}"
+        system: true
+        state: present
+
+    - name: Setup sanoid user
+      ansible.builtin.user:
+        name: "{{ sanoid_user_name }}"
+        group: "{{ sanoid_user_name }}"
+        password: "{{ sanoid_user_pass }}"
+        shell: /bin/bash
+        create_home: true
+        state: present
+
+    - name: Setup sanoid sudoers rule
+      community.general.sudoers:
+        name: "{{ sanoid_user_name }}"
+        user: "{{ sanoid_user_name }}"
+        host: ALL
+        runas: root
+        nopassword: true
+        commands: /usr/bin/zfs
+        state: present
+
+    - name: "Add SSH authorised key for user: {{ debian_user_name }}"
+      ansible.posix.authorized_key:
+        user: "{{ sanoid_user_name }}"
+        key: "{{ sanoid_ssh_public_key }}"
+        state: present
 
 - name: Setup scrutiny spoke for disk SMART monitoring
   ansible.builtin.import_tasks: ../scrutiny/deploy.yaml
