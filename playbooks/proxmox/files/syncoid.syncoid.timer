@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily zfs backups pull from &i
+
+[Timer]
+# Execute at 0015 daily
+OnCalendar=*-*-* 00:15:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

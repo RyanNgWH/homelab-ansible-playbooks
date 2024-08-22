@@ -1,0 +1,4 @@
+# @format
+---
+sanoid_user_name: sanoid
+sanoid_ssh_public_key: ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICFIp4V2eR/Rl2KLbTmel8ZWpquwW7BfkPXmrogMU0vv Sanoid/Syncoid zfs backup orchestration

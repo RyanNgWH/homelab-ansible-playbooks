@@ -1,0 +1,11 @@
+[Unit]
+Description=Sync zfs backups from %i
+Requires=local-fs.target
+After=network-online.target local-fs.target
+Wants=network-online.target
+ConditionFileNotEmpty=/etc/sanoid/syncoid/%i.env
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/sanoid/syncoid/%i.env
+ExecStart=/usr/sbin/syncoid $SYNCOID_OPTIONS --sshkey=/root/.ssh/sanoid/id_ed25519 ${SYNCOID_HOST}:${SYNCOID_DATASET} buttercup/${SYNCOID_DATASET}

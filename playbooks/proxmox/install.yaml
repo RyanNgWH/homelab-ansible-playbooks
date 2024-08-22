@@ -289,5 +289,87 @@
 - name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
+- name: Setup sanoid/syncoid zfs backup orchestration
+  become: true
+  block:
+    - name: Ensure sanoid private key folder is present
+      ansible.builtin.file:
+        path: /root/.ssh/sanoid
+        owner: root
+        group: root
+        mode: "0700"
+        state: directory
+
+    - name: Copy sanoid private key to server
+      ansible.builtin.copy:
+        src: "{{ sanoid_private_key_file }}"
+        dest: /root/.ssh/sanoid/id_ed25519
+        owner: "root"
+        group: "root"
+        mode: "0600"
+
+    - name: Install sanoid
+      ansible.builtin.apt:
+        name: sanoid
+        update_cache: true
+        state: present
+
+    - name: Ensure sanoid configuration folder is present
+      ansible.builtin.file:
+        path: /etc/sanoid
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+
+    - name: Setup sanoid configuration file
+      ansible.builtin.copy:
+        src: files/sanoid.sanoid.conf
+        dest: /etc/sanoid/sanoid.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Ensure syncoid configuration folder is present
+      ansible.builtin.file:
+        path: /etc/sanoid/syncoid
+        owner: root
+        group: root
+        mode: "0755"
+        state: directory
+
+    - name: Setup syncoid configuration files
+      ansible.builtin.copy:
+        src: files/syncoid.{{ item }}.env
+        dest: /etc/sanoid/syncoid/{{ item }}.env
+        owner: root
+        group: root
+        mode: "0644"
+      loop: "{{ syncoid_targets }}"
+
+    - name: Setup syncoid systemd service for pulling backups
+      ansible.builtin.copy:
+        src: files/syncoid.syncoid.service
+        dest: /etc/systemd/system/syncoid@.service
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Create syncoid systemd timer for scheduling backups
+      ansible.builtin.copy:
+        src: files/syncoid.syncoid.timer
+        dest: /etc/systemd/system/syncoid@.timer
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Enable and start syncoid timers
+      ansible.builtin.systemd_service:
+        name: "syncoid@{{ item }}.timer"
+        daemon_reload: true
+        enabled: true
+        state: started
+      loop: "{{ syncoid_targets }}"
+
 - name: Setup scrutiny spoke for disk SMART monitoring
   ansible.builtin.import_tasks: ../scrutiny/deploy.yaml

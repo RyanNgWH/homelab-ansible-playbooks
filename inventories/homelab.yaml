@@ -206,3 +206,8 @@ sierra_proxmox:
     wallos:
     wikijs:
     your_spotify:
+
+syncoid:
+  hosts:
+    nas:
+    proxmox:
