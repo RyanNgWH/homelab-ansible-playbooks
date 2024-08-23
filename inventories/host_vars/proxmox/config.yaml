@@ -116,6 +116,7 @@ proxmox_ve_storages:
 sanoid_private_key_file: /mnt/veracrypt2/SSH Keys/Sanoid/id_ed25519
 
 syncoid_targets:
+  - desktop
   - nas
   - proxmox
 
