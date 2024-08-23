@@ -119,6 +119,7 @@ syncoid_targets:
   - desktop
   - nas
   - proxmox
+  - router
 
 ## Scrutiny variables
 scrutiny_spoke_docker_name: scrutiny-spoke

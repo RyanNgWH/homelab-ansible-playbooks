@@ -33,6 +33,8 @@ all:
       ansible_host: cloud.tinynamoo.com
     ntfy:
       ansible_host: push.tinynamoo.com
+    opnsense:
+      ansible_host: router.tinynamoo.com
     paperless:
       ansible_host: archive.tinynamoo.com
     piped:
@@ -210,4 +212,5 @@ sierra_proxmox:
 syncoid:
   hosts:
     nas:
+    opnsense:
     proxmox:

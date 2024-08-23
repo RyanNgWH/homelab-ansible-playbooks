@@ -1,0 +1,85 @@
+# @format
+
+- name: Setup sanoid/syncoid zfs backup orchestration
+  become: true
+  block:
+    - name: Enable FreeBSD pkg repository
+      ansible.builtin.copy:
+        content: "FreeBSD: { enabled: yes }"
+        dest: /usr/local/etc/pkg/repos/FreeBSD.conf
+        owner: root
+        group: wheel
+        mode: "0644"
+
+    - name: Install sanoid packages
+      community.general.pkgng:
+        name: sanoid
+        cached: false
+        pkgsite: FreeBSD
+        state: present
+
+    - name: Disable FreeBSD pkg repository
+      ansible.builtin.copy:
+        content: "FreeBSD: { enabled: no }"
+        dest: /usr/local/etc/pkg/repos/FreeBSD.conf
+        owner: root
+        group: wheel
+        mode: "0644"
+
+    - name: Ensure sanoid configuration folder is present
+      ansible.builtin.file:
+        path: /usr/local/etc/sanoid
+        owner: root
+        group: wheel
+        mode: "0755"
+        state: directory
+
+    - name: Setup sanoid configuration file
+      ansible.builtin.copy:
+        src: files/sanoid.sanoid.conf
+        dest: /usr/local/etc/sanoid/sanoid.conf
+        owner: root
+        group: wheel
+        mode: "0644"
+
+    - name: Setup sanoid group
+      ansible.builtin.group:
+        name: "{{ sanoid_user_name }}"
+        system: true
+        state: present
+
+    - name: Setup sanoid user
+      ansible.builtin.user:
+        name: "{{ sanoid_user_name }}"
+        group: "{{ sanoid_user_name }}"
+        password: "{{ sanoid_user_pass }}"
+        groups: wheel
+        shell: /bin/sh
+        create_home: true
+        state: present
+
+    - name: Setup sanoid sudoers rule
+      community.general.sudoers:
+        name: "{{ sanoid_user_name }}"
+        user: "{{ sanoid_user_name }}"
+        host: ALL
+        runas: root
+        nopassword: true
+        commands: /sbin/zfs
+        sudoers_path: /usr/local/etc/sudoers.d
+        state: present
+
+    - name: "Add SSH authorised key for user: {{ debian_user_name }}"
+      ansible.posix.authorized_key:
+        user: "{{ sanoid_user_name }}"
+        key: "{{ sanoid_ssh_public_key }}"
+        state: present
+
+    - name: Create sanoid configd action
+      ansible.builtin.copy:
+        src: files/sanoid.actions_sanoid.conf
+        dest: /usr/local/opnsense/service/conf/actions.d/actions_sanoid.conf
+        owner: root
+        group: wheel
+        mode: "0644"
+      notify: Restart configd

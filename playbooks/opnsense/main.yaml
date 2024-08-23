@@ -1,0 +1,16 @@
+# @format
+
+# Opnsense
+# Install and configure the Opnsense router.
+---
+- name: Install and configure the Opnsense router
+  hosts: opnsense
+
+  handlers:
+    - name: Import handlers
+      ansible.builtin.import_tasks: handlers/main.yaml
+
+  tasks:
+    - name: Install and configure the Opnsense router
+      ansible.builtin.import_tasks: install.yaml
+      tags: install
