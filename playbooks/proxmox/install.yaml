@@ -308,9 +308,11 @@
         group: "root"
         mode: "0600"
 
-    - name: Install sanoid
+    - name: Install sanoid packages
       ansible.builtin.apt:
-        name: sanoid
+        name:
+          - sanoid
+          - lz4
         update_cache: true
         state: present
 
