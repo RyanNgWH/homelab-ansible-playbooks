@@ -17,7 +17,7 @@ allow-ovs vmbr0
 iface ens3f1 inet manual
   ovs_type OVSPort
   ovs_bridge vmbr0
-  ovs_options vlan_mode=native-untagged trunks=10,14,17,20
+  ovs_options vlan_mode=native-untagged trunks=10,14,17,20,28
 
 auto server
 allow-ovs vmbr0
