@@ -37,7 +37,7 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre-upgrade-sonarr' + (sonarr_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_name: "{{ 'pre-upgrade-sonarr_' + (sonarr_image_version | regex_replace('[.|-]', '_')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of sonarr {{ sonarr_image_version }} before upgrading to {{ sonarr_latest_version }}"
   delegate_to: localhost
 
