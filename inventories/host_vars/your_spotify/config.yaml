@@ -34,6 +34,11 @@ yourspotify_public_token: 45603d7c85c34913bd4d2c9788aaa4a7
 
 yourspotify_api_docker_name: your-spotify-api
 
+## Proxmox variables
+proxmox_snapshot_vmid: 20117
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
 ## Docker variables
 docker_project_name: your-spotify
 docker_project_src: /opt/your-spotify
