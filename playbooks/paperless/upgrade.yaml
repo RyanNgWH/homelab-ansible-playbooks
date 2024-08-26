@@ -37,7 +37,7 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (paperless_image_version | regex_replace('[.|-]', '_')) + '-' + (gotenberg_image_version | regex_replace('[.|-]', '_')) }}" # noqa: yaml[line-length]
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (paperless_image_version | regex_replace('[.]', '-')) + '_' + (gotenberg_image_version | regex_replace('[.]', '-')) }}" # noqa: yaml[line-length]
     proxmox_snapshot_description: |
       [Ansible] Working snapshot of paperless-ngx
 

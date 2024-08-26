@@ -37,7 +37,7 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (immich_image_version | replace('.', '_')) }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (immich_image_version | replace('.', '-')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of immich {{ immich_image_version }} before upgrading to {{ immich_latest_version }}"
   delegate_to: localhost
 

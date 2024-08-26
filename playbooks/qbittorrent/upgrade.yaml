@@ -37,7 +37,7 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (qbittorrent_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (qbittorrent_image_version | regex_replace('[.]', '-')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of qbittorrent {{ qbittorrent_image_version }} before upgrading to {{ qbittorrent_latest_version }}" # noqa: yaml[line-length]
   delegate_to: localhost
 

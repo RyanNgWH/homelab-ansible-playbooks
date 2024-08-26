@@ -37,7 +37,7 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (wikijs_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (wikijs_image_version | regex_replace('[.]', '-')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of wikijs {{ wikijs_image_version }} before upgrading to {{ wikijs_latest_version }}"
   delegate_to: localhost
 

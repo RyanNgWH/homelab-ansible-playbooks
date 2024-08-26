@@ -38,7 +38,7 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (stirling_pdf_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (stirling_pdf_image_version | regex_replace('[.]', '-')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of stirling-pdf {{ stirling_pdf_image_version }} before upgrading to {{ stirling_pdf_latest_version }}" # noqa: yaml[line-length]
   delegate_to: localhost
 

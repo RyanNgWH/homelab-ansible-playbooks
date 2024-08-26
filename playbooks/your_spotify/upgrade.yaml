@@ -9,7 +9,7 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + now(utc=true,fmt='%Y-%m-%d_%H-%M-%S') }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + now(utc=true,fmt='%Y-%m-%d_%H-%M-%S') }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of your-spotify before upgrading"
   delegate_to: localhost
 

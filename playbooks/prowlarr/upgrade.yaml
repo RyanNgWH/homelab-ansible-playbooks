@@ -37,7 +37,7 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre-upgrade-' + (prowlarr_image_version | regex_replace('[.|-]', '_')) }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (prowlarr_image_version | regex_replace('[.]', '-')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of prowlarr {{ prowlarr_image_version }} before upgrading to {{ prowlarr_latest_version }}"
   delegate_to: localhost
 
