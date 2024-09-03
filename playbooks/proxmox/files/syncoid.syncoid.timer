@@ -2,8 +2,8 @@
 Description=Daily zfs backups pull from &i
 
 [Timer]
-# Execute at 0015 daily
-OnCalendar=*-*-* 00:15:00
+# Execute at the 15th minute hourly
+OnCalendar=*-*-* *:15:00
 Persistent=true
 
 [Install]
