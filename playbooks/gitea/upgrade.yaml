@@ -1,0 +1,60 @@
+# @format
+
+# Gitea
+# Install and configure Gitea git server.
+---
+- name: Check if gitea requires update
+  become: true
+  block:
+    - name: Get latest gitea container release from github
+      community.general.github_release:
+        user: go-gitea
+        repo: gitea
+        action: latest_release
+      delegate_to: localhost
+      register: gitea_github_release
+
+    - name: Extract latest gitea container version
+      ansible.builtin.set_fact:
+        gitea_latest_version: "{{ gitea_github_release.tag }}"
+
+    - name: Stop play if gitea has no updates
+      ansible.builtin.meta: end_play
+      when: gitea_image_version == gitea_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (gitea_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of gitea {{ gitea_image_version }} before upgrading to {{ gitea_latest_version }}"
+  delegate_to: localhost
+
+- name: Upgrade gitea git server
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Update & start gitea docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true
