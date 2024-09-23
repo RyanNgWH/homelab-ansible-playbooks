@@ -30,6 +30,7 @@
       when: wallos_current_version == wallos_latest_version
 
 - name: Take snapshot of Proxmox instance
+  become: false
   ansible.builtin.import_role:
     name: proxmox
     public: false
