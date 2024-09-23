@@ -20,6 +20,7 @@
         homarr_image_version: "v{{ homarr_image_version }}"
 
     - name: Get latest homarr container release from github
+      become: false
       community.general.github_release:
         user: ajnart
         repo: homarr

@@ -16,6 +16,7 @@
         docker_fact_name: bazarr
 
     - name: Get latest bazarr container release from github
+      become: false
       community.general.github_release:
         user: linuxserver
         repo: docker-bazarr

@@ -16,6 +16,7 @@
         docker_fact_name: sonarr
 
     - name: Get latest sonarr container release from github
+      become: false
       community.general.github_release:
         user: linuxserver
         repo: docker-sonarr

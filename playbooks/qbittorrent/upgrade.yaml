@@ -16,6 +16,7 @@
         docker_fact_name: qbittorrent
 
     - name: Get latest qbittorrent container release from github
+      become: false
       community.general.github_release:
         user: linuxserver
         repo: docker-qbittorrent

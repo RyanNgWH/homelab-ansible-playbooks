@@ -16,6 +16,7 @@
         docker_fact_name: "{{ item.name }}"
 
     - name: Get latest containers releases from github
+      become: false
       community.general.github_release:
         user: "{{ item.docker_user }}"
         repo: "{{ item.docker_repo }}"

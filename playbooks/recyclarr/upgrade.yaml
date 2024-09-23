@@ -16,6 +16,7 @@
         docker_fact_name: recyclarr
 
     - name: Get latest recyclarr container release from github
+      become: false
       community.general.github_release:
         user: recyclarr
         repo: recyclarr

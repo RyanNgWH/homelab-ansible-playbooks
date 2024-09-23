@@ -16,6 +16,7 @@
         docker_fact_name: stirling_pdf
 
     - name: Get latest stirling-pdf container release from github
+      become: false
       community.general.github_release:
         user: Stirling-Tools
         repo: Stirling-PDF

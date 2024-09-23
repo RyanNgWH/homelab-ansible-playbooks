@@ -16,6 +16,7 @@
         docker_fact_name: radarr
 
     - name: Get latest radarr container release from github
+      become: false
       community.general.github_release:
         user: linuxserver
         repo: docker-radarr

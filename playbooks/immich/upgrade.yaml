@@ -16,6 +16,7 @@
         docker_fact_name: immich
 
     - name: Get latest immich server release from github
+      become: false
       community.general.github_release:
         user: immich-app
         repo: immich

@@ -12,6 +12,7 @@
       register: version_file
 
     - name: Get latest wallos release from github
+      become: false
       community.general.github_release:
         user: ellite
         repo: Wallos

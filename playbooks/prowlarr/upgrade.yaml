@@ -16,6 +16,7 @@
         docker_fact_name: prowlarr
 
     - name: Get latest prowlarr container release from github
+      become: false
       community.general.github_release:
         user: linuxserver
         repo: docker-prowlarr

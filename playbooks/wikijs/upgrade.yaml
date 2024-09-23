@@ -16,6 +16,7 @@
         docker_fact_name: wikijs
 
     - name: Get latest wikijs container release from github
+      become: false
       community.general.github_release:
         user: linuxserver
         repo: docker-wikijs
