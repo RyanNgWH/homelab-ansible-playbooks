@@ -28,3 +28,7 @@
     - name: Install and configure Miniflux feed reader
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Miniflux feed reader
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade
