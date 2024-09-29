@@ -31,3 +31,4 @@
         project_name: "{{ docker_project_name }}"
         project_src: "{{ docker_project_src }}"
         state: present
+      when: "'backup' in ansible_run_tags"

@@ -29,6 +29,11 @@ nginx_conf_files:
 ## Uptime kuma variables
 uptime_kuma_docker_name: uptime-kuma
 
+## Proxmox variables
+proxmox_snapshot_vmid: 10120
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
 ## Docker variables
 docker_project_name: uptime-kuma
 docker_project_src: /opt/uptime-kuma

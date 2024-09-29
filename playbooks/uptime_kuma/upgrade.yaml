@@ -1,0 +1,61 @@
+# @format
+
+# Uptime Kuma
+# Upgrade Uptime Kuma monitoring tool
+---
+- name: Get latest container release from github
+  become: false
+  community.general.github_release:
+    user: louislam
+    repo: uptime-kuma
+    action: latest_release
+  delegate_to: localhost
+  register: github_release
+
+- name: Extract latest containers versions
+  ansible.builtin.set_fact:
+    "kuma_latest_version": "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
+
+- name: Fix application docker image versionings in fact
+  ansible.builtin.set_fact:
+    kuma_latest_version: "v{{ kuma_latest_version }}"
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (kuma_latest_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of uptime kuma before upgrading to {{ kuma_latest_version }}"
+  delegate_to: localhost
+
+- name: Backup uptime kuma data directory
+  ansible.builtin.import_tasks: backup.yaml
+
+- name: Upgrade uptime kuma monitoring tool
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Update & start uptime kuma docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true
