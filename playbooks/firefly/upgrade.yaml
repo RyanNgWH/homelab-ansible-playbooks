@@ -3,6 +3,35 @@
 # Firefly III
 # Upgrade the Firefly III finance managment server.
 ---
+- name: Get application current and latest versions
+  ansible.builtin.include_tasks: get-versions.yaml
+  loop:
+    - name: firefly
+      docker_name: "{{ docker_project_name }}"
+      docker_user: firefly-iii
+      docker_repo: firefly-iii
+
+- name: Check if applications have updates
+  block:
+    - name: Check if applications have updates
+      ansible.builtin.set_fact:
+        firefly_has_updates: "{{ firefly_image_version != firefly_latest_version }}"
+
+    - name: Stop play if applications have no updates
+      ansible.builtin.meta: end_play
+      when: "not firefly_has_updates"
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (firefly_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of firefly-iii {{ firefly_image_version }} - upgrading to firefly-iii {{ firefly_latest_version }}"
+  delegate_to: localhost
+
+
 - name: Upgrade Firefly III finance managment server
   become: true
   block:

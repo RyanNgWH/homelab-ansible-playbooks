@@ -1,0 +1,29 @@
+# @format
+
+# Firefly-III
+# Get current and latest versions of the Firefly-III applications
+---
+- name: Get application current and latest versions
+  become: true
+  block:
+    - name: Get current containers version
+      ansible.builtin.import_role:
+        name: docker
+        public: false
+      vars:
+        docker_task_list: get_container_image_version
+        docker_container_name: "{{ item.docker_name }}"
+        docker_fact_name: "{{ item.name }}"
+
+    - name: Get latest containers releases from github
+      become: false
+      community.general.github_release:
+        user: "{{ item.docker_user }}"
+        repo: "{{ item.docker_repo }}"
+        action: latest_release
+      delegate_to: localhost
+      register: github_release
+
+    - name: Extract latest containers versions
+      ansible.builtin.set_fact:
+        "{{ item.name }}_latest_version": "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
