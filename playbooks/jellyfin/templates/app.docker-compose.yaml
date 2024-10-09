@@ -19,7 +19,9 @@ services:
       resources:
         reservations:
           devices:
-            - capabilities: [gpu]
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
 
   jellystat:
     container_name: {{ jellystat_docker_name }}
