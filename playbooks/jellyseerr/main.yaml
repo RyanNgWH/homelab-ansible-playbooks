@@ -28,3 +28,7 @@
     - name: Install and configure the Jellyseerr media management server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade the Jellyseerr media management server
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade
