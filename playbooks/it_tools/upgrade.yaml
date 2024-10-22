@@ -1,0 +1,41 @@
+# @format
+
+# IT-Tools
+# Upgrade IT-Tools developers tools collection
+---
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + now(utc=true, fmt='%Y-%m-%d_%H-%M-%S') }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of IT-Tools before upgrading"
+  delegate_to: localhost
+
+- name: Upgrade IT-Tools developers tools collection
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Update & start IT-Tools docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true

@@ -26,3 +26,7 @@
     - name: Install and configure IT-Tools developers tools collection
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade IT-Tools developers tools collection
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade
