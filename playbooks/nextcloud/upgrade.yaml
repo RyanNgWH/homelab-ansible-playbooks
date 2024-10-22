@@ -3,6 +3,16 @@
 # Jellyfin
 # Upgrade Nextcloud cloud storage
 ---
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + now(utc=true,fmt='%Y-%m-%d_%H-%M-%S') }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of nextcloud before upgrading"
+  delegate_to: localhost
+
 - name: Upgrade Nextcloud cloud storage server
   become: true
   block:

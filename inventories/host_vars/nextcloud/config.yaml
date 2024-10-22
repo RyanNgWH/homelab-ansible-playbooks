@@ -41,6 +41,11 @@ nextcloud_collabora_hostname: office.tinynamoo.com
 
 nextcloud_docker_name: nextcloud
 
+## Proxmox instance variables
+proxmox_snapshot_vmid: 14100
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
 ## Docker variables
 docker_project_name: nextcloud
 docker_project_src: /opt/nextcloud
