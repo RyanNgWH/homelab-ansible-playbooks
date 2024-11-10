@@ -52,6 +52,33 @@
         groups: "{{ qbit_media_group_name }}"
         append: true
 
+- name: Ensure docker starts only after NFS mounted
+  become: true
+  block:
+    - name: Ensure docker NFS override folder is present
+      ansible.builtin.file:
+        path: "/etc/systemd/system/docker.service.d"
+        owner: root
+        group: root
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker NFS override file
+      ansible.builtin.template:
+        src: templates/99_require-nfs-mount.conf
+        dest: "/etc/systemd/system/docker.service.d/99_require-nfs-mount.conf"
+        owner: root
+        group: root
+        mode: "0644"
+      register: nfs_override_file
+    
+    - name: Reload and restart Docker service
+      ansible.builtin.systemd_service:
+        name: docker.service
+        daemon_reload: true
+        state: restarted
+      when: nfs_override_file.changed
+
 - name: Setup qBittorrent application files
   become: true
   block:
