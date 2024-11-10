@@ -88,6 +88,7 @@ debian:
     jellyfin:
     jellyseerr:
     miniflux:
+    nas:
     nextcloud:
     ntfy:
     paperless:
