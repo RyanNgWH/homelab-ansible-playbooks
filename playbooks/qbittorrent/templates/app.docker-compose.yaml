@@ -15,6 +15,10 @@ services:
     ports:
       - 8080:8080
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s -o /dev/null -f http://localhost:8080/api/v2/app/version"]
+      interval: 2s
+      timeout: 30s 
 
   cross-seed:
     container_name: {{ cross_seed_docker_name }}
