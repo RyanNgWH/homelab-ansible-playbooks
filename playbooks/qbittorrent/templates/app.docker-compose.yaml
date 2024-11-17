@@ -14,6 +14,9 @@ services:
       - {{ nfs_mounts.marilyn.mount_point }}/media/cross-seed-links:/data/media/cross-seed-links
     ports:
       - 8080:8080
+    networks:
+      qbit:
+        ipv4_address: "172.18.0.2"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -s -o /dev/null -f http://localhost:8080/api/v2/app/version"]
@@ -29,8 +32,9 @@ services:
       - {{ nfs_mounts.marilyn.mount_point }}/torrents/cross-seed-torrents:/cross-seeds
       - {{ nfs_mounts.marilyn.mount_point }}/media:/data/media
     command: daemon
-    ports:
-      - "2468:2468"
+    networks:
+      qbit:
+        ipv4_address: "172.18.0.3"
     user: {{ nfs_user_id }}:{{ qbit_media_group_gid }}
     restart: unless-stopped
     depends_on:
@@ -50,7 +54,18 @@ services:
       QBT_CONFIG: config.yml
       QBT_LOGFILE: activity.log
       QBT_LOG_LEVEL: INFO
+    networks:
+      qbit:
+        ipv4_address: "172.18.0.4"
     restart: unless-stopped
     depends_on:
       qbittorrent:
         condition: service_started
+
+networks:
+  qbit:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16
+          gateway: "172.18.0.1"

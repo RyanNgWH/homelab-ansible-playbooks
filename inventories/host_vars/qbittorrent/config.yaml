@@ -31,6 +31,7 @@ qbit_media_group_name: media
 qbit_media_group_gid: "{{ nfs_groups['media'].gid }}"
 
 qbittorrent_docker_name: qbittorrent
+qbittorrent_docker_ip: 172.18.0.2
 
 protonvpn_gateway: 10.2.0.1
 protonvpn_port_forward_lifetime: 60 # ProtonVPN currently limits at 60s

@@ -13,7 +13,7 @@ findconfiguredport() {
 }
 
 findactiveport() {
-  natpmpc -g {{ protonvpn_gateway }} -a 1 0 tcp {{ protonvpn_port_forward_lifetime }} | grep -oP '(?<=Mapped public port.).*(?=.protocol.*)'
+  natpmpc -g {{ protonvpn_gateway }} -a 0 0 tcp {{ protonvpn_port_forward_lifetime }} | grep -oP '(?<=Mapped public port.).*(?=.protocol.*)'
 }
 
 qbt_login() {
@@ -43,10 +43,34 @@ qbt_isreachable(){
   fi
 }
 
+fw_delrule(){
+  if (/usr/sbin/iptables -t nat -L DOCKER -n | grep -qP "^DNAT.*${configured_port}.*"); then
+    /usr/sbin/iptables -t nat -D DOCKER -p tcp --dport ${configured_port} -j DNAT --to-destination {{ qbittorrent_docker_ip }}:${configured_port}
+  fi
+  
+  if !(/usr/sbin/iptables -L DOCKER -n | grep -P "ACCEPT.*dpt:${configured_port}.*"); then
+    /usr/sbin/iptables -D DOCKER -p tcp -d {{ qbittorrent_docker_ip }} --dport ${active_port} -j ACCEPT
+  fi
+}
+
+fw_addrule(){
+  if !(/usr/sbin/iptables -t nat -L DOCKER -n | grep -qP "^DNAT.*${active_port}.*"); then
+    /usr/sbin/iptables -t nat -A DOCKER -p tcp --dport ${active_port} -j DNAT --to-destination {{ qbittorrent_docker_ip }}:${active_port}
+
+    if !(/usr/sbin/iptables -L DOCKER -n | grep -P "ACCEPT.*dpt:${active_port}.*"); then
+      /usr/sbin/iptables -A DOCKER -p tcp -d {{ qbittorrent_docker_ip }} --dport ${active_port} -j ACCEPT
+      return 0
+    else
+      return 1
+    fi
+  else
+    return 1
+  fi
+}
+
 get_portmap() {
   res=0
   public_ip=$(getpublicip)
-
   if ! qbt_checksid; then
     echo "$(timestamp) | qBittorrent Cookie invalid, getting new SessionID"
     if ! qbt_login; then
@@ -66,6 +90,9 @@ get_portmap() {
 
   if [[ ${configured_port} != ${active_port} ]]; then
     if qbt_changeport "${qbt_sid}" ${active_port}; then
+      if fw_delrule; then
+          echo "$(timestamp) | IPTables rule deleted for port ${configured_port}"
+      fi
       echo "$(timestamp) | Port Changed to: $(findconfiguredport ${qbt_sid})"
     else
       echo "$(timestamp) | Port Change failed."
@@ -74,6 +101,11 @@ get_portmap() {
   else
     echo "$(timestamp) | Port OK (Act: ${active_port} Cfg: ${configured_port})"
   fi
+
+  if fw_addrule; then
+    echo "$(timestamp) | IPTables rule added for port ${active_port}"
+  fi
+
   return $res
 }
 
