@@ -3,34 +3,32 @@
 # qBittorrent
 # Upgrade qBittorrent download server
 ---
-- name: Check if qbittorrent requires update
-  become: true
+- name: Get application current and latest versions
+  ansible.builtin.include_tasks: get-versions.yaml
+  loop:
+    - name: qbittorrent
+      docker_name: "{{ qbittorrent_docker_name }}"
+      docker_user: linuxserver
+      docker_repo: docker-qbittorrent
+    - name: cross_seed
+      docker_name: "{{ cross_seed_docker_name }}"
+      docker_user: cross-seed
+      docker_repo: cross-seed
+
+- name: Check if applications have updates
   block:
-    - name: Get current qbittorrent container version
-      ansible.builtin.import_role:
-        name: docker
-        public: false
-      vars:
-        docker_task_list: get_container_image_version
-        docker_container_name: "{{ qbittorrent_docker_name }}"
-        docker_fact_name: qbittorrent
-
-    - name: Get latest qbittorrent container release from github
-      become: false
-      community.general.github_release:
-        user: linuxserver
-        repo: docker-qbittorrent
-        action: latest_release
-      delegate_to: localhost
-      register: qbittorrent_github_release
-
-    - name: Extract latest qbittorrent container version
+    - name: Fix application docker image versionings in fact
       ansible.builtin.set_fact:
-        qbittorrent_latest_version: "{{ qbittorrent_github_release.tag }}"
+        cross_seed_image_version: "{{ cross_seed_image_version | regex_replace('version-', 'v') }}"
 
-    - name: Stop play if qbittorrent has no updates
+    - name: Check if applications have updates
+      ansible.builtin.set_fact:
+        qbittorrent_has_updates: "{{ qbittorrent_image_version != qbittorrent_latest_version }}"
+        cross_seed_has_updates: "{{ cross_seed_image_version != cross_seed_latest_version }}"
+
+    - name: Stop play if applications have no updates
       ansible.builtin.meta: end_play
-      when: qbittorrent_image_version == qbittorrent_latest_version
+      when: "(not qbittorrent_has_updates) and (not cross_seed_has_updates)"
 
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
@@ -38,8 +36,17 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (qbittorrent_image_version | regex_replace('[.]', '-')) }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of qbittorrent {{ qbittorrent_image_version }} before upgrading to {{ qbittorrent_latest_version }}" # noqa: yaml[line-length]
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (qbittorrent_image_version | regex_replace('[.]', '-')) + '_' + (cross_seed_image_version | regex_replace('[.]', '-'))  }}"
+    proxmox_snapshot_description: |
+      [Ansible] Working snapshot of qbittorrent
+
+      Current:
+        qBittorrent: {{ qbittorrent_image_version }}
+        cross-seed: {{ cross_seed_image_version }}
+
+      New:
+        qBittorrent: {{ qbittorrent_latest_version }}
+        cross-seed: {{ cross_seed_latest_version }}
   delegate_to: localhost
 
 - name: Upgrade qbittorrent downloads server
@@ -52,14 +59,49 @@
         autoremove: true
         purge: true
 
-    - name: Update & start qBittorrent docker containers
+    - name: Ensure application files is updated
+      block:
+        - name: Ensure docker-compose file is updated
+          ansible.builtin.template:
+            src: templates/app.docker-compose.yaml
+            dest: "{{ docker_project_src }}/docker-compose.yaml"
+            owner: "{{ nfs_user_name }}"
+            group: "{{ nfs_user_name }}"
+            mode: "0640"
+
+        - name: Ensure cross-seed configuration file is updated
+          ansible.builtin.template:
+            src: templates/cross-seed.config.js
+            dest: "{{ nfs_mounts.marilyn.mount_point }}/configs/cross-seed/config.js"
+            owner: "{{ nfs_user_name }}"
+            group: "{{ qbit_media_group_name }}"
+            mode: "0660"
+
+        - name: Setup qbit-manage configuration file is updated
+          ansible.builtin.template:
+            src: templates/qbit-manage.config.yaml
+            dest: "{{ docker_project_src }}/qbit-manage.config.yaml"
+            owner: "{{ nfs_user_name }}"
+            group: "{{ nfs_user_name }}"
+            mode: "0640"
+
+    - name: Update & start docker containers
       become: true
       community.docker.docker_compose_v2:
         project_name: "{{ docker_project_name }}"
         project_src: "{{ docker_project_src }}"
         remove_orphans: true
+        services: "{{ item.services }}"
         pull: always
         state: present
+      loop:
+        - services:
+            - "{{ qbittorrent_docker_name }}"
+            - "{{ qbit_manage_docker_name }}"
+          condition: "{{ qbittorrent_has_updates }}"
+        - services: "{{ cross_seed_docker_name }}"
+          condition: "{{ cross_seed_has_updates }}"
+      when: item.condition
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
