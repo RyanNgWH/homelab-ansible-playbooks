@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 module.exports = {
   /**
    * Pause at least this much in between each search. Higher is safer.
-   * It is not recommended to set this to less than 2 seconds.
+   * It is not recommended to set this to less than 15 seconds.
    */
   delay: 30,
   /**
@@ -27,6 +27,44 @@ module.exports = {
     "https://{{ cross_seed_prowlarr_hostname }}/10/api?apikey={{ cross_seed_prowlarr_api_key }}", // Aither
   ],
   /**
+	 * URL(s) to your Sonarr instance(s), included in the same way as torznab
+	 * URLs but for your Sonarr: note that api is not at the end. see below.
+	 *
+	 * You should order these in most likely to match -> the least likely order.
+	 * They are searched sequentially as they are listed.
+	 *
+	 * This apikey parameter comes from Sonarr
+	 *
+	 * Example: sonarr: ["http://sonarr:8989/?apikey=12345"],
+	 *
+	 *      sonarr: ["http://sonarr:8989/?apikey=12345",
+	 *               "http://sonarr4k:8989/?apikey=12345"],
+	 */
+  sonarr: [
+    "https://{{ cross_seed_sonarr_hostname }}/?apikey={{ cross_seed_sonarr_api_key }}",             // TV
+    "https://{{ cross_seed_sonarr4k_hostname }}/?apikey={{ cross_seed_sonarr4k_api_key }}",         // TV 4K
+    "https://{{ cross_seed_sonarr_anime_hostname }}/?apikey={{ cross_seed_sonarr_anime_api_key }}", // TV Anime
+  ],
+  /**
+	 * URL(s) to your Radarr instance(s), included in the same way as torznab
+	 * URLs but for your Radarr: note that api is not at the end. see below.
+	 *
+	 * You should order these in most likely to match -> the least likely order.
+	 * They are searched sequentially as they are listed.
+	 *
+	 * This apikey parameter comes from Radarr
+	 *
+	 * Example: radarr: ["http://radarr:7878/?apikey=12345"],
+	 *
+	 *       radarr: ["http://radarr:7878/?apikey=12345",
+	 *                "http://radarr4k:7878/?apikey=12345"],
+	 */
+  radarr: [
+    "https://{{ cross_seed_radarr_hostname }}/?apikey={{ cross_seed_radarr_api_key }}",             // Movies
+    "https://{{ cross_seed_radarr4k_hostname }}/?apikey={{ cross_seed_radarr4k_api_key }}",         // Movies 4K
+    "https://{{ cross_seed_radarr_anime_hostname }}/?apikey={{ cross_seed_radarr_anime_api_key }}", // Movies Anime
+  ],
+  /**
    * To search with downloaded data, you can pass in directories to your downloaded torrent
    * data to find matches rather using the torrent files themselves for matching.
    *
@@ -37,20 +75,13 @@ module.exports = {
    *          dataDirs: ["/path/here", "/other/path/here"],
    *          dataDirs: ["C:\\My Data\\Downloads"]
    */
-  dataDirs: [
-    "/data/media/movies",
-    "/data/media/movies4k",
-    "/data/media/tv",
-    "/data/media/tv4k",
-    "/data/media/anime",
-    "/data/media/animetv",
-  ],
+  dataDirs: [],
   /**
    * Determines flexibility of naming during matching. "safe" will allow only perfect name matches
    * using the standard matching algorithm. "risky" uses filesize as its only comparison point.
-   * Options: "safe", "risky"
+   * Options: "safe", "risky", "partial"
    */
-  matchMode: "risky",
+  matchMode: "partial",
   /**
    * Defines what category torrents injected by data-based matching should use.
    * Default is "cross-seed-data"
@@ -67,6 +98,18 @@ module.exports = {
    * Options: "symlink", "hardlink"
    */
   linkType: "hardlink",
+	/**
+	 * Enabling this will link files using v5's flat folder style.
+	 *
+	 * Each individual Torznab tracker's cross-seeds, otherwise, will have its
+	 * own folder with the tracker's name and it's links within it.
+	 *
+	 * If using Automatic Torrent Management in qBittorrent, please read:
+	 * https://www.cross-seed.org/docs/basics/options#flatlinking
+	 *
+	 * Default: false.
+	 */
+	flatLinking: false,
   /**
    * Whether to skip recheck in Qbittorrent. If using "risky" matchMode it is HIGHLY
    * recommended to set this to false.
@@ -97,29 +140,49 @@ module.exports = {
    * Instead set the volume mapping on your docker container.
    */
   outputDir: "/cross-seeds",
-  /**
-   * Whether to search for all episode torrents, including those from season packs. This option overrides includeSingleEpisodes.
-   */
-  includeEpisodes: true,
-  /**
-   * Whether to include single episode torrents in the search (not from season packs).
-   * Like `includeEpisodes` but slightly more restrictive.
-   */
+	/**
+	 * Whether to include single episode torrents in a search (not those from
+	 * season packs).
+	 *
+	 * This setting does not affect matching episodes from rss and
+	 * announce.
+	 */
   includeSingleEpisodes: true,
-  /**
-   * Include torrents which contain non-video files
-   * This option does not override includeEpisodes or includeSingleEpisodes.
-   *
-   * To search for everything except episodes, use (includeEpisodes: false, includeSingleEpisodes: false, includeNonVideos: true)
-   * To search for everything including episodes, use (includeEpisodes: true, includeNonVideos: true)
-   * To search for everything except season pack episodes (data-based)
-   *    use (includeEpisodes: false, includeSingleEpisodes: true, includeNonVideos: true)
-   */
+	/**
+	 * Include torrents which are comprised of non-video files.
+	 *
+	 * If this option is set to false, any folders or torrents whose
+	 * totalNonVideoFilesSize / totalSize > fuzzySizeThreshold
+	 * will be excluded.
+	 *
+	 * For example, if you have .srt or .nfo files inside a torrent, using
+	 * false will still allow the torrent to be considered for cross-seeding
+	 * while disallowing torrents that are music, games, books, etc.
+	 * For full disc based folders (not .ISO) you may wish to set this as true.
+	 *
+	 * To search for all video media except individual episodes, use:
+	 *
+	 *    includeSingleEpisodes: false
+	 *    includeNonVideos: false
+	 *
+	 * To search for all video media including individual episodes, use:
+	 *
+	 *    includeSingleEpisodes: true
+	 *    includeNonVideos: false
+	 *
+	 * To search for absolutely ALL types of content, including non-video, configure
+	 * your episode settings based on the above examples and use:
+	 *
+	 *     includeNonVideos: true
+	 */
   includeNonVideos: true,
-  /**
-   * fuzzy size match threshold
-   * decimal value (0.02 = 2%)
-   */
+	/**
+	 * You should NOT modify this unless you have good reason.
+	 * The following option is the preliminary value to compare sizes of
+	 * releases for further comparison.
+	 *
+	 * decimal value (0.02 = 2%)
+	 */  
   fuzzySizeThreshold: 0.02,
   /**
    * Exclude torrents first seen more than this long ago.
@@ -129,16 +192,18 @@ module.exports = {
    * "2w"
    * "3 days"
    */
-  excludeOlder: undefined,
+  excludeOlder: "12 weeks",
   /**
-   * Exclude torrents which have been searched
-   * more recently than this long ago.
-   * Examples:
-   * "10min"
-   * "2w"
-   * "3 days"
-   */
-  excludeRecentSearch: "3 days",
+	 * Exclude torrents which have been searched more recently than this long
+	 * ago.
+	 * Doesn't exclude previously failed searches.
+	 * Examples:
+	 * "2 days"
+	 * "5 days"
+	 *
+	 * This value must be 2-5x less than excludeOlder.
+	 */  
+  excludeRecentSearch: "4 weeks",
   /**
    * With "inject" you need to set up one of the below clients.
    * Options: "save", "inject"
@@ -200,12 +265,6 @@ module.exports = {
    */
   host: undefined,
   /**
-   * Whether to require authentication for API.
-   * Run the command `cross-seed api-key` to find your api key.
-   * Keys can be provided in an X-Api-Key HTTP header or a query param.
-   */
-  apiAuth: true,
-  /**
    * Run rss scans on a schedule. Format: https://github.com/vercel/ms
    * Set to undefined or null to disable. Minimum of 10 minutes.
    * Examples:
@@ -223,7 +282,7 @@ module.exports = {
    * "2w"
    * "3 days"
    */
-  searchCadence: "4 weeks",
+  searchCadence: "1 week",
   /**
    * Fail snatch requests that haven't responded after this long.
    * Set to null for an infinite timeout.
@@ -252,5 +311,20 @@ module.exports = {
    * Default is no limit.
    */
   searchLimit: undefined,
+	/**
+	 * The list of infohashes or strings which are contained in torrents that
+	 * you want to be excluded from cross-seed. This is the same format as
+	 * torznab, surround the entire set of quoted strings in square brackets
+	 * You can use any combination which must be entered on the one line.
+	 * Leave as undefined to disable.
+	 *
+	 * examples:
+	 *
+	 *    blockList: ["-excludedGroup", "-excludedGroup2"],
+	 *    blocklist: ["x265"],
+	 *    blocklist: ["Release.Name"],
+	 *    blocklist: ["3317e6485454354751555555366a8308c1e92093"],
+	 */
+	blockList: undefined,
 };
 //# sourceMappingURL=config.template.docker.cjs.map
