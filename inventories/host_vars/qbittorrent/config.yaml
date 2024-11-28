@@ -10,8 +10,8 @@ debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMNZXj6RHh4KAAP
 
 ## NFSv4-client-setup variables
 # Kerberos
-nfs_krb5_host_keytab_file: "/Volumes/Homelab/Kerberos Keytabs/[Dahlia] qBittorrent/host.keytab"
-nfs_krb5_user_keytab_file: "/Volumes/Homelab/Kerberos Keytabs/[Dahlia] qBittorrent/user.keytab"
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Dahlia] qBittorrent/host.keytab"
+nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Dahlia] qBittorrent/user.keytab"
 
 # NFS
 nfs_user_name: "{{ nfs_clients['qbittorrent'].name }}"
