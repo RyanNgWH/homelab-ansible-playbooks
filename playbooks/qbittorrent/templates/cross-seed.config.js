@@ -273,16 +273,16 @@ module.exports = {
    * "3 days"
    */
   rssCadence: "10min",
-  /**
-   * Run searches on a schedule. Format: https://github.com/vercel/ms
-   * Set to undefined or null to disable. Minimum of 1 day.
-   * If you have RSS enabled, you won't need this to run often (2+ weeks recommended)
-   * Examples:
-   * "10min"
-   * "2w"
-   * "3 days"
-   */
-  searchCadence: "1 week",
+	/**
+	 * Run searches on a schedule.
+	 * Set to undefined or null to disable. Minimum of 1 day.
+	 * Examples:
+	 * "2 weeks"
+	 * "3 days"
+	 *
+	 * This value must be at least 3x less than your excludeRecentSearch
+	 */
+  searchCadence: "1 day",
   /**
    * Fail snatch requests that haven't responded after this long.
    * Set to null for an infinite timeout.
