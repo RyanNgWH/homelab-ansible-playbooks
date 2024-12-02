@@ -25,6 +25,7 @@ module.exports = {
     "https://{{ cross_seed_prowlarr_hostname }}/7/api?apikey={{ cross_seed_prowlarr_api_key }}",  // LST
     "https://{{ cross_seed_prowlarr_hostname }}/9/api?apikey={{ cross_seed_prowlarr_api_key }}",  // DigitalCore
     "https://{{ cross_seed_prowlarr_hostname }}/10/api?apikey={{ cross_seed_prowlarr_api_key }}", // Aither
+    "https://{{ cross_seed_prowlarr_hostname }}/11/api?apikey={{ cross_seed_prowlarr_api_key }}", // Hawke Uno
   ],
   /**
 	 * URL(s) to your Sonarr instance(s), included in the same way as torznab

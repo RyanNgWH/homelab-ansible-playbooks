@@ -111,6 +111,9 @@ tracker:
   digitalcore:
     tag:
       - digitalcore
+  hawke-uno:
+    tag:
+      - hawke-uno
   hd-space:
     tag:
       - hd-space
@@ -374,6 +377,25 @@ share_limits:
       - tv4k-completed
     max_ratio: 10.0
     min_seeding_time: 10d
+    max_seeding_time: 1y
+    last_active: 7d
+    min_num_seeds: 1
+    cleanup: true
+  hawk-uno:
+    priority: 14
+    include_all_tags:
+      - hawke-uno
+    categories:
+      - movies
+      - movies4k
+      - tv
+      - tv4k
+      - movies-completed
+      - movies4k-completed
+      - tv-completed
+      - tv4k-completed
+    max_ratio: 10.0
+    min_seeding_time: 5d
     max_seeding_time: 1y
     last_active: 7d
     min_num_seeds: 1
