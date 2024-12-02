@@ -31,6 +31,7 @@ services:
       - {{ nfs_mounts.marilyn.mount_point }}/configs/qbittorrent/qBittorrent/BT_backup:/torrents:ro
       - {{ nfs_mounts.marilyn.mount_point }}/torrents/cross-seed-torrents:/cross-seeds
       - {{ nfs_mounts.marilyn.mount_point }}/media:/data/media
+      - {{ nfs_mounts.marilyn.mount_point }}/torrents:/data/torrents
     command: daemon
     networks:
       qbit:
