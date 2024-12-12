@@ -3,7 +3,7 @@
 # qBittorrent
 # Upgrade qBittorrent download server
 ---
-- name: Get application current and latest versions
+- name: Get qbittorrent & cross-seed current and latest versions
   ansible.builtin.include_tasks: get-versions.yaml
   loop:
     - name: qbittorrent
@@ -15,6 +15,20 @@
       docker_user: cross-seed
       docker_repo: cross-seed
 
+- name: Get qbit-manage latest version
+  block: 
+    - name: Get latest qbit-manage container release from github
+      community.general.github_release:
+        user: StuffAnThings
+        repo: qbit_manage
+        action: latest_release
+      delegate_to: localhost
+      register: qbit_manage_github_release
+
+    - name: Extract latest qbit-manage container version
+      ansible.builtin.set_fact:
+        qbit_manage_latest_version: "{{ qbit_manage_github_release.tag }}"
+
 - name: Check if applications have updates
   block:
     - name: Fix application docker image versionings in fact
@@ -25,10 +39,11 @@
       ansible.builtin.set_fact:
         qbittorrent_has_updates: "{{ qbittorrent_image_version != qbittorrent_latest_version }}"
         cross_seed_has_updates: "{{ cross_seed_image_version != cross_seed_latest_version }}"
+        qbit_manage_has_updates: "{{ qbit_manage_image_version != qbit_manage_latest_version }}"
 
     - name: Stop play if applications have no updates
       ansible.builtin.meta: end_play
-      when: "(not qbittorrent_has_updates) and (not cross_seed_has_updates)"
+      when: "(not qbittorrent_has_updates) and (not cross_seed_has_updates) and (not qbit_manage_has_updates)"
 
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
@@ -36,17 +51,19 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (qbittorrent_image_version | regex_replace('[.]', '-')) + '_' + (cross_seed_image_version | regex_replace('[.]', '-'))  }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + now(utc=true, fmt='%Y-%m-%d_%H-%M-%S') }}"
     proxmox_snapshot_description: |
       [Ansible] Working snapshot of qbittorrent
 
       Current:
         qBittorrent: {{ qbittorrent_image_version }}
         cross-seed: {{ cross_seed_image_version }}
+        qbit_manage: {{ qbit_manage_image_version }}
 
       New:
         qBittorrent: {{ qbittorrent_latest_version }}
         cross-seed: {{ cross_seed_latest_version }}
+        qbit_manage: {{ qbit_manage_latest_version }}
   delegate_to: localhost
 
 - name: Upgrade qbittorrent downloads server
@@ -77,7 +94,7 @@
             group: "{{ qbit_media_group_name }}"
             mode: "0660"
 
-        - name: Setup qbit-manage configuration file is updated
+        - name: Ensure qbit-manage configuration file is updated
           ansible.builtin.template:
             src: templates/qbit-manage.config.yaml
             dest: "{{ docker_project_src }}/qbit-manage.config.yaml"
@@ -95,12 +112,12 @@
         pull: always
         state: present
       loop:
-        - services:
-            - "{{ qbittorrent_docker_name }}"
-            - "{{ qbit_manage_docker_name }}"
+        - services: "{{ qbittorrent_docker_name }}"
           condition: "{{ qbittorrent_has_updates }}"
         - services: "{{ cross_seed_docker_name }}"
           condition: "{{ cross_seed_has_updates }}"
+        - services: "{{ qbit_manage_docker_name }}"
+          condition: "{{ qbit_manage_has_updates }}"
       when: item.condition
 
     - name: Prune unused docker objects
