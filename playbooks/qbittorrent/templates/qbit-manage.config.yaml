@@ -63,7 +63,7 @@ cat:
   animetv: "/data/torrents/animetv"
   animetv-completed: "/data/torrents/animetv"
   animetv-completed.cross-seed: "/data/torrents/animetv"
-  cross-seed-data: "/data/media/cross-seed-links"
+  cross-seed-link: "/data/media/cross-seed-links"
   games: "/data/torrents/games"
   manual-seed: "/data/torrents/manual-seed"
   movies: "/data/torrents/movies"
@@ -172,7 +172,7 @@ share_limits:
     include_all_tags:
       - cross-seed
     categories:
-      - cross-seed-data
+      - cross-seed-link
       - movies-completed.cross-seed
       - movies4k-completed.cross-seed
       - tv-completed.cross-seed
