@@ -62,6 +62,11 @@
 
     - name: Create default VM user with SSH public key
       block:
+        - name: Set root password
+          ansible.builtin.user:
+            name: root
+            password: "{{ debian_root_password }}"
+
         - name: "Create group: {{ debian_user_name }}"
           ansible.builtin.group:
             name: "{{ debian_user_name }}"

@@ -15,3 +15,8 @@
         autoremove: true
         purge: true
       tags: upgrade
+
+    - name: Install and setup debian base configurations
+      ansible.builtin.import_role:
+        name: debian-12-setup
+      tags: install
