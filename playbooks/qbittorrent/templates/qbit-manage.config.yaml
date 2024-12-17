@@ -182,6 +182,8 @@ share_limits:
       - cross-seed
     categories:
       - cross-seed-link
+      - anime-completed.cross-seed
+      - animetv-completed.cross-seed
       - movies-completed.cross-seed
       - movies4k-completed.cross-seed
       - tv-completed.cross-seed
@@ -196,10 +198,14 @@ share_limits:
     include_all_tags:
       - avistaz
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -215,10 +221,14 @@ share_limits:
     include_all_tags:
       - cinemaz
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -234,10 +244,14 @@ share_limits:
     include_all_tags:
       - hd-space
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -252,10 +266,14 @@ share_limits:
     include_all_tags:
       - oldtoons
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -271,10 +289,14 @@ share_limits:
     include_all_tags:
       - upload.cx
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -290,10 +312,14 @@ share_limits:
     include_all_tags:
       - milkie
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -306,10 +332,14 @@ share_limits:
     include_all_tags:
       - jptv
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -325,10 +355,14 @@ share_limits:
     include_all_tags:
       - lst
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -344,10 +378,14 @@ share_limits:
     include_all_tags:
       - nyaa
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -360,10 +398,14 @@ share_limits:
     include_all_tags:
       - digitalcore
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -379,10 +421,14 @@ share_limits:
     include_all_tags:
       - aither
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -398,10 +444,14 @@ share_limits:
     include_all_tags:
       - hawke-uno
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
@@ -417,10 +467,14 @@ share_limits:
     include_all_tags:
       - torrentleech
     categories:
+      - anime
+      - animetv
       - movies
       - movies4k
       - tv
       - tv4k
+      - anime-completed
+      - animetv-completed
       - movies-completed
       - movies4k-completed
       - tv-completed
