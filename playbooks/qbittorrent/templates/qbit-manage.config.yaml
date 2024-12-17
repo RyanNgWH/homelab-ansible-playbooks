@@ -393,7 +393,7 @@ share_limits:
     last_active: 7d
     min_num_seeds: 1
     cleanup: true
-  hawk-uno:
+  hawke-uno:
     priority: 14
     include_all_tags:
       - hawke-uno
