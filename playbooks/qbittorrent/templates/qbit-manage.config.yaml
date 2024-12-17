@@ -120,7 +120,7 @@ tracker:
   digitalcore:
     tag:
       - digitalcore
-  hawke-uno:
+  hawke.uno:
     tag:
       - hawke-uno
   hd-space:
