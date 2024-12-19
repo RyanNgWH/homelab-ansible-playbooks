@@ -11,7 +11,6 @@ services:
     volumes:
       - {{ nfs_mounts.marilyn.mount_point }}/configs/qbittorrent:/config
       - {{ nfs_mounts.marilyn.mount_point }}/torrents:/data/torrents
-      - {{ nfs_mounts.marilyn.mount_point }}/media/cross-seed-links:/data/media/cross-seed-links
     ports:
       - 8080:8080
     networks:
@@ -30,7 +29,6 @@ services:
       - {{ nfs_mounts.marilyn.mount_point }}/configs/cross-seed:/config
       - {{ nfs_mounts.marilyn.mount_point }}/configs/qbittorrent/qBittorrent/BT_backup:/torrents:ro
       - {{ nfs_mounts.marilyn.mount_point }}/torrents/cross-seed-torrents:/cross-seeds
-      - {{ nfs_mounts.marilyn.mount_point }}/media:/data/media
       - {{ nfs_mounts.marilyn.mount_point }}/torrents:/data/torrents
     command: daemon
     networks:
