@@ -138,6 +138,9 @@ tracker:
   lst:
     tag:
       - lst
+  privatehd:
+    tag:
+      - privatehd
   milkie:
     tag:
       - milkie
@@ -490,6 +493,29 @@ share_limits:
     max_seeding_time: 1y
     last_active: 7d
     min_num_seeds: 1
+    cleanup: true
+  privatehd:
+    priority: 16
+    include_all_tags:
+      - privatehd
+    categories:
+      - anime
+      - animetv
+      - movies
+      - movies4k
+      - tv
+      - tv4k
+      - anime-completed
+      - animetv-completed
+      - movies-completed
+      - movies4k-completed
+      - tv-completed
+      - tv4k-completed
+    max_ratio: 10.0
+    min_seeding_time: 20d
+    max_seeding_time: 1y
+    last_active: 7d
+    min_num_seeds: 5
     cleanup: true
   manual-seed:
     priority: 100
