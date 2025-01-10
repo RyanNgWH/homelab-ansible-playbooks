@@ -94,7 +94,7 @@ module.exports = {
    * If this is specified, cross-seed will create links to scanned files in the specified directory.
    * It will create a different link for every changed file name or directory structure.
    */
-  linkDir: "/data/torrents/cross-seed-links",
+  linkDirs: ["/data/torrents/cross-seed-links"],
   /**
    * cross-seed will use links of this type to inject data-based matches into your client.
    * Only relevant if dataDirs is specified.
