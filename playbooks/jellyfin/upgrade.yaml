@@ -3,7 +3,7 @@
 # Jellyfin
 # Upgrade Jellyfin media streaming server
 ---
-- name: Get application current and latest versions
+- name: Get jellyfin current and latest versions
   ansible.builtin.include_tasks: get-versions.yaml
   loop:
     - name: jellyfin
@@ -11,19 +11,34 @@
       docker_user: jellyfin
       docker_repo: jellyfin
 
-- name: Fix application docker image versionings in fact
-  ansible.builtin.set_fact:
-    jellyfin_image_version: "v{{ jellyfin_image_version }}"
+- name: Get jellystat latest version
+  block:
+    - name: Get latest jellystat container release from github
+      community.general.github_release:
+        user: CyferShepard
+        repo: Jellystat
+        action: latest_release
+      delegate_to: localhost
+      register: jellystat_github_release
+
+    - name: Extract latest jellystat container version
+      ansible.builtin.set_fact:
+        jellystat_latest_version: "v{{ jellystat_github_release.tag }}"
 
 - name: Check if applications have updates
   block:
+    - name: Fix jellyfin docker image versionings in fact
+      ansible.builtin.set_fact:
+        jellyfin_image_version: "v{{ jellyfin_image_version }}"
+
     - name: Check if applications have updates
       ansible.builtin.set_fact:
         jellyfin_has_updates: "{{ jellyfin_image_version != jellyfin_latest_version }}"
+        jellystat_has_updates: "{{ jellystat_image_version != jellystat_latest_version }}"
 
     - name: Stop play if applications have no updates
       ansible.builtin.meta: end_play
-      when: "not jellyfin_has_updates"
+      when: "(not jellyfin_has_updates) and (not jellystat_has_updates)"
 
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
@@ -31,12 +46,22 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (jellyfin_image_version | regex_replace('[.]', '-')) }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of jellyfin {{ jellyfin_image_version }} - upgrading to jellyfin {{ jellyfin_latest_version }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (jellyfin_image_version | regex_replace('[.]', '-')) + '_' + (jellystat_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: |
+      [Ansible] Working snapshot of jellyfin & jellystat
+
+      Current:
+        jellyfin: {{ jellyfin_image_version }}
+        jellystat: {{ jellystat_image_version }}
+
+      New:
+        jellyfin: {{ jellyfin_latest_version }}
+        jellystat: {{ jellystat_latest_version }}
   delegate_to: localhost
 
 - name: Backup Jellyfin data directory
   ansible.builtin.import_tasks: backup.yaml
+  when: jellyfin_has_updates
 
 - name: Upgrade Jellyfin media streaming server
   become: true
@@ -48,14 +73,21 @@
         autoremove: true
         purge: true
 
-    - name: Update & start Jellyfin docker containers
+    - name: Update & start docker containers
       become: true
       community.docker.docker_compose_v2:
         project_name: "{{ docker_project_name }}"
         project_src: "{{ docker_project_src }}"
         remove_orphans: true
+        services: "{{ item.services }}"
         pull: always
         state: present
+      loop:
+        - services: "{{ jellyfin_docker_name }}"
+          condition: "{{ jellyfin_has_updates }}"
+        - services: "{{ jellystat_docker_name }}"
+          condition: "{{ jellystat_has_updates }}"
+      when: item.condition
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
