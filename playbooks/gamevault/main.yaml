@@ -28,3 +28,7 @@
     - name: Install and configure Gamevault games management server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Gamevault games management server
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade
