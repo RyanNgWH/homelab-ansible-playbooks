@@ -12,14 +12,17 @@ services:
 
       # The following line grants Admin Role to the account with this username upon registration.
       SERVER_ADMIN_USERNAME: admin
+
       PUID: {{ nfs_user_id }}
       PGID: {{ nfs_user_id }}
-      RAWG_API_KEY: {{ gamevault_rawg_api_key }}
+
+      METADATA_IGDB_CLIENT_ID: {{ gamevault_igdb_client_id }}
+      METADATA_IGDB_CLIENT_SECRET: {{ gamevault_igdb_client_secret }}
     volumes:
       # Mount the folder where your games are
       - {{ nfs_mounts.sakura.mount_point }}/gamevault/games:/files
-      # Mount the folder where GameVault should store its images
-      - {{ nfs_mounts.sakura.mount_point }}/gamevault/images:/images
+      # Mount the folder where GameVault should store its media
+      - {{ nfs_mounts.sakura.mount_point }}/gamevault/media:/media
       # Mount the folder where logs are stored
       - {{ nfs_mounts.sakura.mount_point }}/gamevault/logs:/logs
     ports:
