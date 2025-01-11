@@ -197,6 +197,85 @@
         name: nfs-server.service
         state: restarted
 
+- name: Setup Samba server
+  become: true
+  block:
+    - name: Install Samba packages
+      ansible.builtin.apt:
+        name:
+          - samba
+          - samba-client
+        update_cache: true
+        state: present
+
+    - name: Setup samba configuration file
+      ansible.builtin.template:
+        src: templates/samba.smb.conf
+        dest: /etc/samba/smb.conf
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Enable and start samba service
+      ansible.builtin.systemd_service:
+        name: smb.service
+        daemon_reload: true
+        enabled: true
+        state: started
+
+    - name: Ensure samba client groups are present
+      ansible.builtin.group:
+        name: "{{ item.value.name }}"
+        gid: "{{ item.value.uid }}"
+        system: false
+        state: present
+      no_log: true
+      loop: "{{ samba_users | dict2items }}"
+
+    - name: Ensure samba client users are present
+      ansible.builtin.user:
+        name: "{{ item.value.name }}"
+        group: "{{ item.value.name }}"
+        groups: "{{ item.value.groups if item.value.groups is defined }}"
+        password: "*"
+        shell: /usr/sbin/nologin
+        create_home: false
+        uid: "{{ item.value.uid }}"
+        state: present
+      no_log: true
+      loop: "{{ samba_users | dict2items }}"
+
+    - name: Create Samba users if they don't exist yet
+      ansible.builtin.shell: >
+        set -o nounset -o pipefail -o errexit &&
+        (pdbedit --user={{ item.value.name }} 2>&1 > /dev/null) \
+        || (echo '{{ item.value.password }}'; echo '{{ item.value.password }}') \
+        | smbpasswd -s -a {{ item.value.name }}
+      args:
+        executable: /bin/bash
+      no_log: true
+      register: samba_create_users
+      changed_when: "'Added user' in samba_create_users.stdout"
+      loop: "{{ samba_users | dict2items }}"
+
+    - name: Set Samba users passwords
+      ansible.builtin.shell: >
+        set -o nounset -o pipefail -o errexit &&
+        (smbclient -U {{ item.value.name }}%'{{ item.value.password }}' -L 127.0.0.1 2>&1 > /dev/null)
+        || (echo '{{ item.value.password }}'; echo '{{ item.value.password }}')
+        | smbpasswd {{ item.value.name }}
+      args:
+        executable: /bin/bash
+      no_log: true
+      register: samba_verify_users
+      changed_when: "'New SMB password' in samba_verify_users.stdout"
+      loop: "{{ samba_users | dict2items }}"
+
+    - name: Restart samba server
+      ansible.builtin.systemd_service:
+        name: smb.service
+        state: restarted
+
 - name: Setup sanoid/syncoid zfs backup orchestration
   become: true
   block:
