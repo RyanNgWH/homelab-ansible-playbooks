@@ -29,7 +29,7 @@ nginx_conf_files:
 ## Gamevault variables
 gamevault_docker_name: gamevault
 
-gamevault_image_version: v13.1.2
+gamevault_image_version: v13.1.3
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20230
