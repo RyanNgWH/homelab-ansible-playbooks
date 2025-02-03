@@ -66,7 +66,6 @@ cat:
   animetv: "/data/torrents/animetv"
   animetv-completed: "/data/torrents/animetv"
   animetv-completed.cross-seed: "/data/torrents/animetv"
-  cross-seed-link: "/data/media/cross-seed-links"
   games: "/data/torrents/games"
   manual-seed: "/data/torrents/manual-seed"
   movies: "/data/torrents/movies"
@@ -83,17 +82,7 @@ cat:
   tv4k-completed: "/data/torrents/tv4k"
   tv4k-completed.cross-seed: "/data/torrents/tv4k"
 
-  cross-seed-link.avistaz: /data/media/cross-seed-links/AvistaZ/
-  cross-seed-link.cinemaz: /data/media/cross-seed-links/CinemaZ/
-  cross-seed-link.oldtoons: /data/media/cross-seed-links/Oldtoons/
-  cross-seed-link.uploadcx: /data/media/cross-seed-links/upload.cx/
-  cross-seed-link.jptv: /data/media/cross-seed-links/JPTV/
-  cross-seed-link.digitalcore: /data/media/cross-seed-links/DigitalCore/
-  cross-seed-link.lst: /data/media/cross-seed-links/LST/
-  cross-seed-link.aither: /data/media/cross-seed-links/Aither (API)/
-  cross-seed-link.hawke-uno: /data/media/cross-seed-links/hawke-uno/
-  cross-seed-link.torrentleech: /data/media/cross-seed-links/TorrentLeech/
-  cross-seed-link.privateHD: /data/media/cross-seed-links/PrivateHD/
+  cross-seed-link: "/data/media/cross-seed-links/*"
 
 cat_change:
   # This moves all the torrents from one category to another category. This executes on --cat-update
