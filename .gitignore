@@ -9,3 +9,6 @@ playbooks/workshop
 
 # MacOS files
 .DS_Store
+
+# Ansible files
+.ansible/
