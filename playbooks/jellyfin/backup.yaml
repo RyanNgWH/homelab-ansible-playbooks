@@ -16,6 +16,7 @@
       community.docker.docker_compose_v2:
         project_name: "{{ docker_project_name }}"
         project_src: "{{ docker_project_src }}"
+        services: "{{ jellyfin_docker_name }}"
         state: absent
 
     - name: Sync data directory from local application directory to NFS server
