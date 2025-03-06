@@ -30,7 +30,7 @@ nginx_conf_files:
 gitea_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIxW2NoBiOA/73caeYjYLvHpId88UOdJtERcz+d/r4S0 Gitea Host Key"
 
 gitea_docker_name: gitea
-gitea_image_version: v1.23.4
+gitea_image_version: v1.23.5
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20180
