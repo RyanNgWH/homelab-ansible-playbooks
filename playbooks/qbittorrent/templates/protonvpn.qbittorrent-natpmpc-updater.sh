@@ -47,7 +47,7 @@ fw_delrule(){
   if (/usr/sbin/iptables -t nat -L DOCKER -n | grep -qP "^DNAT.*${configured_port}.*"); then
     /usr/sbin/iptables -t nat -D DOCKER -p tcp --dport ${configured_port} -j DNAT --to-destination {{ qbittorrent_docker_ip }}:${configured_port}
   fi
-  
+
   if !(/usr/sbin/iptables -L DOCKER -n | grep -P "ACCEPT.*dpt:${configured_port}.*"); then
     /usr/sbin/iptables -D DOCKER -p tcp -d {{ qbittorrent_docker_ip }} --dport ${active_port} -j ACCEPT
   fi
@@ -58,7 +58,7 @@ fw_addrule(){
     /usr/sbin/iptables -t nat -A DOCKER -p tcp --dport ${active_port} -j DNAT --to-destination {{ qbittorrent_docker_ip }}:${active_port}
 
     if !(/usr/sbin/iptables -L DOCKER -n | grep -P "ACCEPT.*dpt:${active_port}.*"); then
-      /usr/sbin/iptables -A DOCKER -p tcp -d {{ qbittorrent_docker_ip }} --dport ${active_port} -j ACCEPT
+      /usr/sbin/iptables -I DOCKER -p tcp -d {{ qbittorrent_docker_ip }} --dport ${active_port} -j ACCEPT
       return 0
     else
       return 1
