@@ -28,6 +28,7 @@ module.exports = {
     "https://{{ cross_seed_prowlarr_hostname }}/11/api?apikey={{ cross_seed_prowlarr_api_key }}", // Hawke Uno
     "https://{{ cross_seed_prowlarr_hostname }}/12/api?apikey={{ cross_seed_prowlarr_api_key }}", // TorrentLeech
     "https://{{ cross_seed_prowlarr_hostname }}/13/api?apikey={{ cross_seed_prowlarr_api_key }}", // PrivateHD
+    "https://{{ cross_seed_prowlarr_hostname }}/14/api?apikey={{ cross_seed_prowlarr_api_key }}", // Blutopia
   ],
   /**
    * URL(s) to your Sonarr instance(s), included in the same way as torznab
@@ -142,7 +143,7 @@ module.exports = {
    * Don't change this for Docker.
    * Instead set the volume mapping on your docker container.
    */
-  outputDir: "/cross-seeds",
+  outputDir: null,
   /**
    * Whether to include single episode torrents in a search (not those from
    * season packs).
@@ -255,8 +256,9 @@ module.exports = {
    * with a JSON payload of { title, body }.
    * Conforms to the caronc/apprise REST API.
    */
-  notificationWebhookUrl:
+  notificationWebhookUrls: [
     "https://{{ cross_seed_ntfy_hostname }}/Cross-seed?auth={{ cross_seed_ntfy_auth }}",
+  ],
   /**
    * Listen on a custom port.
    */
