@@ -21,7 +21,6 @@ module.exports = {
     "https://{{ cross_seed_prowlarr_hostname }}/2/api?apikey={{ cross_seed_prowlarr_api_key }}", // CinemaZ
     "https://{{ cross_seed_prowlarr_hostname }}/4/api?apikey={{ cross_seed_prowlarr_api_key }}", // Oldtoons
     "https://{{ cross_seed_prowlarr_hostname }}/5/api?apikey={{ cross_seed_prowlarr_api_key }}", // Upload.cx
-    "https://{{ cross_seed_prowlarr_hostname }}/6/api?apikey={{ cross_seed_prowlarr_api_key }}", // JPTV
     "https://{{ cross_seed_prowlarr_hostname }}/7/api?apikey={{ cross_seed_prowlarr_api_key }}", // LST
     "https://{{ cross_seed_prowlarr_hostname }}/9/api?apikey={{ cross_seed_prowlarr_api_key }}", // DigitalCore
     "https://{{ cross_seed_prowlarr_hostname }}/10/api?apikey={{ cross_seed_prowlarr_api_key }}", // Aither
