@@ -3,14 +3,34 @@
 # Jellyseerr
 # Upgrade the Jellyseerr media management server
 ---
+- name: Check if jellyseerr requires update
+  become: true
+  block:
+    - name: Get latest jellyseerr container release from github
+      become: false
+      community.general.github_release:
+        user: fallenbagel
+        repo: jellyseerr
+        action: latest_release
+      delegate_to: localhost
+      register: jellyseerr_github_release
+
+    - name: Extract latest jellyseerr container version
+      ansible.builtin.set_fact:
+        jellyseerr_latest_version: "{{ jellyseerr_github_release.tag }}"
+
+    - name: Stop play if jellyseerr has no updates
+      ansible.builtin.meta: end_play
+      when: jellyseerr_image_version == jellyseerr_latest_version
+
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
     name: proxmox
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_' + now(utc=true, fmt='%Y-%m-%d_%H-%M-%S') }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of Jellyseerr on {{ now(utc=true, fmt='%Y-%m-%d_%H-%M-%S') }} UTC"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (jellyseerr_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of jellyseerr {{ jellyseerr_image_version }} before upgrading to {{ jellyseerr_latest_version }}"
   delegate_to: localhost
 
 - name: Upgrade the Jellyseerr media management server
