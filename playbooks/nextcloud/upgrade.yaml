@@ -3,14 +3,34 @@
 # Nextcloud
 # Upgrade Nextcloud cloud storage
 ---
+- name: Check if nextcloud requires update
+  become: true
+  block:
+    - name: Get latest nextcloud container release from github
+      become: false
+      community.general.github_release:
+        user: nextcloud
+        repo: docker
+        action: latest_release
+      delegate_to: localhost
+      register: nextcloud_github_release
+
+    - name: Extract latest nextcloud container version
+      ansible.builtin.set_fact:
+        nextcloud_latest_version: "{{ nextcloud_github_release.tag }}"
+
+    - name: Stop play if nextcloud has no updates
+      ansible.builtin.meta: end_play
+      when: nextcloud_image_version == nextcloud_latest_version
+
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
     name: proxmox
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_' + now(utc=true, fmt='%Y-%m-%d_%H-%M-%S') }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of nextcloud before upgrading"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (nextcloud_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of nextcloud {{ nextcloud_image_version }} before upgrading to {{ nextcloud_latest_version }}"
   delegate_to: localhost
 
 - name: Upgrade Nextcloud cloud storage server

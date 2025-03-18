@@ -40,6 +40,7 @@ nextcloud_smtp_mail_domain: tinynamoo.com
 nextcloud_collabora_hostname: office.tinynamoo.com
 
 nextcloud_docker_name: nextcloud
+nextcloud_image_version: v2025.3.1
 
 ## Proxmox instance variables
 proxmox_snapshot_vmid: 14100
