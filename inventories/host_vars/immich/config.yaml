@@ -31,7 +31,7 @@ immich_photos_group_name: photos
 immich_photos_group_gid: 201
 
 immich_server_docker_name: immich-server
-immich_image_version: v1.131.1
+immich_image_version: v1.131.3
 
 ## Proxmox instance variables
 proxmox_snapshot_vmid: 14120
