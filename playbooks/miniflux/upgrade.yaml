@@ -12,7 +12,7 @@
   delegate_to: localhost
   register: miniflux_github_release
 
-- name: Extract latest radarr container version
+- name: Extract latest miniflux container version
   ansible.builtin.set_fact:
     miniflux_latest_version: "{{ miniflux_github_release.tag }}"
 
