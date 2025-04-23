@@ -3,18 +3,25 @@
 # Minflux
 # Upgrade Miniflux feed reader
 ---
-- name: Get latest miniflux container release from github
-  become: false
-  community.general.github_release:
-    user: miniflux
-    repo: v2
-    action: latest_release
-  delegate_to: localhost
-  register: miniflux_github_release
+- name: Check if gitea requires update
+  become: true
+  block:
+    - name: Get latest miniflux container release from github
+      become: false
+      community.general.github_release:
+        user: miniflux
+        repo: v2
+        action: latest_release
+      delegate_to: localhost
+      register: miniflux_github_release
 
-- name: Extract latest miniflux container version
-  ansible.builtin.set_fact:
-    miniflux_latest_version: "{{ miniflux_github_release.tag }}"
+    - name: Extract latest miniflux container version
+      ansible.builtin.set_fact:
+        miniflux_latest_version: "{{ miniflux_github_release.tag }}"
+
+    - name: Stop play if miniflux has no updates
+      ansible.builtin.meta: end_play
+      when: miniflux_image_version == miniflux_latest_version
 
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
@@ -23,7 +30,7 @@
   vars:
     proxmox_task_list: snapshot
     proxmox_snapshot_name: "{{ 'pre_upgrade_miniflux_' + (miniflux_latest_version | regex_replace('[.]', '-')) }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of miniflux before upgrading to {{ miniflux_latest_version }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of miniflux {{ miniflux_image_version }} before upgrading to {{ miniflux_latest_version }}"
   delegate_to: localhost
 
 - name: Upgrade miniflux feed reader
