@@ -1,0 +1,63 @@
+# @format
+
+# Send
+# Upgrade Send file sharing server
+---
+- name: Check if gitea requires update
+  become: true
+  block:
+    - name: Get latest send container tag from github
+      become: false
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/timvisee/send/tags
+        method: GET
+        return_content: yes
+        status_code: 200
+        body_format: json
+      delegate_to: localhost
+      register: send_github_release
+
+    - name: Extract latest send container version
+      ansible.builtin.set_fact:
+        send_latest_version: "{{ send_github_release.json[0].name }}"
+
+    - name: Stop play if send has no updates
+      ansible.builtin.meta: end_play
+      when: send_image_version == send_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_send_' + (send_latest_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of send {{ send_image_version }} before upgrading to {{ send_latest_version }}"
+  delegate_to: localhost
+
+- name: Upgrade send file sharing server
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Update & start send container
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true

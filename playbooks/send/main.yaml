@@ -28,3 +28,7 @@
     - name: Install and configure Send file sharing server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Send file sharing server
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade
