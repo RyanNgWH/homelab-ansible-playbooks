@@ -1,7 +1,7 @@
 services:
   nextcloud:
     container_name: {{ nextcloud_docker_name }}
-    image: nextcloud:fpm
+    image: nextcloud:stable-fpm
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_DB: nextcloud
