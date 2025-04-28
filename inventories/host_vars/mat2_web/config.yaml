@@ -1,0 +1,29 @@
+# @format
+---
+## Debian-12-setup variables
+# Date time configurations
+debian_datetime_ntp_server: 172.28.20.1
+
+# User configurations
+debian_user_name: celeste
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO4/Q3baRGQbgAwmCckv6otA0Vn8f56Lht6IK0uloQo7 celeste@clean.tinynamoo.com"
+
+## NGINX variables
+nginx_conf_files:
+  - filename: mat2-web.conf
+    path: templates/nginx.mat2-web.conf
+
+## Mat2-web variables
+mat2_web_docker_name: mat2-web
+
+mat2_web_image_version: v0.8.12
+mat2_web_latest_version: v0.8.12
+
+## Proxmox instance variables
+proxmox_snapshot_vmid: 20040
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: mat2-web
+docker_project_src: /opt/mat2-web

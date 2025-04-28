@@ -1,0 +1,17 @@
+# @format
+---
+services:
+  mat2-web:
+    container_name: {{ mat2_web_docker_name }}
+    image: "registry.0xacab.org/jvoisin/mat2-web:{{ mat2_web_latest_version }}"
+    security_opt:
+      - seccomp=./seccomp.json
+      - no-new-privileges=true
+    tmpfs:
+      - /app/upload
+      - /run/uwsgi
+      - /tmp
+    read_only: true
+    ports:
+      - '8080:8080'
+    restart: unless-stopped

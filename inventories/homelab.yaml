@@ -25,6 +25,8 @@ all:
       ansible_host: filme.tinynamoo.com
     jellyseerr:
       ansible_host: media.tinynamoo.com
+    mat2_web:
+      ansible_host: clean.tinynamoo.com
     miniflux:
       ansible_host: feeds.tinynamoo.com
     nas:
@@ -87,6 +89,7 @@ debian:
     it_tools:
     jellyfin:
     jellyseerr:
+    mat2_web:
     miniflux:
     nas:
     nextcloud:
@@ -139,6 +142,7 @@ nfs:
 
 nginx:
   hosts:
+    ansible_lxc:
     bazarr:
     firefly:
     gamevault:
@@ -148,6 +152,7 @@ nginx:
     it_tools:
     jellyfin:
     jellyseerr:
+    mat2_web:
     miniflux:
     nextcloud:
     ntfy:

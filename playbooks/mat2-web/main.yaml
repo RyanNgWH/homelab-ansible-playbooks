@@ -1,0 +1,28 @@
+# @format
+
+# Mat2-web
+# Configure & manage Mat2-web metadata removal tool
+---
+- name: Configure & manage the Mat2-web metadata removal tool
+  hosts: mat2_web
+
+  pre_tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
+  roles:
+    - role: debian-12-setup
+      tags: install
+    - role: debian-common
+      tags: install
+      vars:
+        debian_common_task_list:
+          - docker
+
+  tasks:
+    - name: Install and configure Mat2-web metadata removal tool
+      ansible.builtin.import_tasks: install.yaml
+      tags: install
