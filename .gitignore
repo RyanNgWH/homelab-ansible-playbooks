@@ -3,6 +3,7 @@
 dev-inventory
 Vagrantfile
 playbooks/workshop
+inventories/host_vars/ansible_lxc
 
 # Vscode configuration
 .vscode
