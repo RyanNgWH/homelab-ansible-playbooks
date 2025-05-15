@@ -32,7 +32,6 @@
 /export ansible.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export archive.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export cloud.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
-/export games.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export download.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export feeds.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export filme.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
