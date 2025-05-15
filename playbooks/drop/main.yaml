@@ -1,0 +1,30 @@
+# @format
+
+# Drop
+# Configure & manage Drop games management server
+---
+- name: Configure & manage Drop games management server
+  hosts: drop
+
+  pre_tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
+  roles:
+    - role: debian-12-setup
+      tags: install
+    - role: nfsv4-client-setup
+      tags: install
+    - role: debian-common
+      tags: install
+      vars:
+        debian_common_task_list:
+          - docker
+
+  tasks:
+    - name: Install and configure Drop games management server
+      ansible.builtin.import_tasks: install.yaml
+      tags: install

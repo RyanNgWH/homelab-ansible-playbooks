@@ -9,6 +9,8 @@ all:
       ansible_host: ansible.tinynamoo.com
     bazarr:
       ansible_host: subtitles.tinynamoo.com
+    drop:
+      ansible_host: games.tinynamoo.com
     firefly:
       ansible_host: finance.tinynamoo.com
     gamevault:
@@ -81,6 +83,7 @@ debian:
     ansible_lxc:
     ansible_vm:
     bazarr:
+    drop:
     firefly:
     gamevault:
     gitea:
@@ -115,6 +118,7 @@ nfs:
   hosts:
     ansible_vm:
     bazarr:
+    drop:
     firefly:
     gamevault:
     gitea:
@@ -145,6 +149,7 @@ nginx:
     ansible_lxc:
     ansible_vm:
     bazarr:
+    drop:
     firefly:
     gamevault:
     gitea:
@@ -188,6 +193,7 @@ sierra_proxmox:
     ansible_lxc:
     ansible_vm:
     bazarr:
+    drop:
     firefly:
     gamevault:
     gitea:

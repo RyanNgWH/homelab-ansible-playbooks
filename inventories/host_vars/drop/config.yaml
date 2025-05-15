@@ -1,0 +1,41 @@
+# @format
+---
+## Debian-12-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.20.1
+
+# User
+debian_user_name: daisy
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINAf2o6UvC5lK9h7xDHs4S/fDP2EDSoj1j0UW3vAZMh7 daisy@games.tinynamoo.com"
+
+## NFSv4-client-setup variables
+# Kerberos
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Daisy] Drop/host.keytab"
+nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Daisy] Drop/user.keytab"
+
+# NFS
+nfs_user_name: "{{ nfs_clients['drop'].name }}"
+nfs_user_id: "{{ nfs_clients['drop'].uid }}"
+nfs_mounts:
+  daisy:
+    mount_share: /daisy
+    mount_point: /srv/daisy
+
+## NGINX variables
+nginx_conf_files:
+  - filename: drop.conf
+    path: templates/nginx.drop.conf
+
+## Drop variables
+drop_docker_name: drop
+
+drop_docker_version: v0.2.0-beta
+
+## Proxmox variables
+proxmox_snapshot_vmid: 20231
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: drop
+docker_project_src: /opt/drop

@@ -1,0 +1,44 @@
+
+---
+services:
+  drop:
+    container_name: {{ drop_docker_name }}
+    image: decduck/drop-oss:{{ drop_docker_version }}
+    environment:
+      DATABASE_URL: postgres://drop:{{ drop_database_password }}@postgres:5432/drop
+      FS_BACKEND_PATH: /objects
+      CLIENT_CERTIFICATES: /certs
+      LIBRARY: /library
+      GIANT_BOMB_API_KEY: {{ drop_giantbomb_api_key }}
+    volumes:
+      # Folder where your games are stored
+      - {{ nfs_mounts.daisy.mount_point }}/library:/library
+      # Folder where cryptographic certs for end clients are stored
+      - {{ nfs_mounts.daisy.mount_point }}/certs:/certs
+      # Folder where metadata files are stored
+      - {{ nfs_mounts.daisy.mount_point }}/objects:/objects
+    ports:
+      - 3000:3000
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres
+    image: postgres:14-alpine
+    environment:
+      POSTGRES_USER: drop
+      POSTGRES_PASSWORD: {{ drop_database_password }}
+      POSTGRES_DB: drop
+    volumes:
+      - {{ nfs_mounts.daisy.mount_point }}/db:/var/lib/postgresql/data
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
+    healthcheck:
+      test: pg_isready -d drop -U drop
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 10s
