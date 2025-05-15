@@ -18,6 +18,8 @@ nfs_exports:
     dest: /export/alora
   - src: /aspen/alyssa/
     dest: /export/alyssa
+  - src: /aspen/daisy/
+    dest: /export/daisy
   - src: /aspen/florence/
     dest: /export/florence
   - src: /aspen/hanni/

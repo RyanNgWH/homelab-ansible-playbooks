@@ -3,6 +3,7 @@
 
 /export/alora finance.tinynamoo.com(rw,secure,no_subtree_check,crossmnt,root_squash,sec=krb5p,anonuid={{ nfs_clients["firefly"].uid }},anongid={{ nfs_clients["firefly"].uid }})
 /export/alyssa archive.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["paperless"].uid }},anongid={{ nfs_clients["paperless"].uid }})
+/export/daisy games.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["drop"].uid }},anongid={{ nfs_clients["drop"].uid }})
 /export/florence feeds.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["miniflux"].uid }},anongid={{ nfs_clients["miniflux"].uid }})
 /export/hanni tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["homarr"].uid }},anongid={{ nfs_clients["homarr"].uid }})
 /export/karina push.tinynamoo.com(rw,secure,no_subtree_check,crossmnt,root_squash,sec=krb5p,anonuid={{ nfs_clients["ntfy"].uid }},anongid={{ nfs_clients["ntfy"].uid }})
@@ -28,8 +29,10 @@
 /export/yena git.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["gitea"].uid }},anongid={{ nfs_clients["gitea"].uid }})
 
 # NFSv4 pseudofilesystem
+/export ansible.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export archive.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export cloud.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
+/export games.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export download.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export feeds.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)
 /export filme.tinynamoo.com(fsid=0,ro,secure,root_squash,no_subtree_check,hide,sec=krb5p)

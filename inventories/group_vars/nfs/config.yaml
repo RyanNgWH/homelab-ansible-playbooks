@@ -16,6 +16,9 @@ nfs_clients:
     name: bazarr
     uid: 118
     groups: media
+  drop:
+    name: drop
+    uid: 231
   firefly:
     name: firefly
     uid: 160
