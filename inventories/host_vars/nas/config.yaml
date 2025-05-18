@@ -20,6 +20,8 @@ nfs_exports:
     dest: /export/alyssa
   - src: /aspen/daisy/
     dest: /export/daisy
+  - src: /aspen/daisy/library
+    dest: /export/daisy/library
   - src: /aspen/florence/
     dest: /export/florence
   - src: /aspen/hanni/
