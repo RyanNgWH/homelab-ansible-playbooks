@@ -22,9 +22,6 @@ nfs_clients:
   firefly:
     name: firefly
     uid: 160
-  gamevault:
-    name: gamevault
-    uid: 230
   gitea:
     name: gitea
     uid: 180

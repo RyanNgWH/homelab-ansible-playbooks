@@ -52,8 +52,6 @@ nfs_exports:
     dest: /export/melodee
   - src: /aspen/petal/
     dest: /export/petal
-  - src: /aspen/sakura/
-    dest: /export/sakura
   - src: /aspen/sana/
     dest: /export/sana
   - src: /aspen/serene/

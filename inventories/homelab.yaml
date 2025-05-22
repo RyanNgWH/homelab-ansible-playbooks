@@ -13,8 +13,6 @@ all:
       ansible_host: games.tinynamoo.com
     firefly:
       ansible_host: finance.tinynamoo.com
-    gamevault:
-      ansible_host: games.tinynamoo.com
     gitea:
       ansible_host: git.tinynamoo.com
     homarr:
@@ -85,7 +83,6 @@ debian:
     bazarr:
     drop:
     firefly:
-    gamevault:
     gitea:
     homarr:
     immich:
@@ -120,7 +117,6 @@ nfs:
     bazarr:
     drop:
     firefly:
-    gamevault:
     gitea:
     homarr:
     immich:
@@ -151,7 +147,6 @@ nginx:
     bazarr:
     drop:
     firefly:
-    gamevault:
     gitea:
     homarr:
     immich:
@@ -195,7 +190,6 @@ sierra_proxmox:
     bazarr:
     drop:
     firefly:
-    gamevault:
     gitea:
     homarr:
     immich:

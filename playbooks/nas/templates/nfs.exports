@@ -17,7 +17,6 @@
 /export/marilyn-media filme.tinynamoo.com(ro,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p) subtitles.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["bazarr"].uid }},anongid={{ nfs_groups["media"].gid }})
 /export/melodee spotify.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["your-spotify"].uid }},anongid={{ nfs_clients["your-spotify"].uid }})
 /export/petal photos.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["immich"].uid }},anongid={{ nfs_clients["immich"].uid }})
-/export/sakura games.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anongid={{ nfs_clients["gamevault"].uid }},anonuid={{ nfs_clients["gamevault"].uid }})
 /export/sana subs.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["wallos"].uid }},anongid={{ nfs_clients["wallos"].uid }})
 /export/serene status.tinynamoo.com(rw,secure,no_subtree_check,crossmnt,root_squash,sec=krb5p,anonuid={{ nfs_clients["uptime-kuma"].uid }},anongid={{ nfs_clients["uptime-kuma"].uid }})
 /export/solar smart.tinynamoo.com(rw,secure,no_subtree_check,root_squash,crossmnt,sec=krb5p,anonuid={{ nfs_clients["scrutiny"].uid }},anongid={{ nfs_clients["scrutiny"].uid }})
