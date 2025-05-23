@@ -119,6 +119,14 @@
         mode: "0750"
         state: link
 
+    - name: Ensure cron log directory is present
+      ansible.builtin.file:
+        path: "/var/log/cron"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0740"
+        state: directory
+
     - name: Setup crontab
       block:
         - name: Setup next payment update cron job
@@ -143,6 +151,18 @@
             month: "*"
             weekday: "*"
             job: "php {{ wallos_project_src }}/endpoints/cronjobs/updateexchange.php >> /var/log/cron/updateexchange.log 2>&1"
+            state: present
+
+        - name: Setup cancellation notifications cron job
+          ansible.builtin.cron:
+            name: Cancellation notifications
+            user: "{{ nfs_user_name }}"
+            minute: "0"
+            hour: "8"
+            day: "*"
+            month: "*"
+            weekday: "*"
+            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/sendcancellationnotifications.php >> /var/log/cron/sendcancellationnotifications.log 2>&1"
             state: present
 
         - name: Setup notifications cron job
@@ -179,6 +199,30 @@
             month: "*"
             weekday: "*"
             job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/sendresetpasswordemails.php >> /var/log/cron/sendresetpasswordemails.log 2>&1"
+            state: present
+
+        - name: Setup update check cron job
+          ansible.builtin.cron:
+            name: Updates check
+            user: "{{ nfs_user_name }}"
+            minute: "0"
+            hour: "*/6"
+            day: "*"
+            month: "*"
+            weekday: "*"
+            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/checkforupdates.php >> /var/log/cron/checkforupdates.log 2>&1"
+            state: present
+
+        - name: Setup store yearly costs cron job
+          ansible.builtin.cron:
+            name: Store total yearly cost
+            user: "{{ nfs_user_name }}"
+            minute: "30"
+            hour: "1"
+            day: "*"
+            month: "*"
+            weekday: "1"
+            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/storetotalyearlycost.php >> /var/log/cron/storetotalyearlycost.log 2>&1"
             state: present
 
 - name: Install and configure nginx
