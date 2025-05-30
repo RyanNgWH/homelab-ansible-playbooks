@@ -1,0 +1,69 @@
+# @format
+
+# Ntfy
+# Upgrade Ntfy notifications service
+---
+- name: Check if ntfy requires update
+  become: true
+  block:
+    - name: Get latest ntfy container release from github
+      become: false
+      community.general.github_release:
+        user: binwiederhier
+        repo: ntfy
+        action: latest_release
+      delegate_to: localhost
+      register: ntfy_github_release
+
+    - name: Extract latest ntfy container version
+      ansible.builtin.set_fact:
+        ntfy_latest_version: "{{ ntfy_github_release.tag }}"
+
+    - name: Stop play if ntfy has no updates
+      ansible.builtin.meta: end_play
+      when: ntfy_image_version == ntfy_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (ntfy_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of ntfy {{ ntfy_image_version }} before upgrading to {{ ntfy_latest_version }}"
+  delegate_to: localhost
+
+- name: Upgrade ntfy notifications service
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Ensure docker compose file is updated
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Update & start ntfy docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true

@@ -32,3 +32,7 @@
     - name: Install and configure Ntfy notifications service
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Ntfy notifications service
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade
