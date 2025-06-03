@@ -3,34 +3,28 @@
 # Prowlarr
 # Upgrade Prowlarr indexer managment server
 ---
-- name: Check if prowlarr requires update
-  become: true
+- name: Get application current and latest versions
+  ansible.builtin.include_tasks: get-versions.yaml
+  loop:
+    - name: prowlarr
+      docker_name: "{{ prowlarr_docker_name }}"
+      docker_user: linuxserver
+      docker_repo: docker-prowlarr
+    - name: flaresolverr
+      docker_name: "{{ flaresolverr_docker_name }}"
+      docker_user: FlareSolverr
+      docker_repo: FlareSolverr
+
+- name: Check if applications have updates
   block:
-    - name: Get current prowlarr container version
-      ansible.builtin.import_role:
-        name: docker
-        public: false
-      vars:
-        docker_task_list: get_container_image_version
-        docker_container_name: "{{ prowlarr_docker_name }}"
-        docker_fact_name: prowlarr
-
-    - name: Get latest prowlarr container release from github
-      become: false
-      community.general.github_release:
-        user: linuxserver
-        repo: docker-prowlarr
-        action: latest_release
-      delegate_to: localhost
-      register: prowlarr_github_release
-
-    - name: Extract latest prowlarr container version
+    - name: Check if applications have updates
       ansible.builtin.set_fact:
-        prowlarr_latest_version: "{{ prowlarr_github_release.tag }}"
+        prowlarr_has_updates: "{{ prowlarr_image_version != prowlarr_latest_version }}"
+        flaresolverr_has_updates: "{{ flaresolverr_image_version != flaresolverr_latest_version }}"
 
-    - name: Stop play if prowlarr has no updates
+    - name: Stop play if applications have no updates
       ansible.builtin.meta: end_play
-      when: prowlarr_image_version == prowlarr_latest_version
+      when: "(not prowlarr_has_updates) and (not flaresolverr_has_updates)"
 
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
@@ -58,8 +52,17 @@
         project_name: "{{ docker_project_name }}"
         project_src: "{{ docker_project_src }}"
         remove_orphans: true
+        services: "{{ item.services }}"
         pull: always
         state: present
+      loop:
+        - services:
+            - "{{ prowlarr_docker_name }}"
+            - postgres
+          condition: "{{ prowlarr_has_updates }}"
+        - services: "{{ flaresolverr_docker_name }}"
+          condition: "{{ flaresolverr_has_updates }}"
+      when: item.condition
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
