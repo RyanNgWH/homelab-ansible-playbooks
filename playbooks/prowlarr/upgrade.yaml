@@ -32,8 +32,17 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (prowlarr_image_version | regex_replace('[.]', '-')) }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of prowlarr {{ prowlarr_image_version }} before upgrading to {{ prowlarr_latest_version }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (prowlarr_image_version | regex_replace('[.]', '-')) + '_' + (flaresolverr_image_version | regex_replace('[.]', '-')) }}" # noqa: yaml[line-length]
+    proxmox_snapshot_description: |
+      [Ansible] Working snapshot of prowlarr
+
+      Current:
+        prowlarr: {{ prowlarr_image_version }}
+        flaresolverr: {{ flaresolverr_image_version }}
+
+      New:
+        prowlarr: {{ prowlarr_latest_version }}
+        flaresolverr: {{ flaresolverr_latest_version }}
   delegate_to: localhost
 
 - name: Upgrade Prowlarr indexer managment server
