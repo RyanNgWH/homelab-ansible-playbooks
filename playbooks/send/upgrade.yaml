@@ -3,7 +3,7 @@
 # Send
 # Upgrade Send file sharing server
 ---
-- name: Check if gitea requires update
+- name: Check if send requires update
   become: true
   block:
     - name: Get latest send container tag from github
