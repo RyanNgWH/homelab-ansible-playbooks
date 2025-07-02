@@ -27,7 +27,7 @@ nginx_conf_files:
     path: templates/nginx.send.conf
 
 send_docker_name: send
-send_image_version: v3.4.26
+send_image_version: v3.4.27
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20210
