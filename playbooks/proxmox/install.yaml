@@ -50,10 +50,13 @@
   ansible.builtin.import_role:
     name: debian-12-setup
 
-- name: Install Intel microcode updates
+- name: Install Intel microcode updates & firmware updater
   become: true
   ansible.builtin.apt:
-    name: intel-microcode
+    name:
+      - intel-microcode
+      - fwupd
+      - udisks2
     update_cache: true
     state: present
 
