@@ -31,7 +31,7 @@ jellyseerr_media_group_name: media
 jellyseerr_media_group_gid: "{{ nfs_groups['media'].gid }}"
 
 jellyseerr_docker_name: jellyseerr
-jellyseerr_image_version: v2.6.0
+jellyseerr_image_version: v2.7.1
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20116
