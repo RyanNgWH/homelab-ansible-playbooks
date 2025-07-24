@@ -9,7 +9,7 @@ services:
       - no-new-privileges=true
     tmpfs:
       - /app/upload
-      - /run/uwsgi:uid=1000,gid=1000
+      - /run/uwsgi
       - /tmp
     read_only: true
     ports:
