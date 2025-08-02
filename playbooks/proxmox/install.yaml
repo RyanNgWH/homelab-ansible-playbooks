@@ -162,7 +162,7 @@
       ansible.builtin.user:
         name: "{{ item.name }}"
         group: "{{ item.name }}"
-        groups: "{{ item.groups if item.groups is defined }}"
+        groups: "{{ item.groups if item.groups is defined else '' }}"
         password: "{{ item.pass }}"
         shell: "{{ item.shell }}"
         comment: "{{ item.name }}"
