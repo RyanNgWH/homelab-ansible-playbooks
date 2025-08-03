@@ -1,16 +1,13 @@
 services:
   homarr:
     container_name: {{ homarr_docker_name }}
-    image: ghcr.io/ajnart/homarr:latest
+    image: ghcr.io/homarr-labs/homarr:latest
     environment:
-      BASE_URL: {{ ansible_host }}
-      TZ: Asia/Singapore
-      DISABLE_ANALYTICS: true
+      SECRET_ENCRYPTION_KEY: {{ homarr_secret_encryption_key }}
+      DOCKER_HOSTNAMES: {{ ansible_host }}
     volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
-      - {{ nfs_mounts.hanni.mount_point }}/configs:/app/data/configs
-      - {{ nfs_mounts.hanni.mount_point }}/icons:/app/public/icons
-      - {{ nfs_mounts.hanni.mount_point }}/data:/data
+      - {{ nfs_mounts.hanni.mount_point }}/appdata:/appdata
     ports:
-      - '7575:7575'
+      - 7575:7575
     restart: unless-stopped
