@@ -58,7 +58,6 @@ proxmox_ve_roles:
       VM.Config.Network
       VM.Config.Options
       VM.Migrate
-      VM.Monitor
       VM.PowerMgmt
   - name: Packer
     privileges: >-
@@ -68,6 +67,7 @@ proxmox_ve_roles:
       Datastore.Audit
       SDN.Audit
       SDN.Use
+      Sys.Audit
       VM.Allocate
       VM.Audit
       VM.Config.CDROM
@@ -79,7 +79,6 @@ proxmox_ve_roles:
       VM.Config.Network
       VM.Config.Options
       VM.Console
-      VM.Monitor
       VM.PowerMgmt
 
 proxmox_ve_permissions:
