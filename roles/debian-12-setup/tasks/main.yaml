@@ -9,12 +9,13 @@
   become: true
   block:
     - name: Install and configure time synchronisation
-      notify: Restart timesyncd service
+      notify:
+        - Restart chrony service
       when: ansible_virtualization_type != "lxc"
       block:
-        - name: Ensure systemd-timesyncd is installed
+        - name: Ensure chrony is installed
           ansible.builtin.apt:
-            name: systemd-timesyncd
+            name: chrony
             update_cache: true
             state: present
 
@@ -23,11 +24,19 @@
             hwclock: "{{ debian_datetime_hardware_clock }}"
             name: "{{ debian_datetime_timezone }}"
 
-        - name: Set NTP servers
-          ansible.builtin.template:
-            src: templates/timesyncd.conf
-            dest: /etc/systemd/timesyncd.conf
-            mode: "0644"
+        - name: Remove default NTP pool
+          ansible.builtin.lineinfile:
+            path: /etc/chrony/chrony.conf
+            line: '# \g<1>'
+            regexp: "^(pool .*)"
+            backrefs: true
+            state: present
+
+        - name: Set NTP server
+          ansible.builtin.lineinfile:
+            path: /etc/chrony/chrony.conf
+            line: "server {{ debian_datetime_ntp_server }} iburst"
+            insertafter: "^# pool .*"
 
     - name: Flush handlers
       ansible.builtin.meta: flush_handlers

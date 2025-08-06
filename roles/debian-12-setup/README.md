@@ -6,7 +6,7 @@ This role sets up common basic configurations on a Debian 12 system.
 
 It executes the following tasks:
 
-1. Install and configure time synchronisation using `systemd-timesyncd`
+1. Install and configure time synchronisation using `chrony`
 1. Update `apt` sources and packages
 1. Harden SSH server
 1. Install `unattended-upgrades`
