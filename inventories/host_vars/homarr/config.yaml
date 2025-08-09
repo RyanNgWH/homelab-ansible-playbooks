@@ -30,7 +30,7 @@ nginx_conf_files:
 jellyseerr_hostname: media.tinynamoo.com
 
 homarr_docker_name: homarr
-homarr_image_version: 1.31.0
+homarr_image_version: v1.32.0
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20030
