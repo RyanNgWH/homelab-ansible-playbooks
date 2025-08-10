@@ -2,7 +2,7 @@
 
 # NFSv4 Client Setup
 
-This role sets up NFSv4 with Kerberos authentication on a Debian 12 system.
+This role sets up NFSv4 with Kerberos authentication on a Debian 13 system.
 
 It executes the following tasks:
 

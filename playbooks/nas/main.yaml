@@ -11,7 +11,7 @@
       ansible.builtin.import_tasks: handlers/main.yaml
 
   roles:
-    - role: debian-12-setup
+    - role: debian-13-setup
       tags: install
 
   tasks:

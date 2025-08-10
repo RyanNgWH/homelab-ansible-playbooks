@@ -1,8 +1,8 @@
 <!-- @format -->
 
-# Debian 12 Setup
+# Debian 13 Setup
 
-This role sets up common basic configurations on a Debian 12 system.
+This role sets up common basic configurations on a Debian 13 system.
 
 It executes the following tasks:
 
@@ -47,7 +47,7 @@ This role utilises modules from the following collections that is not part of `a
     debian_user_name: ansible
 
   roles:
-      - debian-12-setup
+      - debian-13-setup
 ```
 
 ## Author Information

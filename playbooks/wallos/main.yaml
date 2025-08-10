@@ -15,7 +15,7 @@
       tags: always
 
   roles:
-    - role: debian-12-setup
+    - role: debian-13-setup
       tags: install
     - role: nfsv4-client-setup
       tags: install

@@ -5,7 +5,7 @@
     gather_subset:
       - virtualization_type
 
-- name: Setup common Debian 12 configurations
+- name: Setup common Debian 13 configurations
   become: true
   block:
     - name: Install and configure time synchronisation
@@ -43,10 +43,16 @@
 
     - name: Update apt sources and packages
       block:
-        - name: Ensure apt uses https sources
+        - name: Set debian sources
           ansible.builtin.template:
-            src: templates/debian-apt-sources.list
-            dest: /etc/apt/sources.list
+            src: templates/debian.sources
+            dest: /etc/apt/sources.list.d/debian.sources
+            mode: "0644"
+
+        - name: Set debian backports sources
+          ansible.builtin.template:
+            src: templates/debian-backports.sources
+            dest: /etc/apt/sources.list.d/debian-backports.sources
             mode: "0644"
 
         - name: Update apt cache, upgrade packages and remove unused dependencies

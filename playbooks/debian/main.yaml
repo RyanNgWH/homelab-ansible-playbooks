@@ -18,5 +18,5 @@
 
     - name: Install and setup debian base configurations
       ansible.builtin.import_role:
-        name: debian-12-setup
+        name: debian-13-setup
       tags: install

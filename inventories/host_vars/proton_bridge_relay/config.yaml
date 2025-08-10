@@ -10,7 +10,7 @@ debian_architecture:
     "i386": "i386",
   }
 
-## Debian-12-setup variables
+## debian-13-setup variables
 # Date time configurations
 debian_datetime_ntp_server: 172.28.10.1
 

@@ -15,7 +15,7 @@
       tags: install
 
   roles:
-    - role: debian-12-setup
+    - role: debian-13-setup
       tags: install
 
   tasks:

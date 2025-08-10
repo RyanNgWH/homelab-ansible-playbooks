@@ -1,6 +1,6 @@
 # @format
 ---
-## Debian-12-setup variables
+## Debian-13-setup variables
 # Datetime
 debian_datetime_ntp_server: 172.28.20.1
 
