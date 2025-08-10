@@ -18,6 +18,11 @@ debian_datetime_ntp_server: 172.28.10.1
 debian_user_name: sunny
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIlo/hfCkUuuzqpSjRkVKXNLyogcC4jg3KzseCg87QId sunny@smtp.tinynamoo.com"
 
+## Proxmox variables
+proxmox_snapshot_vmid: 10140
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
 ## Proton bridge variables
 golang_version: "1.22.6"
 

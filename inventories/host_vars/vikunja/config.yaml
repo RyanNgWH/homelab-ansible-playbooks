@@ -36,3 +36,8 @@ vikunja_docker_name: vikunja
 ## Docker variables
 docker_project_name: vikunja
 docker_project_src: /opt/vikunja
+
+## Proxmox variables
+proxmox_snapshot_vmid: 20240
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false

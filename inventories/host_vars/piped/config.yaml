@@ -40,3 +40,8 @@ piped_docker_name: piped
 ## Docker variables
 docker_project_name: piped
 docker_project_src: /opt/piped
+
+## Proxmox variables
+proxmox_snapshot_vmid: 20200
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false

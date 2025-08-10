@@ -71,6 +71,11 @@ nfs_exports:
   - src: /aspen/yena/
     dest: /export/yena
 
+## Proxmox variables
+proxmox_snapshot_vmid: 10100
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
 ## Scrutiny variables
 scrutiny_spoke_docker_name: scrutiny-spoke
 scrutiny_spoke_project_src: /opt/scrutiny-spoke

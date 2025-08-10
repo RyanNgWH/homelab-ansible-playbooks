@@ -39,3 +39,8 @@ scrutiny_docker_name: scrutiny
 ## Docker variables
 docker_project_name: scrutiny
 docker_project_src: /opt/scrutiny
+
+## Proxmox variables
+proxmox_snapshot_vmid: 10150
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
