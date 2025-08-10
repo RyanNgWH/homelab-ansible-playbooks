@@ -102,15 +102,10 @@
 
     - name: Update Debian sources with 'non-free' components
       ansible.builtin.lineinfile:
-        path: /etc/apt/sources.list
-        regexp: "{{ item.regex }}"
-        line: "{{ item.line }}"
+        path: /etc/apt/sources.list.d/debian.sources
+        regex: "^Suites: trixie\nComponents: main contrib non-free-firmware"
+        line: "^Suites: trixie\nComponents: main contrib non-free non-free-firmware"
         state: present
-      loop:
-        - regex: "deb .*debian {{ ansible_distribution_release }} .*$"
-          line: "deb https://deb.debian.org/debian {{ ansible_distribution_release }} main contrib non-free non-free-firmware"
-        - regex: "deb-src .*debian {{ ansible_distribution_release }} .*$"
-          line: "deb-src https://deb.debian.org/debian {{ ansible_distribution_release }} main contrib non-free non-free-firmware"
 
     - name: Install NVIDIA drivers & firmware # noqa: ignore-errors
       ansible.builtin.apt:
@@ -134,8 +129,8 @@
 
     - name: Add nvidia container toolkit repository
       ansible.builtin.copy:
-        src: files/nvidia-container-toolkit.list
-        dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+        src: files/nvidia-container-toolkit.sources
+        dest: /etc/apt/sources.list.d/nvidia-container-toolkit.sources
         owner: root
         group: root
         mode: "0644"
