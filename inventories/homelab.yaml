@@ -196,8 +196,10 @@ sierra_proxmox:
     it_tools:
     jellyfin:
     jellyseerr:
+    mat2_web:
     miniflux:
     nextcloud:
+    nas:
     ntfy:
     paperless:
     piped:
