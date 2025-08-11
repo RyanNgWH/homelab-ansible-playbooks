@@ -13,13 +13,13 @@
         state: present
 
     # Ensures upstream stable patches is tracked and compatibility is always maintained
-    # - name: Install zfs utils package from debian backports
-    #   ansible.builtin.apt:
-    #     name: zfsutils-linux
-    #     default_release: stable-backports
-    #     update_cache: true
-    #     state: present
-    #   notify: Reboot system
+    - name: Install zfs utils package from debian backports
+      ansible.builtin.apt:
+        name: zfsutils-linux
+        default_release: stable-backports
+        update_cache: true
+        state: present
+      notify: Reboot system
 
     - name: Flush handlers
       ansible.builtin.meta: flush_handlers
