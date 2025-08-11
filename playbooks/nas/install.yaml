@@ -184,7 +184,7 @@
       ansible.builtin.user:
         name: "{{ item.value.name }}"
         group: "{{ item.value.name }}"
-        groups: "{{ item.value.groups if item.value.groups is defined }}"
+        groups: "{{ item.value.groups if item.value.groups is defined else '' }}"
         password: "*"
         shell: /usr/sbin/nologin
         create_home: false
@@ -236,7 +236,7 @@
       ansible.builtin.user:
         name: "{{ item.value.name }}"
         group: "{{ item.value.name }}"
-        groups: "{{ item.value.groups if item.value.groups is defined }}"
+        groups: "{{ item.value.groups if item.value.groups is defined else '' }}"
         password: "*"
         shell: /usr/sbin/nologin
         create_home: false
