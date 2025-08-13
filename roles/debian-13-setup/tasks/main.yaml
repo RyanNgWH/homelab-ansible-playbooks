@@ -55,6 +55,11 @@
             dest: /etc/apt/sources.list.d/debian-backports.sources
             mode: "0644"
 
+        - name: Remove old debian sources
+          ansible.builtin.file:
+            path: /etc/apt/sources.list
+            state: absent
+
         - name: Update apt cache, upgrade packages and remove unused dependencies
           ansible.builtin.apt:
             update_cache: true
