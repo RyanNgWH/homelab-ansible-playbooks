@@ -1,7 +1,7 @@
 services:
   prometheus:
     container_name: {{ docker_project_name }}
-    image: prom/prometheus
+    image: prom/prometheus:latest
     volumes:
       - {{ nfs_mounts.melanie.mount_point }}/prometheus:/prometheus
       - {{ docker_project_src }}/prometheus.yml:/etc/prometheus/prometheus.yml
