@@ -40,7 +40,7 @@
         system: true
         state: present
 
-    - name: Add prometheus user to photos group
+    - name: Add prometheus user to monitoring group
       ansible.builtin.user:
         name: "{{ nfs_user_name }}"
         groups: "{{ prometheus_monitoring_group_name }}"
