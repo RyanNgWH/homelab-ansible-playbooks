@@ -1,0 +1,82 @@
+services:
+  grafana:
+    container_name: {{ docker_project_name }}
+    image: grafana/grafana-oss:latest
+    environment:
+      GF_DEFAULT_INSTANCE_NAME: {{ ansible_hostname }}
+
+      GF_SERVER_PROTOCOL: http
+      GF_SERVER_DOMAIN: {{ ansible_host }}
+      GF_SERVER_ENFORCE_DOMAIN: true
+      GF_SERVER_ROOT_URL: https://{{ ansible_host }}
+
+      GF_DATABASE_TYPE: postgres
+      GF_DATABASE_HOST: postgres:5432
+      GF_DATABASE_NAME: grafana
+      GF_DATABASE_USER: grafana
+      GF_DATABASE_PASSWORD: {{ grafana_postgres_pass }}
+
+      GF_REMOTE_CACHE_TYPE: redis
+      GF_REMOTE_CACHE_CONNSTR: addr=redis:6379
+
+      GF_ANALYTICS_REPORTING_ENABLED: false
+      GF_ANALYTICS_CHECK_FOR_UPDATES: true
+      GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: true
+      GF_ANALYTICS_FEEDBACK_LINKS_ENABLED: false
+
+      GF_SECURITY_DISABLE_GRAVATAR: true
+      GF_SECURITY_COOKIE_SECURE: true
+
+      GF_SNAPSHOTS_EXTERNAL_ENABLED: false
+
+      GF_AUTH_BASIC_PASSWORD_POLICY: true
+
+      GF_SMTP_ENABLED: true
+      GF_SMTP_HOST: smtp.tinynamoo.com:25
+      GF_SMTP_FROM_ADDRESS: sunny@mail.tinynamoo.com
+
+      GF_LOG_FILE_MAX_DAYS: 30
+
+      GF_METRICS_ENABLED: true
+      GF_METRICS_DISABLE_TOTAL_STATS: false
+
+      GF_EXTERNAL_IMAGE_STORAGE_PROVIDER: local
+
+      GF_DATE_FORMATS_INTERVAL_HOUR: DD/MM HH:mm
+      GF_DATE_FORMATS_INTERVAL_DAY: DD/MM
+      GF_DATE_FORMATS_DEFAULT_TIMEZONE: browser
+    volumes:
+      - {{ nfs_mounts.melanie.mount_point }}/grafana/data:/var/lib/grafana
+    ports:
+      - '3000:3000'
+    user: {{ nfs_user_id }}:{{ nfs_groups['monitoring'].gid }}
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  postgres:
+    container_name: postgres
+    image: postgres:17
+    environment:
+      POSTGRES_DB: grafana
+      POSTGRES_USER: grafana
+      POSTGRES_PASSWORD: {{ grafana_postgres_pass }}
+    volumes:
+      - {{ nfs_mounts.melanie.mount_point }}/grafana/db:/var/lib/postgresql/data
+    user: {{ nfs_user_id }}:{{ nfs_groups['monitoring'].gid }}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER -d grafana"]
+      interval: 2s
+      timeout: 20s
+
+  redis:
+    container_name: redis
+    image: 'redis:alpine'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+    restart: unless-stopped

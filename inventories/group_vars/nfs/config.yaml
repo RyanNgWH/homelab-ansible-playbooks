@@ -25,6 +25,10 @@ nfs_clients:
   gitea:
     name: gitea
     uid: 180
+  grafana:
+    name: grafana
+    uid: 192
+    groups: monitoring
   homarr:
     name: homarr
     uid: 140

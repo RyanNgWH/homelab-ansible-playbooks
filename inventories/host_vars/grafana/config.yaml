@@ -1,0 +1,40 @@
+# @format
+---
+## debian-13-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.10.1
+
+# User
+debian_user_name: sabi
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDFgbN61GZ3bFwke43PBKMNL4ZACZ1Rv/o4K35Jc+C3L sabi@monitor.tinynamoo.com"
+
+## NFSv4-client-setup variables
+# Kerberos
+nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sabi] Grafana/host.keytab"
+nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sabi] Grafana/user.keytab"
+
+# NFS
+nfs_user_name: "{{ nfs_clients['grafana'].name }}"
+nfs_user_id: "{{ nfs_clients['grafana'].uid }}"
+nfs_mounts:
+  melanie:
+    mount_share: /melanie
+    mount_point: /srv/melanie
+
+## NGINX variables
+nginx_conf_files:
+  - filename: grafana.conf
+    path: templates/nginx.grafana.conf
+
+## Grafana variables
+grafana_monitoring_group_name: "{{ nfs_groups['monitoring'].name }}"
+grafana_monitoring_group_gid: "{{ nfs_groups['monitoring'].gid }}"
+
+## Proxmox instance variables
+proxmox_snapshot_vmid: 10192
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: grafana
+docker_project_src: /opt/grafana

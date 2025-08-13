@@ -15,6 +15,8 @@ all:
       ansible_host: finance.tinynamoo.com
     gitea:
       ansible_host: git.tinynamoo.com
+    grafana:
+      ansible_host: monitor.tinynamoo.com
     homarr:
       ansible_host: tinynamoo.com
     immich:
@@ -86,6 +88,7 @@ debian:
     drop:
     firefly:
     gitea:
+    grafana:
     homarr:
     immich:
     it_tools:
@@ -121,6 +124,7 @@ nfs:
     drop:
     firefly:
     gitea:
+    grafana:
     homarr:
     immich:
     jellyfin:
@@ -152,6 +156,7 @@ nginx:
     drop:
     firefly:
     gitea:
+    grafana:
     homarr:
     immich:
     it_tools:
@@ -196,6 +201,7 @@ sierra_proxmox:
     drop:
     firefly:
     gitea:
+    grafana:
     homarr:
     immich:
     it_tools:

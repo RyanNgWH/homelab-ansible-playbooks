@@ -1,0 +1,30 @@
+# @format
+
+# Grafana
+# Configure & manage Grafana data visualisation server.
+---
+- name: Configure & manage Grafana data visualisation server
+  hosts: grafana
+
+  pre_tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
+  roles:
+    - role: debian-13-setup
+      tags: install
+    - role: nfsv4-client-setup
+      tags: install
+    - role: debian-common
+      tags: install
+      vars:
+        debian_common_task_list:
+          - docker
+
+  tasks:
+    - name: Install and configure Grafana data visualisation server
+      ansible.builtin.import_tasks: install.yaml
+      tags: install
