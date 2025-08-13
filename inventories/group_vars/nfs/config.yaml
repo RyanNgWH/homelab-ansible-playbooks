@@ -54,6 +54,10 @@ nfs_clients:
   piped:
     name: piped
     uid: 204
+  prometheus:
+    name: prometheus
+    uid: 191
+    groups: monitoring
   prowlarr:
     name: prowlarr
     uid: 286
@@ -96,3 +100,6 @@ nfs_groups:
   media:
     name: media
     gid: 200
+  monitoring:
+    name: monitoring
+    gid: 190

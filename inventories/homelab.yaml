@@ -41,6 +41,8 @@ all:
       ansible_host: archive.tinynamoo.com
     piped:
       ansible_host: tube.tinynamoo.com
+    prometheus:
+      ansible_host: metrics.tinynamoo.com
     proton_bridge_relay:
       ansible_host: smtp.tinynamoo.com
     prowlarr:
@@ -96,6 +98,7 @@ debian:
     ntfy:
     paperless:
     piped:
+    prometheus:
     proton_bridge_relay:
     proxmox:
     prowlarr:
@@ -128,6 +131,7 @@ nfs:
     ntfy:
     paperless:
     piped:
+    prometheus:
     prowlarr:
     qbittorrent:
     radarr:
@@ -159,6 +163,7 @@ nginx:
     ntfy:
     paperless:
     piped:
+    prometheus:
     prowlarr:
     proxmox:
     qbittorrent:
@@ -203,6 +208,7 @@ sierra_proxmox:
     ntfy:
     paperless:
     piped:
+    prometheus:
     proton_bridge_relay:
     proxmox:
     prowlarr:

@@ -1,0 +1,63 @@
+# @format
+
+# Prometheus
+# Install and configure Prometheus metrics aggregation server.
+---
+- name: Setup Prometheus application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: "{{ docker_project_src }}"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+    - name: Setup prometheus configuration file
+      ansible.builtin.template:
+        src: templates/app.config.yml
+        dest: "{{ docker_project_src }}/prometheus.yml"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
+- name: Setup prometheus user
+  become: true
+  block:
+    - name: Create monitoring group
+      ansible.builtin.group:
+        name: "{{ prometheus_monitoring_group_name }}"
+        gid: "{{ prometheus_monitoring_group_gid }}"
+        system: true
+        state: present
+
+    - name: Add prometheus user to photos group
+      ansible.builtin.user:
+        name: "{{ nfs_user_name }}"
+        groups: "{{ prometheus_monitoring_group_name }}"
+        append: true
+
+- name: Install and configure nginx
+  vars:
+    debian_common_task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ ansible_host }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start prometheus docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: "{{ docker_project_name }}"
+    project_src: "{{ docker_project_src }}"
+    state: present

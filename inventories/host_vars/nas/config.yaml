@@ -48,6 +48,8 @@ nfs_exports:
     dest: /export/marilyn-databases-prowlarr
   - src: /aspen/marilyn/media/
     dest: /export/marilyn-media
+  - src: /aspen/melanie/
+    dest: /export/melanie
   - src: /aspen/melodee/
     dest: /export/melodee
   - src: /aspen/petal/

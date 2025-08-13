@@ -1,0 +1,11 @@
+services:
+  prometheus:
+    container_name: {{ docker_project_name }}
+    image: prom/prometheus
+    volumes:
+      - {{ nfs_mounts.melanie.mount_point }}/prometheus:/prometheus
+      - {{ docker_project_src }}/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+    user: {{ nfs_user_id }}:{{ nfs_groups['monitoring'].gid }}
+    restart: unless-stopped
