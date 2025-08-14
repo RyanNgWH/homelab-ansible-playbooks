@@ -31,7 +31,7 @@ This role utilises modules from the following collections that is not part of `a
 | `debian_datetime_timezone`       | Timezone of the system.                                             | `Asia/Singapore` |
 | `debian_datetime_hardware_clock` | Timezone of hardware clock.<br><br>Options:<br>- `UTC`<br>- `local` | `UTC`            |
 
-### Time synchronisation
+### User
 
 | Variable                     | Description                                                                                                                                           | Default     |
 | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- |
@@ -39,6 +39,12 @@ This role utilises modules from the following collections that is not part of `a
 | `debian_user_password`       | Hashed password of default VM user to be created. Use `*` to lock user password.<br><br>Hashed password can be generated using `mkpasswd -m SHA-512`. | `*`         |
 | `debian_user_shell`          | Shell of the default VM user to be created.                                                                                                           | `/bin/bash` |
 | `debian_user_ssh_public_key` | Path to SSH public key of the default VM user to be created.                                                                                          |             |
+
+### Node Exporter
+
+| Variable                  | Description                                               | Default |
+| ------------------------- | --------------------------------------------------------- | ------- |
+| `node_exporter_listen_ip` | IP address node exporter's NGINX reverse proxy listens on |         |
 
 ## Example Playbook
 
