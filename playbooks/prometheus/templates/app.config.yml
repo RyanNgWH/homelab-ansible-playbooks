@@ -20,3 +20,8 @@ scrape_configs:
     scheme: https
     static_configs:
       - targets: ["monitor.tinynamoo.com"]
+
+  - job_name: "node-exporters"
+    scheme: https
+    static_configs:
+      - targets: {{ groups['debian'] | difference(groups['ansible']) | map('extract', hostvars) | map(attribute='ansible_host') | product([':9110']) | map('join') | list }}

@@ -11,6 +11,7 @@ It executes the following tasks:
 1. Harden SSH server
 1. Install `unattended-upgrades`
 1. Create default VM user with SSH public key
+1. Install Prometheus Node Exporter for metrics
 
 ## Requirements
 
@@ -18,6 +19,7 @@ This role utilises modules from the following collections that is not part of `a
 
 - ansible.posix
 - community.general
+- prometheus.prometheus
 
 ## Role Variables
 

@@ -149,39 +149,8 @@ nfs:
     your_spotify:
 
 nginx:
-  hosts:
-    ansible_lxc:
-    ansible_vm:
-    bazarr:
-    drop:
-    firefly:
-    gitea:
-    grafana:
-    homarr:
-    immich:
-    it_tools:
-    jellyfin:
-    jellyseerr:
-    mat2_web:
-    miniflux:
-    nextcloud:
-    ntfy:
-    paperless:
-    piped:
-    prometheus:
-    prowlarr:
-    proxmox:
-    qbittorrent:
-    radarr:
-    scrutiny:
-    send:
-    sonarr:
-    stirling_pdf:
-    uptime_kuma:
-    vikunja:
-    wallos:
-    wikijs:
-    your_spotify:
+  children:
+    debian:
 
 recyclarr:
   hosts:

@@ -4,6 +4,7 @@
   ansible.builtin.setup:
     gather_subset:
       - virtualization_type
+      - mounts
 
 - name: Setup common Debian 13 configurations
   become: true
@@ -112,3 +113,23 @@
 
     - name: Flush handlers
       ansible.builtin.meta: flush_handlers
+
+    - name: Install and configure Prometheus node exporter
+      block:
+        - name: Install Prometheus node exporter
+          ansible.builtin.import_role:
+            name: prometheus.prometheus.node_exporter
+          vars:
+            node_exporter_version: latest
+
+        - name: Configure NGINX for node exporter
+          vars:
+            debian_common_task_list:
+              - nginx
+            nginx_tls_domains:
+              - "{{ ansible_host }}"
+            nginx_conf_files:
+              - filename: node-exporter.conf
+                path: templates/nginx.node_exporter.conf
+          ansible.builtin.import_role:
+            name: debian-common
