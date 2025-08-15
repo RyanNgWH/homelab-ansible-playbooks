@@ -46,9 +46,9 @@
         autoremove: true
         purge: true
 
-- name: Execute debian 12 setup
+- name: Execute debian 13 setup
   ansible.builtin.import_role:
-    name: debian-12-setup
+    name: debian-13-setup
 
 - name: Install Intel microcode updates & firmware updater
   become: true
