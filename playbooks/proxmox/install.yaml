@@ -8,27 +8,21 @@
   block:
     - name: Enable no-subscription respository
       ansible.builtin.template:
-        src: templates/host.pve-no-subscription.list
-        dest: /etc/apt/sources.list.d/pve-no-subscription.list
+        src: templates/host.pve-no-subscription.sources
+        dest: /etc/apt/sources.list.d/pve-no-subscription.sources
         owner: root
         group: root
         mode: "0644"
 
-    - name: Disable pve enterprise respository
-      ansible.builtin.copy:
-        content: "# deb https://enterprise.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-enterprise"
-        dest: /etc/apt/sources.list.d/pve-enterprise.list
-        owner: root
-        group: root
-        mode: "0644"
+    - name: Remove old pve enterprise repository
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/pve-enterprise.list
+        state: absent
 
-    - name: Disable ceph enterprise respository
-      ansible.builtin.copy:
-        content: "# deb https://enterprise.proxmox.com/debian/ceph-quincy {{ ansible_distribution_release }} enterprise"
-        dest: /etc/apt/sources.list.d/ceph.list
-        owner: root
-        group: root
-        mode: "0644"
+    - name: Remove old pve ceph repository
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/ceph.list
+        state: absent
 
     - name: Disable no subscription nagging message
       ansible.builtin.copy:
