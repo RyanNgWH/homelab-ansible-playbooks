@@ -128,3 +128,5 @@ scrutiny_spoke_project_src: /opt/scrutiny-spoke
 
 scrutiny_spoke_collector_host_id: "[Sierra] Proxmox"
 scrutiny_spoke_collector_cron: "*/15 * * * *" # Every 15 minutes
+
+scrutiny_spoke_host_mode: true

@@ -13,3 +13,4 @@ services:
       - SYS_RAWIO
     devices: {{ scrutiny_spoke_devices }}
     restart: unless-stopped
+{{ "    network_mode: host" if scrutiny_spoke_host_mode is defined }}

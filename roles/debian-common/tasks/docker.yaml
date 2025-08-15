@@ -51,24 +51,14 @@
         update_cache: true
         state: present
 
-# Docker changes the FORWARD policy to DROP which breaks networking on the vms
-- name: Fix iptables issue introduced by docker to allow for VM networking to work
+- name: Disable iptables if using nftables
   become: true
   when: inventory_hostname == 'proxmox'
-  notify: Restart docker daemon
   block:
-    - name: Ensure docker override directory is present
-      ansible.builtin.file:
-        path: /etc/systemd/system/docker.service.d
-        owner: root
-        group: root
-        mode: "0755"
-        state: directory
-
-    - name: Setup docker service override
-      ansible.builtin.template:
-        src: templates/docker.iptables-override.conf
-        dest: /etc/systemd/system/docker.service.d/iptables-override.conf
+    - name: Disable docker iptables
+      ansible.builtin.copy:
+        src: files/docker.daemon.json
+        dest: /etc/docker/daemon.json
         owner: root
         group: root
         mode: "0644"
