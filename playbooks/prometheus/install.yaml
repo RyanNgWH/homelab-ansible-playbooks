@@ -29,6 +29,7 @@
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"
+      register: prometheus_config_file
 
 - name: Setup prometheus user
   become: true
@@ -61,3 +62,12 @@
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+  register: docker_containers_started
+
+- name: Restart prometheus docker containers (if config file changed)
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: "{{ docker_project_name }}"
+    project_src: "{{ docker_project_src }}"
+    state: restarted
+  when: prometheus_config_file.changed and not docker_containers_started.changed

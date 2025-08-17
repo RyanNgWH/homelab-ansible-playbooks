@@ -3,6 +3,15 @@
 # Jellyfin
 # Configure & manage Jellyfin media streaming server.
 ---
+- name: Gather prometheus facts
+  hosts: prometheus
+  tasks:
+    - name: Get prometheus IP address
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
 - name: Configure & manage Jellyfin media streaming server
   hosts: jellyfin
 

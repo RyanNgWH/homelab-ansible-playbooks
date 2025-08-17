@@ -19,7 +19,12 @@ scrape_configs:
   - job_name: "grafana"
     scheme: https
     static_configs:
-      - targets: ["monitor.tinynamoo.com"]
+      - targets: ["{{ hostvars['grafana'].ansible_host }}"]
+
+  - job_name: "jellyfin"
+    scheme: https
+    static_configs:
+      - targets: ["{{ hostvars['jellyfin'].ansible_host }}"]
 
   - job_name: "node-exporters"
     scheme: https
