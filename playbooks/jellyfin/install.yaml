@@ -101,11 +101,12 @@
         state: present
 
     - name: Update Debian sources with 'non-free' components
-      ansible.builtin.lineinfile:
-        path: /etc/apt/sources.list.d/debian.sources
-        regex: "^Suites: trixie\nComponents: main contrib non-free-firmware"
-        line: "^Suites: trixie\nComponents: main contrib non-free non-free-firmware"
-        state: present
+      ansible.builtin.template:
+        src: templates/debian.debian.sources
+        dest: /etc/apt/sources.list.d/debian.sources
+        owner: root
+        group: root
+        mode: "0644"
 
     - name: Install NVIDIA drivers & firmware # noqa: ignore-errors
       ansible.builtin.apt:
