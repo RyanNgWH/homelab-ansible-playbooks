@@ -10,7 +10,8 @@ services:
       # Folder where your games are stored
       - {{ nfs_mounts.daisy.mount_point }}/library:/library
       - {{ nfs_mounts.daisy.mount_point }}/data:/data
-    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    ports:
+      - "3000:3000"
     restart: unless-stopped
     depends_on:
       postgres:
