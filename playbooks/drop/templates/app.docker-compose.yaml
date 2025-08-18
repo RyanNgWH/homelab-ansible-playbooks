@@ -6,6 +6,8 @@ services:
     environment:
       DATABASE_URL: postgres://drop:{{ drop_database_password }}@postgres:5432/drop
       EXTERNAL_URL: https://{{ ansible_host }}
+      IGDB_CLIENT_ID: {{ drop_igdb_client_id }}
+      IGDB_CLIENT_SECRET: {{ drop_igdb_client_secret }}
     volumes:
       # Folder where your games are stored
       - {{ nfs_mounts.daisy.mount_point }}/library:/library
