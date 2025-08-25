@@ -22,13 +22,13 @@ module.exports = {
     "https://{{ cross_seed_prowlarr_hostname }}/4/api?apikey={{ cross_seed_prowlarr_api_key }}", // Oldtoons
     "https://{{ cross_seed_prowlarr_hostname }}/5/api?apikey={{ cross_seed_prowlarr_api_key }}", // Upload.cx
     "https://{{ cross_seed_prowlarr_hostname }}/7/api?apikey={{ cross_seed_prowlarr_api_key }}", // LST
-    "https://{{ cross_seed_prowlarr_hostname }}/9/api?apikey={{ cross_seed_prowlarr_api_key }}", // DigitalCore
     "https://{{ cross_seed_prowlarr_hostname }}/10/api?apikey={{ cross_seed_prowlarr_api_key }}", // Aither
     "https://{{ cross_seed_prowlarr_hostname }}/11/api?apikey={{ cross_seed_prowlarr_api_key }}", // Hawke Uno
     "https://{{ cross_seed_prowlarr_hostname }}/12/api?apikey={{ cross_seed_prowlarr_api_key }}", // TorrentLeech
     "https://{{ cross_seed_prowlarr_hostname }}/13/api?apikey={{ cross_seed_prowlarr_api_key }}", // PrivateHD
     "https://{{ cross_seed_prowlarr_hostname }}/14/api?apikey={{ cross_seed_prowlarr_api_key }}", // Blutopia
     "https://{{ cross_seed_prowlarr_hostname }}/15/api?apikey={{ cross_seed_prowlarr_api_key }}", // AnimeTorrents
+    "https://{{ cross_seed_prowlarr_hostname }}/16/api?apikey={{ cross_seed_prowlarr_api_key }}", // DigitalCore
   ],
   /**
    * URL(s) to your Sonarr instance(s), included in the same way as torznab
