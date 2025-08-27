@@ -7,4 +7,6 @@ mailer:
   enabled: true
   host: {{ vikunja_mail_server }}
   port: {{ vikunja_mail_server_port }}
+  username: {{ vikunja_mail_proton_username }}
+  password: {{ vikunja_mail_proton_token }}
   fromemail: {{ vikunja_mail_from_email }}

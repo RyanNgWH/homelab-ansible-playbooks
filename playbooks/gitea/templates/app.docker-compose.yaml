@@ -29,9 +29,11 @@ services:
       # Mail configuration
       GITEA__mailer__ENABLED: true
       GITEA__mailer__FROM: sunny@mail.tinynamoo.com
-      GITEA__mailer__PROTOCOL: smtp
-      GITEA__mailer__SMTP_ADDR: smtp.tinynamoo.com
-      GITEA__mailer__SMTP_PORT: 25
+      GITEA__mailer__PROTOCOL: {{ gitea_smtp_protocol }}
+      GITEA__mailer__SMTP_ADDR: {{ gitea_smtp_host }}
+      GITEA__mailer__SMTP_PORT: {{ gitea_smtp_port }}
+      GITEA__mailer__USER: {{ gitea_smtp_username }}
+      GITEA__mailer__PASSWD: {{ gitea_smtp_proton_token }}
 
       # Git LFS
       GITEA__server__LFS_START_SERVER: true

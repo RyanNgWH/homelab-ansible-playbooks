@@ -71,7 +71,7 @@ notify:
 #    - "telegram://token@telegram?channels=channel-1[,channel-2,...]"
 #    - "pushover://shoutrrr:apiToken@userKey/?priority=1&devices=device1[,device2, ...]"
 #    - "slack://[botname@]token-a/token-b/token-c"
-    - "smtp://{{ scrutiny_smtp_hostname }}:25/?fromAddress={{ scrutiny_smtp_from_email }}&toAddresses={{ scrutiny_smtp_to_email }}"
+    - "smtp://{{ scrutiny_smtp_proton_username }}:{{ scrutiny_smtp_proton_token }}@{{ scrutiny_smtp_hostname }}:{{ scrutiny_smtp_port }}/?fromAddress={{ scrutiny_smtp_from_email }}&toAddresses={{ scrutiny_smtp_to_email }}"
 #    - "teams://token-a/token-b/token-c"
 #    - "gotify://gotify-host/token"
 #    - "pushbullet://api-token[/device/#channel/email]"

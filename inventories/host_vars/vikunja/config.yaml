@@ -27,8 +27,8 @@ nginx_conf_files:
     path: templates/nginx.vikunja.conf
 
 ## Vikunja configurations
-vikunja_mail_server: smtp.tinynamoo.com
-vikunja_mail_server_port: 25
+vikunja_mail_server: smtp.protonmail.ch
+vikunja_mail_server_port: 587
 vikunja_mail_from_email: sunny@mail.tinynamoo.com
 
 vikunja_docker_name: vikunja

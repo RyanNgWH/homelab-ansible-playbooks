@@ -31,9 +31,10 @@ nginx_conf_files:
     path: templates/nginx.collabora.conf
 
 ## Nextcloud variables
-nextcloud_smtp_host: smtp.tinynamoo.com
-nextcloud_smtp_port: "25"
-nextcloud_smtp_auth: PLAIN
+nextcloud_smtp_host: smtp.protonmail.ch
+nextcloud_smtp_port: "587"
+nextcloud_smtp_secure: tls
+nextcloud_smtp_auth: LOGIN
 nextcloud_smtp_from_address: sunny@mail.tinynamoo.com
 nextcloud_smtp_mail_domain: tinynamoo.com
 

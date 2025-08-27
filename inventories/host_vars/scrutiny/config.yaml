@@ -27,7 +27,9 @@ nginx_conf_files:
     path: templates/nginx.scrutiny.conf
 
 ## Scrutiny variables
-scrutiny_smtp_hostname: smtp.tinynamoo.com
+scrutiny_smtp_hostname: smtp.protonmail.ch
+scrutiny_smtp_port: 587
+scrutiny_smtp_proton_username: sunny@mail.tinynamoo.com
 scrutiny_smtp_from_email: sunny@mail.tinynamoo.com
 scrutiny_smtp_to_email: admin@tinynamoo.com
 
