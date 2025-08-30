@@ -13,7 +13,7 @@ findconfiguredport() {
 }
 
 findactiveport() {
-  natpmpc -g {{ protonvpn_gateway }} -a 0 0 tcp {{ protonvpn_port_forward_lifetime }} | grep -oP '(?<=Mapped public port.).*(?=.protocol.*)'
+  natpmpc -g {{ protonvpn_gateway }} -a 1 0 tcp {{ protonvpn_port_forward_lifetime }} | grep -oP '(?<=Mapped public port.).*(?=.protocol.*)'
 }
 
 qbt_login() {
