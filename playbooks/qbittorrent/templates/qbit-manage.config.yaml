@@ -121,6 +121,9 @@ tracker:
   digitalcore:
     tag:
       - digitalcore
+  filelist:
+    tag:
+      - filelist
   hawke.uno:
     tag:
       - hawke-uno
@@ -513,6 +516,29 @@ share_limits:
     priority: 18
     include_all_tags:
       - animetorrents
+    categories:
+      - anime
+      - animetv
+      - movies
+      - movies4k
+      - tv
+      - tv4k
+      - anime-completed
+      - animetv-completed
+      - movies-completed
+      - movies4k-completed
+      - tv-completed
+      - tv4k-completed
+    max_ratio: 10.0
+    min_seeding_time: 7d
+    max_seeding_time: 1y
+    last_active: 7d
+    min_num_seeds: 1
+    cleanup: true
+  filelist:
+    priority: 19
+    include_all_tags:
+      - filelist
     categories:
       - anime
       - animetv

@@ -29,6 +29,7 @@ module.exports = {
     "https://{{ cross_seed_prowlarr_hostname }}/14/api?apikey={{ cross_seed_prowlarr_api_key }}", // Blutopia
     "https://{{ cross_seed_prowlarr_hostname }}/15/api?apikey={{ cross_seed_prowlarr_api_key }}", // AnimeTorrents
     "https://{{ cross_seed_prowlarr_hostname }}/16/api?apikey={{ cross_seed_prowlarr_api_key }}", // DigitalCore
+    "https://{{ cross_seed_prowlarr_hostname }}/17/api?apikey={{ cross_seed_prowlarr_api_key }}", // Filelist
   ],
   /**
    * URL(s) to your Sonarr instance(s), included in the same way as torznab
