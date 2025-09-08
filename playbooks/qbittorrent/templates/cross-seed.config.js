@@ -215,35 +215,14 @@ module.exports = {
    */
   action: "inject",
   /**
-   * The url of your rtorrent XMLRPC interface.
-   * Only relevant with action: "inject".
-   * Could be something like "http://username:password@localhost:1234/RPC2
-   */
-  rtorrentRpcUrl: undefined,
-  /**
-   * The url of your qBittorrent webui.
-   * Only relevant with action: "inject".
-   * Supply your username and password inside the url like so:
-   * "http://username:password@localhost:8080"
-   */
-  qbittorrentUrl:
-    "http://admin:{{ cross_seed_qbit_password }}@qbittorrent:8080",
-  /**
-   * The url of your Transmission RPC interface.
-   * Usually ends with "/transmission/rpc".
-   * Only relevant with action: "inject".
-   * Supply your username and password inside the url like so:
-   * "http://username:password@localhost:9091/transmission/rpc"
-   */
-  transmissionRpcUrl: undefined,
-  /**
-   * The url of your Deluge JSON-RPC interface.
-   * Usually ends with "/json".
-   * Only relevant with action: "inject".
-   * Supply your WebUI password as well
-   * "http://:password@localhost:8112/json"
-   */
-  delugeRpcUrl: undefined,
+  /* The URL(s) of your torrent client that cross-seed will source
+  /* torrents from prefixed by their client type. If desired, you can
+  /* use readonly: after the prefix to use a client to source cross
+  /* seeds from but not inject into.
+  */
+  torrentClients: [
+    "qbittorrent:http://admin:{{ cross_seed_qbit_password }}@qbittorrent:8080",
+  ],
   /**
    * qBittorrent and Deluge specific
    * Whether to inject using the same labels/categories as the original torrent.
