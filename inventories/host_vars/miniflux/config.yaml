@@ -28,7 +28,7 @@ nginx_conf_files:
 
 ## Miniflux variables
 miniflux_docker_name: miniflux
-miniflux_image_version: v2.2.12
+miniflux_image_version: v2.2.13
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20150
