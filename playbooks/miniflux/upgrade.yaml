@@ -3,7 +3,7 @@
 # Minflux
 # Upgrade Miniflux feed reader
 ---
-- name: Check if gitea requires update
+- name: Check if miniflux requires update
   become: true
   block:
     - name: Get latest miniflux container release from github
