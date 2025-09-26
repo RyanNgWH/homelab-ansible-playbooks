@@ -30,6 +30,8 @@ nginx_conf_files:
 prometheus_monitoring_group_name: "{{ nfs_groups['monitoring'].name }}"
 prometheus_monitoring_group_gid: "{{ nfs_groups['monitoring'].gid }}"
 
+prometheus_image_version: v3.6.0
+
 ## Proxmox instance variables
 proxmox_snapshot_vmid: 10191
 proxmox_snapshot_retention: 3

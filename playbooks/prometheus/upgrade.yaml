@@ -1,0 +1,61 @@
+# @format
+
+# Prometheus
+# Upgrade the Prometheus metrics aggregation server.
+---
+- name: Check if prometheus requires update
+  become: true
+  block:
+    - name: Get latest prometheus container release from github
+      become: false
+      community.general.github_release:
+        user: prometheus
+        repo: prometheus
+        action: latest_release
+      delegate_to: localhost
+      register: prometheus_github_release
+
+    - name: Extract latest prometheus container version
+      ansible.builtin.set_fact:
+        prometheus_latest_version: "{{ prometheus_github_release.tag }}"
+
+    - name: Stop play if prometheus has no updates
+      ansible.builtin.meta: end_play
+      when: prometheus_image_version == prometheus_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_miniflux_' + (prometheus_latest_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of prometheus {{ prometheus_image_version }} before upgrading to {{ prometheus_latest_version }}"
+  delegate_to: localhost
+
+- name: Upgrade prometheus metrics aggregation server
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Update & start prometheus container
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true
