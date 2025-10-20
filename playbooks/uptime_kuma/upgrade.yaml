@@ -3,22 +3,29 @@
 # Uptime Kuma
 # Upgrade Uptime Kuma monitoring tool
 ---
-- name: Get latest container release from github
-  become: false
-  community.general.github_release:
-    user: louislam
-    repo: uptime-kuma
-    action: latest_release
-  delegate_to: localhost
-  register: github_release
+- name: Check if uptime kuma requires update
+  become: true
+  block:
+    - name: Get latest uptime kuma container release from github
+      become: false
+      community.general.github_release:
+        user: louislam
+        repo: uptime-kuma
+        action: latest_release
+      delegate_to: localhost
+      register: kuma_github_release
 
-- name: Extract latest containers versions
-  ansible.builtin.set_fact:
-    "kuma_latest_version": "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
+    - name: Extract latest uptime kuma container version
+      ansible.builtin.set_fact:
+        kuma_latest_version: "{{ kuma_github_release.tag }}"
 
-- name: Fix application docker image versionings in fact
-  ansible.builtin.set_fact:
-    kuma_latest_version: "v{{ kuma_latest_version }}"
+    - name: Fix application docker image versionings in fact
+      ansible.builtin.set_fact:
+        kuma_latest_version: "v{{ kuma_latest_version }}"
+
+    - name: Stop play if miniflux has no updates
+      ansible.builtin.meta: end_play
+      when: kuma_image_version == kuma_latest_version
 
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
@@ -26,8 +33,8 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (kuma_latest_version | regex_replace('[.]', '-')) }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of uptime kuma before upgrading to {{ kuma_latest_version }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_uptime_kuma_' + (kuma_latest_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of uptime kuma {{ kuma_image_version }} before upgrading to {{ kuma_latest_version }}"
   delegate_to: localhost
 
 - name: Backup uptime kuma data directory
