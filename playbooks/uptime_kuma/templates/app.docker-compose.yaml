@@ -1,10 +1,10 @@
 services:
   uptime-kuma:
-    container_name: {{ uptime_kuma_docker_name }}
-    image: louislam/uptime-kuma:1
+    container_name: { { uptime_kuma_docker_name } }
+    image: louislam/uptime-kuma:2
     environment:
-      PUID: {{ nfs_user_id }}
-      PGID: {{ nfs_user_id }}
+      PUID: { { nfs_user_id } }
+      PGID: { { nfs_user_id } }
     volumes:
       - ./data:/app/data
     ports:
