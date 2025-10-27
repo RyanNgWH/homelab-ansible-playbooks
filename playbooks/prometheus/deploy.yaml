@@ -1,0 +1,27 @@
+# @format
+
+- name: Gather facts
+  ansible.builtin.setup:
+    gather_subset:
+      - default_ipv4
+      - mounts
+
+- name: Install and configure Prometheus node exporter
+  block:
+    - name: Install Prometheus node exporter
+      ansible.builtin.import_role:
+        name: prometheus.prometheus.node_exporter
+      vars:
+        node_exporter_version: latest
+
+    - name: Configure NGINX for node exporter
+      vars:
+        debian_common_task_list:
+          - nginx
+        nginx_tls_domains:
+          - "{{ ansible_host }}"
+        nginx_conf_files:
+          - filename: node-exporter.conf
+            path: "{{ role_path }}/../debian-13-setup/templates/nginx.node_exporter.conf"
+      ansible.builtin.import_role:
+        name: debian-common

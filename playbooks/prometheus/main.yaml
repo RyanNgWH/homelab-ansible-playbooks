@@ -32,3 +32,11 @@
     - name: Upgrade Prometheus metrics aggregation server
       ansible.builtin.import_tasks: upgrade.yaml
       tags: upgrade
+
+- name: Deploy and manage the Prometheus node exporters
+  hosts: debian
+
+  tasks:
+    - name: Deploy and manage the Prometheus node exporters
+      ansible.builtin.import_tasks: deploy.yaml
+      tags: deploy
