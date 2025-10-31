@@ -5,8 +5,10 @@
     gather_subset:
       - default_ipv4
       - mounts
+  tags: deploy
 
 - name: Install and configure Prometheus node exporter
+  tags: deploy
   block:
     - name: Install Prometheus node exporter
       ansible.builtin.import_role:

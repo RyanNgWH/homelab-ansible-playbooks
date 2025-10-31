@@ -38,5 +38,5 @@
 
   tasks:
     - name: Deploy and manage the Prometheus node exporters
-      ansible.builtin.import_tasks: deploy.yaml
+      ansible.builtin.include_tasks: deploy.yaml
       tags: deploy
