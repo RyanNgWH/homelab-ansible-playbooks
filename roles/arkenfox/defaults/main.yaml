@@ -1,6 +1,6 @@
 # @format
 ---
-arkenfox_profiles_dir: "{{ ansible_env.HOME }}/.mozilla/firefox"
+arkenfox_profiles_dir: "{{ ansible_facts['env']['HOME'] }}/.mozilla/firefox"
 
 arkenfox_profiles:
   - default
