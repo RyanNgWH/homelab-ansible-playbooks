@@ -29,7 +29,7 @@ nginx_conf_files:
 ## Drop variables
 drop_docker_name: drop
 
-drop_image_version: v0.3.3
+drop_image_version: v0.3.4
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20231
