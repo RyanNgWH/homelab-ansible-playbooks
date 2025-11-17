@@ -51,6 +51,14 @@
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
+    - name: Ensure configuration file is updated
+      ansible.builtin.template:
+        src: templates/app.configuration.yml
+        dest: "{{ docker_project_src }}/config/server.yml"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
     - name: Update & start ntfy docker containers
       become: true
       community.docker.docker_compose_v2:
