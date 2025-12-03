@@ -20,7 +20,7 @@
 
     - name: Create sury php source list
       ansible.builtin.copy:
-        content: deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ {{ ansible_distribution_release }} main
+        content: deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ {{ ansible_facts["distribution_release"] }} main
         dest: /etc/apt/sources.list.d/php.list
         owner: root
         group: root

@@ -12,7 +12,7 @@
     - name: Install and configure time synchronisation
       notify:
         - Restart chrony service
-      when: ansible_virtualization_type != "lxc"
+      when: ansible_facts["virtualization_type"] != "lxc"
       block:
         - name: Ensure chrony is installed
           ansible.builtin.apt:

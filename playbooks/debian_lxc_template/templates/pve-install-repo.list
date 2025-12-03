@@ -1,1 +1,1 @@
-deb [arch={{ debian_architecture[ansible_architecture] }}] http://download.proxmox.com/debian/pve {{ ansible_distribution_release }} pve-no-subscription
+deb [arch={{ debian_architecture[ansible_architecture] }}] http://download.proxmox.com/debian/pve {{ ansible_facts["distribution_release"] }} pve-no-subscription

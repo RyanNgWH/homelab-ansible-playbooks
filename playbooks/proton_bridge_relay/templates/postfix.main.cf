@@ -21,7 +21,7 @@ alias_database = hash:/etc/aliases
 mydestination = $myhostname, localhost.localdomain, localhost
 mynetworks = 127.0.0.0/8, 172.28.10.0/24, 172.28.14.0/24, 172.28.17.0/24, 172.28.20.0/24
 recipient_delimiter = +
-inet_interfaces = 127.0.0.1, {{ ansible_default_ipv4.address }}
+inet_interfaces = 127.0.0.1, {{ ansible_facts["default_ipv4"]["address"] }}
 
 mydomain = {{ postfix_domain }}
 
