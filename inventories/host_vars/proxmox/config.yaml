@@ -109,6 +109,7 @@ proxmox_ve_storages:
       - vztmpl
       - snippets
   - storage: local-zfs
+    blocksize: 64k
     content:
       - images
       - rootdir
