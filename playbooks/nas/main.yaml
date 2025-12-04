@@ -6,6 +6,13 @@
 - name: Install and the Network Attached Storage server
   hosts: nas
 
+  pre_tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
   handlers:
     - name: Import handlers
       ansible.builtin.import_tasks: handlers/main.yaml
