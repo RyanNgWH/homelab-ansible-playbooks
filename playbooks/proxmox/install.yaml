@@ -260,15 +260,27 @@
 - name: Setup storage
   become: true
   block:
-    - name: Check if postgres dataset is added
-      ansible.builtin.command: pvesm status --storage {{ proxmox_ve_storages["local-zfs-postgres"]["storage"] }}
-      register: pve_postgres_added
-      changed_when: false
-      failed_when: pve_postgres_added.rc != 0 and pve_postgres_added.rc != 255
+    - name: Ensure additional datasets are added
+      block:
+        - name: Check if postgres dataset is added
+          ansible.builtin.command: pvesm status --storage {{ proxmox_ve_storages["local-zfs-postgres"]["storage"] }}
+          register: pve_postgres_added
+          changed_when: false
+          failed_when: pve_postgres_added.rc != 0 and pve_postgres_added.rc != 255
 
-    - name: Add postgres dataset
-      ansible.builtin.command: pvesm add zfspool {{ proxmox_ve_storages["local-zfs-postgres"]["storage"] }} --pool {{ proxmox_ve_storages["local-zfs-postgres"]["pool"] }} --sparse true --content "{{ proxmox_ve_storages["local-zfs-postgres"]["content"] | join(',') }}" --blocksize {{ proxmox_ve_storages["local-zfs-postgres"]["blocksize"] }}
-      when: pve_postgres_added.rc == 255
+        - name: Add postgres dataset
+          ansible.builtin.command: pvesm add zfspool {{ proxmox_ve_storages["local-zfs-postgres"]["storage"] }} --pool {{ proxmox_ve_storages["local-zfs-postgres"]["pool"] }} --sparse true --content "{{ proxmox_ve_storages["local-zfs-postgres"]["content"] | join(',') }}" --blocksize {{ proxmox_ve_storages["local-zfs-postgres"]["blocksize"] }}
+          when: pve_postgres_added.rc == 255
+
+        - name: Check if appdata dataset is added
+          ansible.builtin.command: pvesm status --storage {{ proxmox_ve_storages["local-zfs-appdata"]["storage"] }}
+          register: pve_appdata_added
+          changed_when: false
+          failed_when: pve_appdata_added.rc != 0 and pve_appdata_added.rc != 255
+
+        - name: Add appdata dataset
+          ansible.builtin.command: pvesm add zfspool {{ proxmox_ve_storages["local-zfs-appdata"]["storage"] }} --pool {{ proxmox_ve_storages["local-zfs-appdata"]["pool"] }} --sparse true --content "{{ proxmox_ve_storages["local-zfs-appdata"]["content"] | join(',') }}" --blocksize {{ proxmox_ve_storages["local-zfs-appdata"]["blocksize"] }}
+          when: pve_appdata_added.rc == 255
 
     - name: Set storage configurations
       ansible.builtin.command: pvesm set {{ item.value.storage }} --content "{{ item.value.content | join(',') }}"{{ ' --blocksize ' if item.value.blocksize is defined else '' }}{{ item.value.blocksize if item.value.blocksize is defined else '' }}
