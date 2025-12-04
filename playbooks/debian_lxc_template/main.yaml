@@ -66,7 +66,7 @@
 
     - name: Create temporary image generation directory
       ansible.builtin.file:
-        path: ~/debian-{{ ansible_distribution_version }}-minimal
+        path: ~/debian-{{ ansible_facts["distribution_version"] }}-minimal
         owner: root
         group: root
         mode: "0644"
@@ -75,7 +75,7 @@
     - name: Create dab configuration file
       ansible.builtin.template:
         src: templates/dab.conf
-        dest: ~/debian-{{ ansible_distribution_version }}-minimal/dab.conf
+        dest: ~/debian-{{ ansible_facts["distribution_version"] }}-minimal/dab.conf
         owner: root
         group: root
         mode: "0644"
@@ -83,22 +83,22 @@
     - name: Create dab makefile
       ansible.builtin.template:
         src: templates/Makefile
-        dest: ~/debian-{{ ansible_distribution_version }}-minimal/Makefile
+        dest: ~/debian-{{ ansible_facts["distribution_version"] }}-minimal/Makefile
         owner: root
         group: root
         mode: "0644"
 
     - name: Generate LXC template
       community.general.make:
-        chdir: ~/debian-{{ ansible_distribution_version }}-minimal
+        chdir: ~/debian-{{ ansible_facts["distribution_version"] }}-minimal
 
     - name: Retrieve generated LXC template
       ansible.builtin.fetch:
-        src: "~/debian-{{ ansible_distribution_version }}-minimal/debian-{{ ansible_distribution_major_version }}-minimal_{{ ansible_distribution_version }}_{{ debian_architecture[ansible_architecture] }}.tar.gz"
+        src: '~/debian-{{ ansible_facts["distribution_version"] }}-minimal/debian-{{ ansible_facts["distribution_major_version"] }}-minimal_{{ ansible_facts["distribution_version"] }}_{{ debian_architecture[ansible_facts["architecture"]] }}.tar.gz'
         dest: "{{ lxc_template_save_directory }}"
         flat: true
 
     - name: Clean makefile directory
       community.general.make:
-        chdir: ~/debian-{{ ansible_distribution_version }}-minimal
+        chdir: ~/debian-{{ ansible_facts["distribution_version"] }}-minimal
         target: clean
