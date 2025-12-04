@@ -102,17 +102,26 @@ proxmox_ve_permissions:
     propagate: true
 
 proxmox_ve_storages:
-  - storage: local
+  local:
+    storage: local
     content:
       - backup
       - iso
       - vztmpl
       - snippets
-  - storage: local-zfs
+  local-zfs:
+    storage: local-zfs
     blocksize: 64k
     content:
       - images
       - rootdir
+  local-zfs-postgres:
+    storage: local-zfs-postgres
+    blocksize: 8k
+    content:
+      - images
+      - rootdir
+    pool: rpool/postgres
 
 ## Sanoid/Syncoid variables
 sanoid_private_key_file: /mnt/veracrypt2/SSH Keys/Sanoid/id_ed25519
