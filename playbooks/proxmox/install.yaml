@@ -24,6 +24,16 @@
         path: /etc/apt/sources.list.d/ceph.list
         state: absent
 
+    - name: Remove updated pve enterprise respository
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/pve-enterprise.sources
+        state: absent
+
+    - name: Remove updated pve ceph respository
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/ceph.sources
+        state: absent
+
     - name: Disable no subscription nagging message
       ansible.builtin.copy:
         src: files/host.no-nag-script
@@ -249,7 +259,7 @@
 
 - name: Setup storage
   become: true
-  ansible.builtin.command: pvesm set {{ item.storage }} --content "{{ item.content | join(',') }}"
+  ansible.builtin.command: pvesm set {{ item.storage }} --content "{{ item.content | join(',') }}"{{ ' --blocksize ' if item.blocksize is defined else '' }}{{ item.blocksize if item.blocksize is defined else '' }}
   loop: "{{ proxmox_ve_storages }}"
   register: pve_storages
   changed_when: pve_storages.rc == 0
