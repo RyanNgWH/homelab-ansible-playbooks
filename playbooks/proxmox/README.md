@@ -36,17 +36,7 @@ Certain tasks are not supported by this playbook (or using the opentofu infrastr
 
 ### Node firewall rules & options
 
-Datacenter & node level firewall rules & options have to be manually added as it is not currently supported by the opentofu bpg/proxmox plugin (as of v0.62.0)
-
-#### Rules
-
-| Type | Action | Macro | Source                | Destination    | Log level | Description                                                                   |
-| ---- | ------ | ----- | --------------------- | -------------- | --------- | ----------------------------------------------------------------------------- |
-| in   | ACCEPT | Ping  | lan_airport_privilege | sierra_proxmox | nolog     | [ICMP] [Allow] LAN & Airport privilege to Sierra proxmox hypervisor           |
-| in   | ACCEPT | SSH   | lan_airport_privilege | sierra_proxmox | nolog     | [SSH] [Allow] LAN & Airport privilege to Sierra proxmox hypervisor            |
-| in   | ACCEPT | HTTPS | serene_uptime-kuma    | sierra_proxmox | nolog     | [Status - HTTPS] [Allow] Uptime_Kuma to Sierra proxmox management interface   |
-| in   | ACCEPT | HTTP  | lan_airport_privilege | sierra_proxmox | nolog     | [HTTP] [Allow] LAN & Remote privilege to Sierra proxmox management interface  |
-| in   | ACCEPT | HTTPS | lan_airport_privilege | sierra_proxmox | nolog     | [HTTPS] [Allow] LAN & Remote privilege to Sierra proxmox management interface |
+Datacenter & node level firewall options have to be manually added as it is not currently supported by the opentofu bpg/proxmox plugin (as of v0.88.0)
 
 #### Options
 
