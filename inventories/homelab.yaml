@@ -129,7 +129,6 @@ nfs:
     miniflux:
     nas:
     nextcloud:
-    ntfy:
     paperless:
     piped:
     prometheus:

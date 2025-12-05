@@ -26,8 +26,6 @@ nfs_exports:
     dest: /export/florence
   - src: /aspen/hanni/
     dest: /export/hanni
-  - src: /aspen/karina/
-    dest: /export/karina
   - src: /aspen/marilyn/
     dest: /export/marilyn
   - src: /aspen/marilyn/configs/

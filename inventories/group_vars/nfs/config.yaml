@@ -49,9 +49,6 @@ nfs_clients:
   nextcloud:
     name: nextcloud
     uid: 233
-  ntfy:
-    name: ntfy
-    uid: 270
   paperless:
     name: paperless
     uid: 130
