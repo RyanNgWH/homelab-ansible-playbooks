@@ -40,6 +40,14 @@ This role utilises modules from the following collections that is not part of `a
 | `debian_user_shell`          | Shell of the default VM user to be created.                                                                                                           | `/bin/bash` |
 | `debian_user_ssh_public_key` | Path to SSH public key of the default VM user to be created.                                                                                          |             |
 
+### Additional Disks
+
+| Variable                              | Description                                         | Default |
+| ------------------------------------- | --------------------------------------------------- | ------- |
+| `debian_additional_disks`             | Dictionary of additional disk objects to be mounted |         |
+| `debian_additional_disks.uuid`        | UUID of disk to be mounted                          |         |
+| `debian_additional_disks.mount_point` | Path on host where disk is to be mounted            |         |
+
 ### Node Exporter
 
 | Variable                  | Description                                               | Default |

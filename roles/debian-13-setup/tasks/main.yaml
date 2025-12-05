@@ -114,6 +114,27 @@
     - name: Flush handlers
       ansible.builtin.meta: flush_handlers
 
+    - name: Ensure additional disks are mounted
+      when: debian_additional_disks is defined
+      block:
+        - name: Ensure mount paths exist
+          ansible.builtin.file:
+            path: "{{ item.value.mount_point }}"
+            owner: "{{ debian_user_name }}"
+            group: "{{ debian_user_name }}"
+            mode: "0755"
+            state: directory
+          loop: "{{ debian_additional_disks | dict2items }}"
+
+        - name: Ensure additional disks fstab entries are present
+          ansible.posix.mount:
+            src: UUID={{ item.value.uuid }}
+            path: "{{ item.value.mount_point }}"
+            fstype: ext4
+            opts: defaults
+            state: mounted
+          loop: "{{ debian_additional_disks | dict2items }}"
+
     - name: Install and configure Prometheus node exporter
       block:
         - name: Install Prometheus node exporter
