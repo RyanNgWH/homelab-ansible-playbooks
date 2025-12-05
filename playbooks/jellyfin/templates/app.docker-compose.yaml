@@ -12,16 +12,8 @@ services:
       JELLYFIN_PublishedServerUrl: https://{{ ansible_host }}
     ports:
       - "8096:8096"
-    restart: unless-stopped
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
-    runtime: nvidia
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: all
-              capabilities: [gpu]
+    restart: unless-stopped
 
   jellystat:
     container_name: {{ jellystat_docker_name }}
