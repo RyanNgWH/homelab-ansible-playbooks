@@ -25,10 +25,6 @@
           - docker
 
   tasks:
-    - name: Backup Nextcloud config & clamav directories
-      ansible.builtin.import_tasks: backup.yaml
-      tags: backup
-
     - name: Install and configure Nextcloud cloud storage
       ansible.builtin.import_tasks: install.yaml
       tags: install
