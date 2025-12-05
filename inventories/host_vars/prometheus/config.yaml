@@ -8,18 +8,9 @@ debian_datetime_ntp_server: 172.28.10.1
 debian_user_name: melanie
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILmxlXueWqzE8G+MicNIbZOlznlKBNHd268MYlyNl98H melanie@metrics.tinynamoo.com"
 
-## NFSv4-client-setup variables
-# Kerberos
-nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Melanie] Prometheus/host.keytab"
-nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Melanie] Prometheus/user.keytab"
-
-# NFS
-nfs_user_name: "{{ nfs_clients['prometheus'].name }}"
-nfs_user_id: "{{ nfs_clients['prometheus'].uid }}"
-nfs_mounts:
-  melanie:
-    mount_share: /melanie
-    mount_point: /srv/melanie
+prometheus_user_name: prometheus
+prometheus_user_id: 191
+prometheus_user_shell: /usr/sbin/nologin
 
 ## NGINX variables
 nginx_conf_files:
@@ -27,9 +18,6 @@ nginx_conf_files:
     path: templates/nginx.prometheus.conf
 
 ## Prometheus variables
-prometheus_monitoring_group_name: "{{ nfs_groups['monitoring'].name }}"
-prometheus_monitoring_group_gid: "{{ nfs_groups['monitoring'].gid }}"
-
 prometheus_image_version: v3.8.0
 
 ## Proxmox instance variables

@@ -3,9 +3,9 @@ services:
     container_name: {{ docker_project_name }}
     image: prom/prometheus:latest
     volumes:
-      - {{ nfs_mounts.melanie.mount_point }}/prometheus:/prometheus
-      - {{ docker_project_src }}/prometheus.yml:/etc/prometheus/prometheus.yml
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/prometheus/data:/prometheus
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - 9090:9090
-    user: {{ nfs_user_id }}:{{ nfs_groups['monitoring'].gid }}
+    user: {{ prometheus_user_id }}:{{ prometheus_user_id }}
     restart: unless-stopped
