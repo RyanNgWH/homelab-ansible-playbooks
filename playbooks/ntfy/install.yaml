@@ -3,14 +3,34 @@
 # Ntfy
 # Install and configure the Ntfy notifications service.
 ---
+- name: Ensure Ntfy user is present
+  become: true
+  block:
+    - name: Ensure Ntfy group is present
+      ansible.builtin.group:
+        name: "{{ ntfy_user_name }}"
+        gid: "{{ ntfy_user_id }}"
+        system: true
+        state: present
+
+    - name: Ensure Ntfy user is present
+      ansible.builtin.user:
+        name: "{{ ntfy_user_name }}"
+        group: "{{ ntfy_user_name }}"
+        password: "*"
+        shell: "{{ ntfy_user_shell }}"
+        create_home: false
+        uid: "{{ ntfy_user_id }}"
+        state: present
+
 - name: Setup Ntfy application files
   become: true
   block:
     - name: Ensure Ntfy directory is present
       ansible.builtin.file:
         path: "{{ docker_project_src }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ ntfy_user_name }}"
+        group: "{{ ntfy_user_name }}"
         mode: "0750"
         state: directory
 
@@ -18,59 +38,23 @@
       ansible.builtin.template:
         src: templates/app.docker-compose.yaml
         dest: "{{ docker_project_src }}/docker-compose.yaml"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ ntfy_user_name }}"
+        group: "{{ ntfy_user_name }}"
         mode: "0640"
-
-    - name: Setup ntfy directories
-      ansible.builtin.file:
-        path: "{{ docker_project_src }}/{{ item }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0750"
-        state: directory
-      loop:
-        - cache
-        - data
-        - config
 
     - name: Setup ntfy configuration file
       ansible.builtin.template:
         src: templates/app.configuration.yml
-        dest: "{{ docker_project_src }}/config/server.yml"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/config/server.yml'
+        owner: "{{ ntfy_user_name }}"
+        group: "{{ ntfy_user_name }}"
         mode: "0640"
-
-- name: Sync backup of ntfy cache & data directories
-  become: true
-  block:
-    - name: Ensure rsync is installed
-      ansible.builtin.apt:
-        name: rsync
-        update_cache: true
-        state: present
-
-    - name: Ensure ntfy docker containers are stopped
-      community.docker.docker_compose_v2:
-        project_name: "{{ docker_project_name }}"
-        project_src: "{{ docker_project_src }}"
-        state: absent
-
-    - name: Sync cache & data directories from NFS server to local application directory
-      ansible.posix.synchronize:
-        src: "{{ nfs_mounts.karina.mount_point }}/{{ item }}"
-        dest: "{{ docker_project_src }}/"
-      delegate_to: "{{ inventory_hostname }}"
-      loop:
-        - cache
-        - data
 
     - name: Ensure cache & data directories permissions is set
       ansible.builtin.file:
-        path: "{{ docker_project_src }}/{{ item }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        path: '{{ debian_additional_disks["appdata"]["mount_point"] }}/{{ item }}'
+        owner: "{{ ntfy_user_name }}"
+        group: "{{ ntfy_user_name }}"
         mode: "0750"
         recurse: true
         follow: false

@@ -8,25 +8,16 @@ debian_datetime_ntp_server: 172.28.10.1
 debian_user_name: karina
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBd8Ox99XaQTMdam4so5UmeojzT8BWDD0fxSeMAN+BMJ karina@push.tinynamoo.com"
 
-## NFSv4-client-setup variables
-# Kerberos
-nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Karina] Ntfy/host.keytab"
-nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Karina] Ntfy/user.keytab"
-
-# NFS
-nfs_user_name: "{{ nfs_clients['ntfy'].name }}"
-nfs_user_id: "{{ nfs_clients['ntfy'].uid }}"
-nfs_mounts:
-  karina:
-    mount_share: /karina
-    mount_point: /srv/karina
-
 ## NGINX variables
 nginx_conf_files:
   - filename: ntfy.conf
     path: templates/nginx.ntfy.conf
 
 ## Ntfy variables
+ntfy_user_name: ntfy
+ntfy_user_id: 270
+ntfy_user_shell: /usr/sbin/nologin
+
 ntfy_smtp_server: smtp.tinynamoo.com
 ntfy_smtp_from_email: sunny@mail.tinynamoo.com
 

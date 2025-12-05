@@ -16,8 +16,6 @@
   roles:
     - role: debian-13-setup
       tags: install
-    - role: nfsv4-client-setup
-      tags: install
     - role: debian-common
       tags: install
       vars:
