@@ -38,10 +38,6 @@
           - docker
 
   tasks:
-    - name: Backup Jellyfin data directory
-      ansible.builtin.import_tasks: backup.yaml
-      tags: backup
-
     - name: Install and configure the Jellyfin media streaming server
       ansible.builtin.import_tasks: install.yaml
       tags: install
