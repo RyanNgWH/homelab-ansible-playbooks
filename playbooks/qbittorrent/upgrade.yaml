@@ -16,7 +16,7 @@
       docker_repo: cross-seed
 
 - name: Get qbit-manage latest version
-  block: 
+  block:
     - name: Get latest qbit-manage container release from github
       community.general.github_release:
         user: StuffAnThings
@@ -91,7 +91,7 @@
             src: templates/cross-seed.config.js
             dest: "{{ nfs_mounts.marilyn.mount_point }}/configs/cross-seed/config.js"
             owner: "{{ nfs_user_name }}"
-            group: "{{ qbit_media_group_name }}"
+            group: "{{ nfs_groups['media'].name }}"
             mode: "0660"
 
         - name: Ensure qbit-manage configuration file is updated

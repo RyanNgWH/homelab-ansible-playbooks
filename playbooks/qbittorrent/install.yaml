@@ -41,15 +41,15 @@
   block:
     - name: Create media group
       ansible.builtin.group:
-        name: "{{ qbit_media_group_name }}"
-        gid: "{{ qbit_media_group_gid }}"
+        name: "{{ nfs_groups['media'].name }}"
+        gid: "{{ nfs_groups['media'].gid }}"
         system: true
         state: present
 
     - name: Add qbit user to media group
       ansible.builtin.user:
         name: "{{ nfs_user_name }}"
-        groups: "{{ qbit_media_group_name }}"
+        groups: "{{ nfs_groups['media'].name }}"
         append: true
 
 - name: Ensure docker starts only after NFS mounted
@@ -71,7 +71,7 @@
         group: root
         mode: "0644"
       register: nfs_override_file
-    
+
     - name: Reload and restart Docker service
       ansible.builtin.systemd_service:
         name: docker.service
@@ -101,15 +101,15 @@
     - name: Setup cross-seed configuration file
       ansible.builtin.template:
         src: templates/cross-seed.config.js
-        dest: "{{ nfs_mounts.marilyn.mount_point }}/configs/cross-seed/config.js"
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/cross-seed/config/config.js'
         owner: "{{ nfs_user_name }}"
-        group: "{{ qbit_media_group_name }}"
+        group: "{{ nfs_groups['media'].name }}"
         mode: "0660"
 
     - name: Setup qbit-manage configuration file
       ansible.builtin.template:
         src: templates/qbit-manage.config.yaml
-        dest: "{{ docker_project_src }}/qbit-manage.config.yaml"
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/qbit-manage/config.yaml'
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"

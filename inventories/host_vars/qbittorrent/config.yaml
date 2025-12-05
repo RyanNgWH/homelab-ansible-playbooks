@@ -9,7 +9,7 @@ debian_user_name: dahlia
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMNZXj6RHh4KAAPaDW7SPWW6n9Xx4OYwE5boKGDBu/lV dahlia@download.tinynamoo.com"
 
 # Node exporter
-node_exporter_listen_ip: "{{ ansible_enp6s18.ipv4.address }}"
+node_exporter_listen_ip: '{{ ansible_facts["enp6s18"]["ipv4"]["address"] }}'
 
 ## NFSv4-client-setup variables
 # Kerberos
@@ -30,9 +30,6 @@ nginx_conf_files:
     path: templates/nginx.qbittorrent.conf
 
 ## qBittorrent variables
-qbit_media_group_name: media
-qbit_media_group_gid: "{{ nfs_groups['media'].gid }}"
-
 qbittorrent_docker_name: qbittorrent
 qbittorrent_docker_ip: 172.18.0.2
 

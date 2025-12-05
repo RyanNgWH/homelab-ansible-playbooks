@@ -5,11 +5,11 @@ services:
     image: lscr.io/linuxserver/qbittorrent:latest
     environment:
       PUID: {{ nfs_user_id }}
-      PGID: {{ qbit_media_group_gid }}
+      PGID: {{ nfs_groups['media'].gid }}
       TZ: {{ debian_datetime_timezone }}
       UMASK: 007
     volumes:
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/qbittorrent:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/qbittorrent/config:/config
       - {{ nfs_mounts.marilyn.mount_point }}/torrents:/data/torrents
     ports:
       - 8080:8080
@@ -20,21 +20,21 @@ services:
     healthcheck:
       test: ["CMD-SHELL", "curl -s -o /dev/null -f http://localhost:8080/api/v2/app/version"]
       interval: 2s
-      timeout: 30s 
+      timeout: 30s
 
   cross-seed:
     container_name: {{ cross_seed_docker_name }}
     image: ghcr.io/cross-seed/cross-seed:latest
     volumes:
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/cross-seed:/config
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/qbittorrent/qBittorrent/BT_backup:/torrents:ro
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/cross-seed/config:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/qbittorrent/config/qBittorrent/BT_backup:/torrents:ro
       - {{ nfs_mounts.marilyn.mount_point }}/torrents/cross-seed-torrents:/cross-seeds
       - {{ nfs_mounts.marilyn.mount_point }}/torrents:/data/torrents
     command: daemon
     networks:
       qbit:
         ipv4_address: "172.18.0.3"
-    user: {{ nfs_user_id }}:{{ qbit_media_group_gid }}
+    user: {{ nfs_user_id }}:{{ nfs_groups['media'].gid }}
     restart: unless-stopped
     depends_on:
       qbittorrent:
@@ -44,9 +44,9 @@ services:
     container_name: {{ qbit_manage_docker_name }}
     image: ghcr.io/stuffanthings/qbit_manage:latest
     volumes:
-      - ./qbit-manage.config.yaml:/app/config.yml
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/qbit-manage/config.yaml:/app/config.yml
       - {{ nfs_mounts.marilyn.mount_point }}/torrents:/data/torrents
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/qbittorrent/qBittorrent:/qbittorrent/:ro
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/qbittorrent/config/qBittorrent:/qbittorrent/:ro
     environment:
       QBT_RUN: false
       QBT_SCHEDULE: 1440

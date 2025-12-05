@@ -27,7 +27,7 @@ qbt_changeport(){
 }
 
 qbt_checksid(){
-  if curl -s --header "Referer: https://{{ ansible_hostname }}" --cookie "${qbt_sid}" "https://{{ ansible_hostname }}/api/v2/app/version" | grep -qi forbidden; then
+  if curl -s --header "Referer: https://{{ ansible_facts["hostname"] }}" --cookie "${qbt_sid}" "https://{{ ansible_facts["hostname"] }}/api/v2/app/version" | grep -qi forbidden; then
       return 1
   else
       return 0
