@@ -32,9 +32,6 @@ nginx_conf_files:
     path: templates/nginx.jellystat.conf
 
 ## Jellyfin variables
-jellyfin_media_group_name: media
-jellyfin_media_group_gid: "{{ nfs_groups['media'].gid }}"
-
 jellyfin_docker_name: jellyfin
 
 ## Jellystat variables

@@ -59,10 +59,6 @@
         jellystat: {{ jellystat_latest_version }}
   delegate_to: localhost
 
-- name: Backup Jellyfin data directory
-  ansible.builtin.import_tasks: backup.yaml
-  when: jellyfin_has_updates
-
 - name: Upgrade Jellyfin media streaming server
   become: true
   block:

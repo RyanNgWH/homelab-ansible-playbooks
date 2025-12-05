@@ -22,36 +22,20 @@
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
-    - name: Setup cache directory
-      ansible.builtin.file:
-        path: "{{ docker_project_src }}/cache"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0750"
-        state: directory
-
-    - name: Setup data directory
-      ansible.builtin.file:
-        path: "{{ docker_project_src }}/data"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0750"
-        state: directory
-
 - name: Setup jellyfin user
   become: true
   block:
     - name: Create media group
       ansible.builtin.group:
-        name: "{{ jellyfin_media_group_name }}"
-        gid: "{{ jellyfin_media_group_gid }}"
+        name: "{{ nfs_groups['media'].name }}"
+        gid: "{{ nfs_groups['media'].gid }}"
         system: true
         state: present
 
     - name: Add jellyfin user to media group
       ansible.builtin.user:
         name: "{{ nfs_user_name }}"
-        groups: "{{ jellyfin_media_group_name }}"
+        groups: "{{ nfs_groups['media'].name }}"
         append: true
 
 - name: Setup Fail2Ban
