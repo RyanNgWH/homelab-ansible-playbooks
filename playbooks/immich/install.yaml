@@ -30,22 +30,6 @@
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
-- name: Setup immich user
-  become: true
-  block:
-    - name: Create photos group
-      ansible.builtin.group:
-        name: "{{ immich_photos_group_name }}"
-        gid: "{{ immich_photos_group_gid }}"
-        system: true
-        state: present
-
-    - name: Add immich user to photos group
-      ansible.builtin.user:
-        name: "{{ nfs_user_name }}"
-        groups: "{{ immich_photos_group_name }}"
-        append: true
-
 - name: Install and configure nginx
   vars:
     debian_common_task_list:

@@ -27,9 +27,6 @@ nginx_conf_files:
     path: templates/nginx.immich.conf
 
 ## Immich variables
-immich_photos_group_name: photos
-immich_photos_group_gid: 201
-
 immich_server_docker_name: immich-server
 
 ## Proxmox instance variables
