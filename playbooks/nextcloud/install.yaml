@@ -22,16 +22,6 @@
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
-    - name: Create php-session.ini file (workaround nextcloud docker permissions issue)
-      ansible.builtin.file:
-        path: "{{ docker_project_src }}/redis-session.ini"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0750"
-        modification_time: preserve
-        access_time: preserve
-        state: touch
-
     - name: Setup nextcloud systemd background jobs service
       ansible.builtin.template:
         src: templates/app.nextcloud-cron.service
@@ -61,43 +51,6 @@
         daemon_reload: true
         enabled: true
         state: started
-
-- name: Sync backup of nextcloud config & clamav directory
-  become: true
-  block:
-    - name: Ensure rsync is installed
-      ansible.builtin.apt:
-        name: rsync
-        update_cache: true
-        state: present
-
-    - name: Ensure nextcloud docker containers are stopped
-      community.docker.docker_compose_v2:
-        project_name: "{{ docker_project_name }}"
-        project_src: "{{ docker_project_src }}"
-        state: absent
-
-    - name: Sync directories from NFS server to local application directory
-      ansible.posix.synchronize:
-        src: "{{ nfs_mounts.wendy.mount_point }}/{{ item }}"
-        dest: "{{ docker_project_src }}/"
-      delegate_to: "{{ inventory_hostname }}"
-      loop:
-        - nextcloud/config
-        - clamav
-
-    - name: Ensure directories permissions is set
-      ansible.builtin.file:
-        path: "{{ docker_project_src }}/{{ item }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0770"
-        recurse: true
-        follow: false
-        state: directory
-      loop:
-        - config
-        - clamav
 
 - name: Setup Fail2Ban
   become: true

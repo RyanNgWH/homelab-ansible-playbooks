@@ -24,9 +24,9 @@ services:
 
       PHP_UPLOAD_LIMIT: 10G
     volumes:
-      - ./config:/var/www/html
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/nextcloud/config:/var/www/html
       - {{ nfs_mounts.wendy.mount_point }}/nextcloud/data:/srv/nextcloud/data
-      - ./redis-session.ini:/usr/local/etc/php/conf.d/redis-session.ini
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/nextcloud/redis-session.ini:/usr/local/etc/php/conf.d/redis-session.ini
     ports:
       - "9000:9000"
     networks:
@@ -52,7 +52,7 @@ services:
       POSTGRES_USER: nextcloud
       POSTGRES_PASSWORD: {{ nextcloud_postgres_pass }}
     volumes:
-      - {{ nfs_mounts.wendy.mount_point }}/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/db:/var/lib/postgresql/data
     networks:
       nextcloud:
         ipv4_address: "172.18.0.3"
@@ -79,7 +79,7 @@ services:
     image: clamav/clamav:stable_base
     entrypoint: /init-unprivileged
     volumes:
-      - ./clamav:/var/lib/clamav
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/clamav:/var/lib/clamav
     networks:
       nextcloud:
         ipv4_address: "172.18.0.5"
