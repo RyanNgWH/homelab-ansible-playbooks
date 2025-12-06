@@ -8,18 +8,9 @@ debian_datetime_ntp_server: 172.28.20.1
 debian_user_name: florence
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAXAyyxa9wKW4ZfozxEk+A32+n4ZLv5QuT9FJvDJcutM florence@feed.tinynamoo.com"
 
-## NFSv4-client-setup variables
-# Kerberos
-nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Florence] Miniflux/host.keytab"
-nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Florence] Miniflux/user.keytab"
-
-# NFS
-nfs_user_name: "{{ nfs_clients['miniflux'].name }}"
-nfs_user_id: "{{ nfs_clients['miniflux'].uid }}"
-nfs_mounts:
-  florence:
-    mount_share: /florence
-    mount_point: /srv/florence
+miniflux_user_name: miniflux
+miniflux_user_id: 250
+miniflux_user_shell: /usr/sbin/nologin
 
 ## NGINX variables
 nginx_conf_files:

@@ -23,10 +23,10 @@ services:
       POSTGRES_USER: miniflux
       POSTGRES_PASSWORD: {{ miniflux_postgres_pass }}
     volumes:
-      - {{ nfs_mounts.florence.mount_point }}/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/miniflux/db:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "miniflux"]
       interval: 2s
       timeout: 20s
-    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    user: {{ miniflux_user_id }}:{{ miniflux_user_id }}
     restart: unless-stopped
