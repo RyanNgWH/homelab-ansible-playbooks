@@ -33,7 +33,7 @@ nginx_conf_files:
 ## Sonarr variables
 sonarr_4k_hostname: tv4k.tinynamoo.com
 sonarr_anime_hostname: animetv.tinynamoo.com
-sonarr_media_group_name: media
+sonarr_media_group_name: "{{ nfs_groups['media'].name }}"
 sonarr_media_group_gid: "{{ nfs_groups['media'].gid }}"
 
 sonarr_docker_name: sonarr

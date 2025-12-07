@@ -9,7 +9,7 @@ services:
       UMASK: 007
     volumes:
       - {{ nfs_mounts.marilyn.mount_point }}:/data
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/sonarr:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/sonarr/config:/config
     ports:
       - "8989:8989"
     restart: unless-stopped
@@ -27,7 +27,7 @@ services:
       UMASK: 007
     volumes:
       - {{ nfs_mounts.marilyn.mount_point }}:/data
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/sonarr4k:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/sonarr4k/config:/config
     ports:
       - "8990:8989"
     restart: unless-stopped
@@ -45,7 +45,7 @@ services:
       UMASK: 007
     volumes:
       - {{ nfs_mounts.marilyn.mount_point }}:/data
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/sonarr-anime:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/sonarr-anime/config:/config
     ports:
       - "8991:8989"
     restart: unless-stopped
@@ -59,8 +59,8 @@ services:
     environment:
       TZ: {{ debian_datetime_timezone }}
     volumes:
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/recyclarr/sonarr:/config
-    user: {{ nfs_user_id }}:{{ sonarr_media_group_gid }}
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/recyclarr/config:/config
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
     depends_on:
       - sonarr
@@ -75,8 +75,8 @@ services:
       POSTGRES_USER: sonarr
       POSTGRES_PASSWORD: {{ sonarr_postgres_pass }}
     volumes:
-      - {{ nfs_mounts.marilyn.mount_point }}/databases/sonarr:/var/lib/postgresql/data
-    user: {{ nfs_user_id }}:{{ sonarr_media_group_gid }}
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/sonarr/db:/var/lib/postgresql/data
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER -d sonarr-main"]
