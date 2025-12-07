@@ -16,10 +16,10 @@ services:
       - "3000:3000"
     restart: unless-stopped
     volumes:
-      - {{ nfs_mounts.winter.mount_point }}/config:/config
-      - {{ nfs_mounts.winter.mount_point }}/data:/data
-      - {{ nfs_mounts.winter.mount_point }}/backups:/backups
-      - ./git:/wiki/git
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/wikijs/config:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/wikijs/data:/data
+      - {{ nfs_mounts.winter.mount_point }}/wikijs/backups:/backups
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/wikijs/git:/wiki/git
       - /home/{{ nfs_user_name }}/.ssh/id_ed25519:/wiki/.ssh/id_ed25519
     depends_on:
       - postgres
@@ -35,5 +35,5 @@ services:
       driver: "none"
     restart: unless-stopped
     volumes:
-      - {{ nfs_mounts.winter.mount_point }}/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/wikijs/db:/var/lib/postgresql/data
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
