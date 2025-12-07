@@ -9,7 +9,7 @@ services:
       TZ: {{ debian_datetime_timezone }}
       UMASK: 007
     volumes:
-      - {{ nfs_mounts["marilyn-configs-prowlarr"].mount_point }}:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/prowlarr/config:/config
     ports:
       - 9696:9696
     restart: unless-stopped
@@ -32,7 +32,7 @@ services:
       POSTGRES_USER: prowlarr
       POSTGRES_PASSWORD: {{ prowlarr_postgres_pass }}
     volumes:
-      - {{ nfs_mounts["marilyn-databases-prowlarr"].mount_point }}:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/prowlarr/db:/var/lib/postgresql/data
     user: {{ nfs_user_id }}:{{ prowlarr_media_group_gid }}
     restart: unless-stopped
     healthcheck:

@@ -20,9 +20,6 @@ nfs_mounts:
   marilyn-configs-prowlarr:
     mount_share: /marilyn-configs-prowlarr
     mount_point: /srv/marilyn-configs-prowlarr
-  marilyn-databases-prowlarr:
-    mount_share: /marilyn-databases-prowlarr
-    mount_point: /srv/marilyn-databases-prowlarr
 
 ## NGINX variables
 nginx_conf_files:
@@ -30,7 +27,7 @@ nginx_conf_files:
     path: templates/nginx.prowlarr.conf
 
 ## Prowlarr variables
-prowlarr_media_group_name: media
+prowlarr_media_group_name: "{{ nfs_groups['media'].name }}"
 prowlarr_media_group_gid: "{{ nfs_groups['media'].gid }}"
 
 prowlarr_docker_name: prowlarr
