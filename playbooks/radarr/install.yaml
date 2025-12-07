@@ -42,7 +42,7 @@
   become: true
   ansible.builtin.template:
     src: templates/app.recyclarr.yaml
-    dest: "{{ nfs_mounts.marilyn.mount_point }}/configs/recyclarr/radarr/recyclarr.yaml"
+    dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/recyclarr/config/recyclarr.yaml'
     owner: "{{ nfs_user_name }}"
     group: "media"
     mode: "0640"

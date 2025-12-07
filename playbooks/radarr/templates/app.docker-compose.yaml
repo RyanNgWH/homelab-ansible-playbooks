@@ -9,7 +9,7 @@ services:
       UMASK: 007
     volumes:
       - {{ nfs_mounts.marilyn.mount_point }}:/data
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/radarr:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/radarr/config:/config
     ports:
       - "7878:7878"
     restart: unless-stopped
@@ -27,7 +27,7 @@ services:
       UMASK: 007
     volumes:
       - {{ nfs_mounts.marilyn.mount_point }}:/data
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/radarr4k:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/radarr4k/config:/config
     ports:
       - "7879:7878"
     restart: unless-stopped
@@ -45,7 +45,7 @@ services:
       UMASK: 007
     volumes:
       - {{ nfs_mounts.marilyn.mount_point }}:/data
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/radarr-anime:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/radarr-anime/config:/config
     ports:
       - "7880:7878"
     restart: unless-stopped
@@ -59,8 +59,8 @@ services:
     environment:
       TZ: {{ debian_datetime_timezone }}
     volumes:
-      - {{ nfs_mounts.marilyn.mount_point }}/configs/recyclarr/radarr:/config
-    user: {{ nfs_user_id }}:{{ radarr_media_group_gid }}
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/recyclarr/config:/config
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
     depends_on:
       - radarr
@@ -75,8 +75,8 @@ services:
       POSTGRES_USER: radarr
       POSTGRES_PASSWORD: {{ radarr_postgres_pass }}
     volumes:
-      - {{ nfs_mounts.marilyn.mount_point }}/databases/radarr:/var/lib/postgresql/data
-    user: {{ nfs_user_id }}:{{ radarr_media_group_gid }}
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/radarr/db:/var/lib/postgresql/data
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER -d radarr-main"]
