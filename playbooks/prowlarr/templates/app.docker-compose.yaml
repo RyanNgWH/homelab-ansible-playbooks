@@ -33,7 +33,7 @@ services:
       POSTGRES_PASSWORD: {{ prowlarr_postgres_pass }}
     volumes:
       - {{ debian_additional_disks["postgres"]["mount_point"] }}/prowlarr/db:/var/lib/postgresql/data
-    user: {{ nfs_user_id }}:{{ prowlarr_media_group_gid }}
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER -d prowlarr-main"]
