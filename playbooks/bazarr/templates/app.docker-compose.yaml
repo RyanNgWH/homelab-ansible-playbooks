@@ -15,7 +15,7 @@ services:
       POSTGRES_USERNAME: bazarr
       POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
     volumes:
-      - {{ nfs_mounts["marilyn-configs"].mount_point }}/bazarr:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/bazarr/config:/config
       - {{ nfs_mounts["marilyn-media"].mount_point }}/movies:/data/movies
       - {{ nfs_mounts["marilyn-media"].mount_point }}/tv:/data/tv
     ports:
@@ -41,7 +41,7 @@ services:
       POSTGRES_USERNAME: bazarr
       POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
     volumes:
-      - {{ nfs_mounts["marilyn-configs"].mount_point }}/bazarr4k:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/bazarr4k/config:/config
       - {{ nfs_mounts["marilyn-media"].mount_point }}/movies4k:/data/movies4k
       - {{ nfs_mounts["marilyn-media"].mount_point }}/tv4k:/data/tv4k
     ports:
@@ -67,7 +67,7 @@ services:
       POSTGRES_USERNAME: bazarr
       POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
     volumes:
-      - {{ nfs_mounts["marilyn-configs"].mount_point }}/bazarr-anime:/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/bazarr-anime/config:/config
       - {{ nfs_mounts["marilyn-media"].mount_point }}/anime:/data/anime
       - {{ nfs_mounts["marilyn-media"].mount_point }}/animetv:/data/animetv
     ports:
@@ -85,8 +85,8 @@ services:
       POSTGRES_USER: bazarr
       POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
     volumes:
-      - {{ nfs_mounts["marilyn-databases-bazarr"].mount_point }}:/var/lib/postgresql/data
-    user: {{ nfs_user_id }}:{{ bazarr_media_group_gid }}
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/bazarr/db:/var/lib/postgresql/data
+    user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER"]

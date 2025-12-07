@@ -23,9 +23,6 @@ nfs_mounts:
   marilyn-configs:
     mount_share: /marilyn-configs
     mount_point: /srv/marilyn-configs
-  marilyn-databases-bazarr:
-    mount_share: /marilyn-databases-bazarr
-    mount_point: /srv/marilyn-databases-bazarr
 
 ## NGINX variables
 nginx_conf_files:
@@ -39,7 +36,7 @@ nginx_conf_files:
 ## Bazarr variables
 bazarr_4k_hostname: subtitles4k.tinynamoo.com
 bazarr_anime_hostname: animesubs.tinynamoo.com
-bazarr_media_group_name: media
+bazarr_media_group_name: "{{ nfs_groups['media'].name }}"
 bazarr_media_group_gid: "{{ nfs_groups['media'].gid }}"
 
 bazarr_docker_name: bazarr
