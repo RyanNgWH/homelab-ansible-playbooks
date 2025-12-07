@@ -3,14 +3,34 @@
 # Piped
 # Install and configure Piped youtube proxy server.
 ---
+- name: Ensure piped user is present
+  become: true
+  block:
+    - name: Ensure piped group is present
+      ansible.builtin.group:
+        name: "{{ piped_user_name }}"
+        gid: "{{ piped_user_id }}"
+        system: true
+        state: present
+
+    - name: Ensure piped user is present
+      ansible.builtin.user:
+        name: "{{ piped_user_name }}"
+        group: "{{ piped_user_name }}"
+        password: "*"
+        shell: "{{ piped_user_shell }}"
+        create_home: false
+        uid: "{{ piped_user_id }}"
+        state: present
+
 - name: Setup piped application files
   become: true
   block:
     - name: Ensure application directory is present
       ansible.builtin.file:
         path: "{{ docker_project_src }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ piped_user_name }}"
+        group: "{{ piped_user_name }}"
         mode: "0750"
         state: directory
 
@@ -18,15 +38,15 @@
       ansible.builtin.template:
         src: templates/app.docker-compose.yaml
         dest: "{{ docker_project_src }}/docker-compose.yaml"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ piped_user_name }}"
+        group: "{{ piped_user_name }}"
         mode: "0640"
 
     - name: Create application config directory
       ansible.builtin.file:
         path: "{{ docker_project_src }}/config"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ piped_user_name }}"
+        group: "{{ piped_user_name }}"
         mode: "0750"
         state: directory
 
@@ -34,8 +54,8 @@
       ansible.builtin.template:
         src: templates/app.{{ item }}
         dest: "{{ docker_project_src }}/config/{{ item }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ piped_user_name }}"
+        group: "{{ piped_user_name }}"
         mode: "0640"
       loop:
         - config.properties

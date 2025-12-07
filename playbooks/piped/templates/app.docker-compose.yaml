@@ -52,13 +52,13 @@ services:
       - POSTGRES_USER=piped
       - POSTGRES_PASSWORD="{{ piped_database_password }}"
     volumes:
-      - {{ nfs_mounts.twyla.mount_point }}/data/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/piped/db:/var/lib/postgresql/data
     restart: unless-stopped
-    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    user: {{ piped_user_id }}:{{ piped_user_id }}
 
   watchtower:
     container_name: watchtower
-    image: containrrr/watchtower
+    image: nickfedor/watchtower:latest
     command: piped-frontend piped-backend piped-proxy varnish nginx postgres watchtower
     environment:
       - WATCHTOWER_CLEANUP=true
