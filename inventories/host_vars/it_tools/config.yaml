@@ -8,6 +8,10 @@ debian_datetime_ntp_server: 172.28.20.1
 debian_user_name: jamie
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBgXD2HjtRSUZwgKwesZZe3BWRrGFUVpuNL/k3cWgw5O jamie@tools.tinynamoo.com"
 
+it_tools_user_name: it-tools
+it_tools_user_id: 201
+it_tools_user_shell: //usr/sbin/nologin
+
 ## NGINX variables
 nginx_conf_files:
   - filename: it-tools.conf
