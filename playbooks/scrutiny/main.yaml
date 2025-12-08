@@ -16,8 +16,6 @@
   roles:
     - role: debian-13-setup
       tags: install
-    - role: nfsv4-client-setup
-      tags: install
     - role: debian-common
       tags: install
       vars:
@@ -25,10 +23,6 @@
           - docker
 
   tasks:
-    - name: Backup Scrutiny sqlite database
-      ansible.builtin.import_tasks: backup.yaml
-      tags: backup
-
     - name: Install and configure the Scrutiny SMART monitoring server
       ansible.builtin.import_tasks: install.yaml
       tags: install
