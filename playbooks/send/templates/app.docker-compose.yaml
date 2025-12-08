@@ -2,32 +2,28 @@ services:
   send:
     container_name: {{ send_docker_name }}
     image: registry.gitlab.com/timvisee/send:latest
-    restart: unless-stopped
-    ports:
-      - '1443:1443'
-    volumes:
-      - {{ nfs_mounts.stevie.mount_point }}:/uploads
     environment:
-      - BASE_URL=https://{{ ansible_host }}
+      BASE_URL: https://{{ ansible_host }}
 
       # For local uploads storage
-      - FILE_DIR=/uploads
+      FILE_DIR: /uploads
 
       # To customize upload limits
-      - MAX_FILE_SIZE=10737418240                                          # 10GB
-      - MAX_EXPIRE_SECONDS=2592000                                         # 30 days
-      - DOWNLOAD_COUNTS=1,3,5,10,25,50,100,1000
-      - EXPIRE_TIMES_SECONDS=3600,21600,43200,86400,432000,864000,2592000  # 1 hour, 6 hour, 12 hour, 1 day, 5 day, 15 days,
+      MAX_FILE_SIZE: 10737418240                                          # 10GB
+      MAX_EXPIRE_SECONDS: 2592000                                         # 30 days
+      DOWNLOAD_COUNTS: 1,3,5,10,25,50,100,1000
+      EXPIRE_TIMES_SECONDS: 3600,21600,43200,86400,432000,864000,2592000  # 1 hour, 6 hour, 12 hour, 1 day, 5 day, 15 days,
+
       # Redis config
-      - REDIS_HOST=redis
+      REDIS_HOST: redis
+    volumes:
+      - {{ nfs_mounts.stevie.mount_point }}/send/uploads:/uploads
+    ports:
+      - '1443:1443'
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
 
   redis:
     container_name: redis
     image: redis:alpine
     restart: unless-stopped
-    volumes:
-      - send-redis:/data
-
-volumes:
-  send-redis:
