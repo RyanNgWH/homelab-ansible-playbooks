@@ -3,14 +3,34 @@
 # Scrutiny
 # Install and configure the Scrutiny SMART monitoring server.
 ---
+- name: Ensure scrutiny user is present
+  become: true
+  block:
+    - name: Ensure scrutiny group is present
+      ansible.builtin.group:
+        name: "{{ scrutiny_user_name }}"
+        gid: "{{ scrutiny_user_id }}"
+        system: true
+        state: present
+
+    - name: Ensure scrutiny user is present
+      ansible.builtin.user:
+        name: "{{ scrutiny_user_name }}"
+        group: "{{ scrutiny_user_name }}"
+        password: "*"
+        shell: "{{ scrutiny_user_shell }}"
+        create_home: false
+        uid: "{{ scrutiny_user_id }}"
+        state: present
+
 - name: Setup scrutiny application files
   become: true
   block:
     - name: Ensure application directory is present
       ansible.builtin.file:
         path: "{{ docker_project_src }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ scrutiny_user_name }}"
+        group: "{{ scrutiny_user_name }}"
         mode: "0750"
         state: directory
 
@@ -18,56 +38,25 @@
       ansible.builtin.template:
         src: templates/app.docker-compose.yaml
         dest: "{{ docker_project_src }}/docker-compose.yaml"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ scrutiny_user_name }}"
+        group: "{{ scrutiny_user_name }}"
         mode: "0640"
-
-    - name: Setup config directory
-      ansible.builtin.file:
-        path: "{{ docker_project_src }}/config"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0750"
-        state: directory
 
     - name: Setup scrutiny configuration file
       ansible.builtin.template:
         src: templates/app.configuration.yaml
-        dest: "{{ docker_project_src }}/config/scrutiny.yaml"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/scrutiny/config/scrutiny.yaml'
+        owner: "{{ scrutiny_user_name }}"
+        group: "{{ scrutiny_user_name }}"
         mode: "0640"
 
-- name: Sync backup of scrutiny sqlite database
-  become: true
-  block:
-    - name: Ensure rsync is installed
-      ansible.builtin.apt:
-        name: rsync
-        update_cache: true
-        state: present
-
-    - name: Ensure scrutiny docker containers are stopped
-      community.docker.docker_compose_v2:
-        project_name: "{{ docker_project_name }}"
-        project_src: "{{ docker_project_src }}"
-        state: absent
-
-    - name: Sync sqlite database from NFS server to local application directory
-      ansible.posix.synchronize:
-        src: "{{ nfs_mounts.solar.mount_point }}/scrutiny/config/scrutiny.db"
-        dest: "{{ docker_project_src }}/config/"
-      delegate_to: "{{ inventory_hostname }}"
-
-    - name: Ensure config directory permissions is set
-      ansible.builtin.file:
-        path: "{{ docker_project_src }}/config"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0750"
-        recurse: true
-        follow: false
-        state: directory
+    - name: Setup logrotate for scrutiny logs
+      ansible.builtin.template:
+        src: templates/logrotate.scrutiny.conf
+        dest: /etc/logrotate.d/scrutiny.conf
+        owner: root
+        group: root
+        mode: "0644"
 
 - name: Install and configure nginx
   vars:
