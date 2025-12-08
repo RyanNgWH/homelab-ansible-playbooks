@@ -10,7 +10,8 @@ services:
     volumes:
       - /run/udev:/run/udev:ro
     cap_add:
-      - SYS_RAWIO
+{{ "      - SYS_RAWIO" if scrutiny_spoke_enable_scsi is defined }}
+{{ "      - SYS_ADMIN" if scrutiny_spoke_enable_nvme is defined }}
     devices: {{ scrutiny_spoke_devices }}
     restart: unless-stopped
 {{ "    network_mode: host" if scrutiny_spoke_host_mode is defined }}
