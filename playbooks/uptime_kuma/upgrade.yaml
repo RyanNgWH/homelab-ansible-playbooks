@@ -37,9 +37,6 @@
     proxmox_snapshot_description: "[Ansible] Working snapshot of uptime kuma {{ kuma_image_version }} before upgrading to {{ kuma_latest_version }}"
   delegate_to: localhost
 
-- name: Backup uptime kuma data directory
-  ansible.builtin.import_tasks: backup.yaml
-
 - name: Ensure docker-compose file is updated
   become: true
   ansible.builtin.template:
