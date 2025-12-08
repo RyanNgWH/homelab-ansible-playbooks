@@ -8,18 +8,9 @@ debian_datetime_ntp_server: 172.28.10.1
 debian_user_name: serene
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIFJciD1T2avmVzNaj99C0L2H3gpfznCPiZdNLw+6tOgv serene@status.tinynamoo.com"
 
-## NFSv4-client-setup variables
-# Kerberos
-nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Serene] Uptime Kuma/host.keytab"
-nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Serene] Uptime Kuma/user.keytab"
-
-# NFS
-nfs_user_name: "{{ nfs_clients['uptime-kuma'].name }}"
-nfs_user_id: "{{ nfs_clients['uptime-kuma'].uid }}"
-nfs_mounts:
-  serene:
-    mount_share: /serene
-    mount_point: /srv/serene
+uptime_kuma_user_name: uptime-kuma
+uptime_kuma_user_id: 290
+uptime_kuma_user_shell: /usr/sbin/nologin
 
 ## NGINX variables
 nginx_conf_files:

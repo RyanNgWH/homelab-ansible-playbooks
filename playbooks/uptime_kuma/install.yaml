@@ -3,14 +3,34 @@
 # Uptime Kuma
 # Install and configure the Uptime Kuma monitoring server.
 ---
-- name: Setup Uptime Kuma application files
+- name: Ensure uptime-kuma user is present
+  become: true
+  block:
+    - name: Ensure uptime-kuma group is present
+      ansible.builtin.group:
+        name: "{{ uptime_kuma_user_name }}"
+        gid: "{{ uptime_kuma_user_id }}"
+        system: true
+        state: present
+
+    - name: Ensure uptime-kuma user is present
+      ansible.builtin.user:
+        name: "{{ uptime_kuma_user_name }}"
+        group: "{{ uptime_kuma_user_name }}"
+        password: "*"
+        shell: "{{ uptime_kuma_user_shell }}"
+        create_home: false
+        uid: "{{ uptime_kuma_user_id }}"
+        state: present
+
+- name: Setup uptime Kuma application files
   become: true
   block:
     - name: Ensure application directory is present
       ansible.builtin.file:
         path: "{{ docker_project_src }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ uptime_kuma_user_name }}"
+        group: "{{ uptime_kuma_user_name }}"
         mode: "0750"
         state: directory
 
@@ -18,48 +38,9 @@
       ansible.builtin.template:
         src: templates/app.docker-compose.yaml
         dest: "{{ docker_project_src }}/docker-compose.yaml"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ uptime_kuma_user_name }}"
+        group: "{{ uptime_kuma_user_name }}"
         mode: "0640"
-
-    - name: Setup data directory
-      ansible.builtin.file:
-        path: "{{ docker_project_src }}/data"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0750"
-        state: directory
-
-- name: Sync backup of uptime kuma data directory
-  become: true
-  block:
-    - name: Ensure rsync is installed
-      ansible.builtin.apt:
-        name: rsync
-        update_cache: true
-        state: present
-
-    - name: Ensure uptime kuma docker containers are stopped
-      community.docker.docker_compose_v2:
-        project_name: "{{ docker_project_name }}"
-        project_src: "{{ docker_project_src }}"
-        state: absent
-
-    - name: Sync data directory from NFS server to local application directory
-      ansible.posix.synchronize:
-        src: "{{ nfs_mounts.serene.mount_point }}/data"
-        dest: "{{ docker_project_src }}/"
-      delegate_to: "{{ inventory_hostname }}"
-
-    - name: Ensure data directory permissions is set
-      ansible.builtin.file:
-        path: "{{ docker_project_src }}/data"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0750"
-        recurse: true
-        follow: false
-        state: directory
 
 - name: Install and configure nginx
   vars:
