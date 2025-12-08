@@ -69,10 +69,10 @@ services:
     networks:
       - gitea
     volumes:
-      - {{ nfs_mounts.yena.mount_point }}/data:/data/gitea
-      - {{ nfs_mounts.yena.mount_point }}/repos:/data/git/repositories
-      - {{ nfs_mounts.yena.mount_point }}/lfs:/data/lfs
-      - {{ nfs_mounts.yena.mount_point }}/logs:/data/logs
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/gitea/data:/data/gitea
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/gitea/logs:/data/logs
+      - {{ nfs_mounts.yena.mount_point }}/gitea/repos:/data/git/repositories
+      - {{ nfs_mounts.yena.mount_point }}/gitea/lfs:/data/lfs
       - /home/gitea/.ssh:/data/git/.ssh
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -93,5 +93,5 @@ services:
     networks:
       - gitea
     volumes:
-      - {{ nfs_mounts.yena.mount_point }}/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/gitea/db:/var/lib/postgresql/data
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
