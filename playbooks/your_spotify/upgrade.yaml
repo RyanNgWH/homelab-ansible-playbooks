@@ -12,8 +12,8 @@
         public: false
       vars:
         docker_task_list: get_container_image_version
-        docker_container_name: "{{ yourspotify_api_docker_name }}"
-        docker_fact_name: yourspotify
+        docker_container_name: "{{ your_spotify_api_docker_name }}"
+        docker_fact_name: your_spotify
 
     - name: Get latest your-spotify container release from github
       become: false
@@ -22,15 +22,15 @@
         repo: your_spotify
         action: latest_release
       delegate_to: localhost
-      register: yourspotify_github_release
+      register: your_spotify_github_release
 
     - name: Extract latest your-spotify container version
       ansible.builtin.set_fact:
-        yourspotify_latest_version: "{{ yourspotify_github_release.tag }}"
+        your_spotify_latest_version: "{{ your_spotify_github_release.tag }}"
 
     - name: Stop play if your-spotify has no updates
       ansible.builtin.meta: end_play
-      when: yourspotify_image_version == yourspotify_latest_version
+      when: your_spotify_image_version == your_spotify_latest_version
 
 - name: Take snapshot of Proxmox instance
   ansible.builtin.import_role:
@@ -38,8 +38,8 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (yourspotify_image_version | regex_replace('[.]', '-')) }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of your-spotify {{ yourspotify_image_version }} before upgrading to {{ yourspotify_latest_version }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (your_spotify_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of your-spotify {{ your_spotify_image_version }} before upgrading to {{ your_spotify_latest_version }}"
   delegate_to: localhost
 
 - name: Upgrade the Your-Spotify statistics management server

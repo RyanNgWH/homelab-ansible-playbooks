@@ -1,14 +1,18 @@
 services:
   server:
-    container_name: {{ yourspotify_api_docker_name }}
+    container_name: {{ your_spotify_api_docker_name }}
     image: yooooomi/your_spotify_server:latest
     environment:
-      API_ENDPOINT: https://{{ yourspotify_api_hostname }}
-      CLIENT_ENDPOINT: https://{{ ansible_host }}
-      SPOTIFY_PUBLIC: {{ yourspotify_public_token }}
-      SPOTIFY_SECRET: {{ yourspotify_private_secret }}
-      MONGO_ENDPOINT: mongodb://mongodb:27017/your_spotify
       TIMEZONE: {{ debian_datetime_timezone }}
+
+      API_ENDPOINT: https://{{ your_spotify_api_hostname }}
+      CLIENT_ENDPOINT: https://{{ ansible_host }}
+
+      SPOTIFY_PUBLIC: {{ your_spotify_public_token }}
+      SPOTIFY_SECRET: {{ your_spotify_private_secret }}
+
+      MONGO_ENDPOINT: mongodb://mongodb:27017/your_spotify
+
       CORS: https://{{ ansible_host }}
     ports:
       - "8080:8080"
@@ -17,13 +21,13 @@ services:
       - mongodb
     depends_on:
       - mongodb
-    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    user: {{ your_spotify_user_id }}:{{ your_spotify_user_id }}
 
   web:
     container_name: your-spotify-web
     image: yooooomi/your_spotify_client
     environment:
-      API_ENDPOINT: https://{{ yourspotify_api_hostname }}
+      API_ENDPOINT: https://{{ your_spotify_api_hostname }}
     ports:
       - "3000:3000"
     restart: unless-stopped
@@ -32,6 +36,6 @@ services:
     container_name: mongodb
     image: mongo:6
     volumes:
-      - {{ nfs_mounts.melodee.mount_point }}/your_spotify_db:/data/db
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/your-spotify/db:/data/db
     restart: unless-stopped
-    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    user: {{ your_spotify_user_id }}:{{ your_spotify_user_id }}
