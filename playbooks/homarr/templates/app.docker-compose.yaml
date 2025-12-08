@@ -3,11 +3,13 @@ services:
     container_name: {{ homarr_docker_name }}
     image: ghcr.io/homarr-labs/homarr:latest
     environment:
+      PUID: {{ homarr_user_id }}
+      GUID: {{ homarr_user_id }}
       SECRET_ENCRYPTION_KEY: {{ homarr_secret_encryption_key }}
       DOCKER_HOSTNAMES: {{ ansible_host }}
     volumes:
 #      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
-      - {{ nfs_mounts.hanni.mount_point }}/appdata:/appdata
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/homarr/appdata:/appdata
     ports:
       - 7575:7575
     restart: unless-stopped

@@ -8,18 +8,9 @@ debian_datetime_ntp_server: 172.28.20.1
 debian_user_name: hanni
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO0ifHhaZ9X916D5ACA8uRl27HMyHIkcbBbHlfLGC1+b hanni@tinynamoo.com"
 
-## NFSv4-client-setup variables
-# Kerberos
-nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Hanni] Homarr/host.keytab"
-nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Hanni] Homarr/user.keytab"
-
-# NFS
-nfs_user_name: "{{ nfs_clients['homarr'].name }}"
-nfs_user_id: "{{ nfs_clients['homarr'].uid }}"
-nfs_mounts:
-  hanni:
-    mount_share: /hanni
-    mount_point: /srv/hanni
+homarr_user_name: homarr
+homarr_user_id: 140
+homarr_user_shell: /usr/sbin/nologin
 
 ## NGINX variables
 nginx_conf_files:
@@ -30,7 +21,7 @@ nginx_conf_files:
 jellyseerr_hostname: media.tinynamoo.com
 
 homarr_docker_name: homarr
-homarr_image_version: v1.44.0
+homarr_image_version: v1.45.2
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20030
