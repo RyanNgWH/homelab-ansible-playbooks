@@ -7,8 +7,8 @@ services:
       LOG_LEVEL: debug
       TZ: {{ debian_datetime_timezone }}
     volumes:
-      - {{ nfs_mounts["marilyn-configs-jellyseerr"].mount_point }}:/app/config
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/jellyseerr/config:/app/config
     ports:
       - 5055:5055
-    user: {{ nfs_user_id }}:{{ jellyseerr_media_group_gid }}
+    user: {{ jellyseerr_user_id }}:{{ jellyseerr_user_id }}
     restart: unless-stopped

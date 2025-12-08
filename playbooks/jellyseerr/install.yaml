@@ -3,14 +3,34 @@
 # Jellyseerr
 # Install and configure the Jellyseerr media managment server.
 ---
+- name: Ensure jellyseerr user is present
+  become: true
+  block:
+    - name: Ensure jellyseerr group is present
+      ansible.builtin.group:
+        name: "{{ jellyseerr_user_name }}"
+        gid: "{{ jellyseerr_user_id }}"
+        system: true
+        state: present
+
+    - name: Ensure jellyseerr user is present
+      ansible.builtin.user:
+        name: "{{ jellyseerr_user_name }}"
+        group: "{{ jellyseerr_user_name }}"
+        password: "*"
+        shell: "{{ jellyseerr_user_shell }}"
+        create_home: false
+        uid: "{{ jellyseerr_user_id }}"
+        state: present
+
 - name: Setup Jellyseerr application files
   become: true
   block:
     - name: Ensure application directory is present
       ansible.builtin.file:
         path: "{{ docker_project_src }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ jellyseerr_user_name }}"
+        group: "{{ jellyseerr_user_name }}"
         mode: "0750"
         state: directory
 
@@ -18,25 +38,9 @@
       ansible.builtin.template:
         src: templates/app.docker-compose.yaml
         dest: "{{ docker_project_src }}/docker-compose.yaml"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        owner: "{{ jellyseerr_user_name }}"
+        group: "{{ jellyseerr_user_name }}"
         mode: "0640"
-
-- name: Setup jellyseerr user
-  become: true
-  block:
-    - name: Create media group
-      ansible.builtin.group:
-        name: "{{ jellyseerr_media_group_name }}"
-        gid: "{{ jellyseerr_media_group_gid }}"
-        system: true
-        state: present
-
-    - name: Add jellyseerr user to media group
-      ansible.builtin.user:
-        name: "{{ nfs_user_name }}"
-        groups: "{{ jellyseerr_media_group_name }}"
-        append: true
 
 - name: Install and configure nginx
   vars:
