@@ -5,7 +5,12 @@ services:
     container_name: {{ stirling_pdf_docker_name }}
     image: docker.stirlingpdf.com/stirlingtools/stirling-pdf:latest
     environment:
-      DISABLE_ADDITIONAL_FEATURES: true
+      DISABLE_ADDITIONAL_FEATURES: false
+
+      SYSTEM_DEFAULTLOCALE: en-SG
+      SYSTEM_ENABLEANALYTICS: false
+
+      SECURITY_ENABLELOGIN: false
     volumes:
       - ./trainingData:/usr/share/tessdata # Required for extra OCR languages
       - ./configs:/configs
