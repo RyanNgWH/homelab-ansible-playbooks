@@ -1,7 +1,7 @@
 services:
   grafana:
     container_name: {{ docker_project_name }}
-    image: grafana/grafana-oss:latest
+    image: grafana/grafana:main
     environment:
       GF_DEFAULT_INSTANCE_NAME: {{ ansible_hostname }}
 
@@ -46,10 +46,10 @@ services:
       GF_DATE_FORMATS_INTERVAL_DAY: DD/MM
       GF_DATE_FORMATS_DEFAULT_TIMEZONE: browser
     volumes:
-      - {{ nfs_mounts.melanie.mount_point }}/grafana/data:/var/lib/grafana
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/grafana/data:/var/lib/grafana
     ports:
       - '3000:3000'
-    user: {{ nfs_user_id }}:{{ nfs_groups['monitoring'].gid }}
+    user: {{ grafana_user_id }}:{{ grafana_user_id }}
     restart: unless-stopped
     depends_on:
       postgres:
@@ -65,8 +65,8 @@ services:
       POSTGRES_USER: grafana
       POSTGRES_PASSWORD: {{ grafana_postgres_pass }}
     volumes:
-      - {{ nfs_mounts.melanie.mount_point }}/grafana/db:/var/lib/postgresql/data
-    user: {{ nfs_user_id }}:{{ nfs_groups['monitoring'].gid }}
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/grafana/db:/var/lib/postgresql/data
+    user: {{ grafana_user_id }}:{{ grafana_user_id }}
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER -d grafana"]

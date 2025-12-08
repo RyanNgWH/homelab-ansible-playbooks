@@ -36,6 +36,6 @@ services:
     container_name: mongodb
     image: mongo:6
     volumes:
-      - {{ debian_additional_disks["appdata"]["mount_point"] }}/your-spotify/db:/data/db
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/your-spotify/db:/data/db
     restart: unless-stopped
     user: {{ your_spotify_user_id }}:{{ your_spotify_user_id }}
