@@ -6,7 +6,7 @@ services:
       POSTGRES_HOST: postgres
       POSTGRES_DB: nextcloud
       POSTGRES_USER: nextcloud
-      POSTGRES_PASSWORD: {{ nextcloud_postgres_pass }}
+      POSTGRES_PASSWORD: '{{ nextcloud_postgres_pass }}'
 
       REDIS_HOST: redis
 
@@ -50,7 +50,7 @@ services:
     environment:
       POSTGRES_DB: nextcloud
       POSTGRES_USER: nextcloud
-      POSTGRES_PASSWORD: {{ nextcloud_postgres_pass }}
+      POSTGRES_PASSWORD: '{{ nextcloud_postgres_pass }}'
     volumes:
       - {{ debian_additional_disks["postgres"]["mount_point"] }}/db:/var/lib/postgresql/data
     networks:
