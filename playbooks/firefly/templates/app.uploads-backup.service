@@ -2,6 +2,6 @@
 Description=Backup firefly uploads diretory
 
 [Service]
-ExecStart=/usr/bin/rsync -a {{ docker_project_src }}/uploads {{ nfs_mounts.alora.mount_point }}/
+ExecStart=/usr/bin/rsync -a {{ debian_additional_disks["appdata"]["mount_point"] }}/firefly/uploads {{ nfs_mounts.alora.mount_point }}/firefly/
 User={{ nfs_user_name }}
 Group={{ nfs_user_name }}

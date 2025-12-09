@@ -2,7 +2,7 @@
 Description=Checks if firefly uploads directory have changed
 
 [Path]
-PathChanged={{ docker_project_src }}/uploads
+PathChanged={{ debian_additional_disks["appdata"]["mount_point"] }}/firefly/uploads
 
 [Install]
 WantedBy=default.target

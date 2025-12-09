@@ -31,7 +31,6 @@
     proxmox_snapshot_description: "[Ansible] Working snapshot of firefly-iii {{ firefly_image_version }} - upgrading to firefly-iii {{ firefly_latest_version }}"
   delegate_to: localhost
 
-
 - name: Upgrade Firefly III finance managment server
   become: true
   block:

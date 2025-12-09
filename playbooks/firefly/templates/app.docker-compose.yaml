@@ -2,38 +2,33 @@ services:
   firefly:
     container_name: {{ firefly_docker_name }}
     image: fireflyiii/core:latest
-    hostname: firefly
-    restart: unless-stopped
     volumes:
-      - ./uploads:/var/www/html/storage/upload
-      - ./locale.gen:/etc/locale.gen
-    env_file: .env
-    networks:
-      - firefly
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/firefly/uploads:/var/www/html/storage/upload
+    env_file: {{ debian_additional_disks["appdata"]["mount_point"] }}/firefly/.env
     ports:
       - 8080:8080
+    restart: unless-stopped
     depends_on:
-      mariadb:
-        condition: service_started
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
 
-  mariadb:
-    image: mariadb:lts
-    hostname: mariadb
-    container_name: mariadb
-    restart: unless-stopped
+  postgres:
+    container_name: postgres
+    image: postgres:18
     environment:
-      MARIADB_ROOT_PASSWORD: {{ firefly_mariadb_root_pass }}
-      MARIADB_DATABASE: firefly
-      MARIADB_USER: firefly
-      MARIADB_PASSWORD: {{ firefly_mariadb_user_pass }}
-      MARIADB_AUTO_UPGRADE: true
-    networks:
-      - firefly
+      POSTGRES_DB: firefly
+      POSTGRES_USER: firefly
+      POSTGRES_PASSWORD: {{ firefly_postgres_pass }}
     volumes:
-      - {{ nfs_mounts.alora.mount_point }}/db:/var/lib/mysql
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/firefly/db:/var/lib/postgresql
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER -d firefly"]
+      interval: 2s
+      timeout: 20s
 
   cron:
     #
@@ -41,11 +36,9 @@ services:
     # The STATIC_CRON_TOKEN must be *exactly* 32 characters long
     #
     image: alpine
-    restart: always
     container_name: cron
     command: sh -c "echo \"0 3 * * * wget -qO- http://app:8080/api/v1/cron/{{ firefly_cron_token }}\" | crontab - && crond -f -L /dev/stdout"
-    networks:
-      - firefly
+    restart: unless-stopped
 
   redis:
     container_name: redis
@@ -54,9 +47,3 @@ services:
       test: ["CMD", "redis-cli", "ping"]
       interval: 2s
     restart: unless-stopped
-    networks:
-      - firefly
-
-networks:
-  firefly:
-    driver: bridge

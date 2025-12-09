@@ -25,15 +25,7 @@
     - name: Setup firefly environment variables
       ansible.builtin.template:
         src: templates/app.environment.env
-        dest: "{{ docker_project_src }}/.env"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0640"
-
-    - name: Setup firefly locales
-      ansible.builtin.template:
-        src: files/app.locale.gen
-        dest: "{{ docker_project_src }}/locale.gen"
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/firefly/.env'
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0640"
@@ -46,13 +38,13 @@
 
     - name: Sync uploads directory from NFS server to local application directory
       ansible.posix.synchronize:
-        src: "{{ nfs_mounts.alora.mount_point }}/uploads"
-        dest: "{{ docker_project_src }}/"
+        src: "{{ nfs_mounts.alora.mount_point }}/firefly/uploads"
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/firefly/'
       delegate_to: "{{ inventory_hostname }}"
 
     - name: Ensure uploads directory permissions is set
       ansible.builtin.file:
-        path: "{{ docker_project_src }}/uploads"
+        path: '{{ debian_additional_disks["appdata"]["mount_point"] }}/firefly/uploads'
         owner: "{{ nfs_user_name }}"
         group: "{{ nfs_user_name }}"
         mode: "0740"
