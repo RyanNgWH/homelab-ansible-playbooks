@@ -8,6 +8,10 @@ debian_datetime_ntp_server: 172.28.20.1
 debian_user_name: celeste
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO4/Q3baRGQbgAwmCckv6otA0Vn8f56Lht6IK0uloQo7 celeste@clean.tinynamoo.com"
 
+mat2_web_user_name: mat2-web
+mat2_web_user_id: 203
+mat2_web_user_shell: /usr/sbin/nologin
+
 ## NGINX variables
 nginx_conf_files:
   - filename: mat2-web.conf

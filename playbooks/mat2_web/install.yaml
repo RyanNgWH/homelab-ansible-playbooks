@@ -3,12 +3,32 @@
 # Mat2-web
 # Install and configure Mat2-web metadata removal tool
 ---
+- name: Ensure mat2-web user is present
+  become: true
+  block:
+    - name: Ensure mat2-web group is present
+      ansible.builtin.group:
+        name: "{{ mat2_web_user_name }}"
+        gid: "{{ mat2_web_user_id }}"
+        system: true
+        state: present
+
+    - name: Ensure mat2-web user is present
+      ansible.builtin.user:
+        name: "{{ mat2_web_user_name }}"
+        group: "{{ mat2_web_user_name }}"
+        password: "*"
+        shell: "{{ mat2_web_user_shell }}"
+        create_home: false
+        uid: "{{ mat2_web_user_id }}"
+        state: present
+
 - name: Create application directory
   become: true
   ansible.builtin.file:
     path: "{{ docker_project_src }}"
-    owner: "{{ debian_user_name }}"
-    group: "{{ debian_user_name }}"
+    owner: "{{ mat2_web_user_name }}"
+    group: "{{ mat2_web_user_name }}"
     mode: "0640"
     state: directory
 
@@ -17,8 +37,8 @@
   ansible.builtin.template:
     src: templates/app.docker-compose.yaml
     dest: "{{ docker_project_src }}/docker-compose.yaml"
-    owner: "{{ debian_user_name }}"
-    group: "{{ debian_user_name }}"
+    owner: "{{ mat2_web_user_name }}"
+    group: "{{ mat2_web_user_name }}"
     mode: "0640"
 
 - name: Setup mat2-web seccomp file
@@ -26,8 +46,8 @@
   ansible.builtin.copy:
     src: files/app.seccomp.json
     dest: "{{ docker_project_src }}/seccomp.json"
-    owner: "{{ debian_user_name }}"
-    group: "{{ debian_user_name }}"
+    owner: "{{ mat2_web_user_name }}"
+    group: "{{ mat2_web_user_name }}"
     mode: "0640"
 
 - name: Install and configure nginx
