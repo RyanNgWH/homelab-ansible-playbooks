@@ -8,33 +8,24 @@ debian_datetime_ntp_server: 172.28.20.1
 debian_user_name: sana
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMPaSbA11SgZYlWJbeNl1niswr8o7nlfW+zfxHvj7n7a sana@subs.tinynamoo.com"
 
-## NFSv4-client-setup variables
-# Kerberos
-nfs_krb5_host_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sana] Wallos/host.keytab"
-nfs_krb5_user_keytab_file: "/mnt/veracrypt2/Kerberos Keytabs/[Sana] Wallos/user.keytab"
-
-# NFS
-nfs_user_name: "{{ nfs_clients['wallos'].name }}"
-nfs_user_id: "{{ nfs_clients['wallos'].uid }}"
-nfs_mounts:
-  sana:
-    mount_share: /sana
-    mount_point: /srv/sana
+wallos_user_name: wallos
+wallos_user_id: 220
+wallos_user_shell: /usr/sbin/nologin
 
 ## NGINX variables
-nginx_user: wallos
-nginx_group: wallos
 nginx_conf_files:
   - filename: wallos.conf
     path: templates/nginx.wallos.conf
 
-## PHP configurations
-php_version: 8.2
-
 ## Wallos variables
-wallos_project_src: /opt/wallos
+wallos_docker_name: wallos
+wallos_image_version: v4.5.0
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20220
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: wallos
+docker_project_src: /opt/wallos

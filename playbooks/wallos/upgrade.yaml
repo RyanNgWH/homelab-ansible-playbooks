@@ -6,12 +6,7 @@
 - name: Check if wallos requires update
   become: true
   block:
-    - name: Get wallos version file
-      ansible.builtin.slurp:
-        src: "{{ wallos_project_src }}/includes/version.php"
-      register: version_file
-
-    - name: Get latest wallos release from github
+    - name: Get latest wallos container release from github
       become: false
       community.general.github_release:
         user: ellite
@@ -20,52 +15,60 @@
       delegate_to: localhost
       register: wallos_github_release
 
-    - name: Extract current & latest wallos version
+    - name: Extract latest wallos container version
       ansible.builtin.set_fact:
-        wallos_current_version: '{{ version_file.content | b64decode | regex_search(''(?<=version = ")v.*.*(?=".*)'') }}'
         wallos_latest_version: "{{ wallos_github_release.tag }}"
+
+    - name: Fix application docker image versionings in fact
+      ansible.builtin.set_fact:
+        wallos_latest_version: "v{{ wallos_latest_version }}"
 
     - name: Stop play if wallos has no updates
       ansible.builtin.meta: end_play
-      when: wallos_current_version == wallos_latest_version
+      when: wallos_image_version == wallos_latest_version
 
 - name: Take snapshot of Proxmox instance
-  become: false
   ansible.builtin.import_role:
     name: proxmox
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (wallos_current_version | regex_replace('[.]', '-')) }}"
-    proxmox_snapshot_description: "[Ansible] Working snapshot of wallos {{ wallos_current_version }} before upgrading to {{ wallos_latest_version }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_uptime_wallos_' + (wallos_latest_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of wallos {{ wallos_image_version }} before upgrading to {{ wallos_latest_version }}"
   delegate_to: localhost
 
-- name: Update apt cache, upgrade packages and remove unused dependencies
-  ansible.builtin.apt:
-    update_cache: true
-    upgrade: dist
-    autoremove: true
-    purge: true
+- name: Ensure docker-compose file is updated
+  become: true
+  ansible.builtin.template:
+    src: templates/app.docker-compose.yaml
+    dest: "{{ docker_project_src }}/docker-compose.yaml"
+    owner: "{{ wallos_user_name }}"
+    group: "{{ wallos_user_name }}"
+    mode: "0640"
 
-- name: Pull Wallos git repository
-  ansible.builtin.git:
-    repo: https://github.com/ellite/Wallos.git
-    dest: "{{ wallos_project_src }}" # noqa: latest
-    force: true
+- name: Upgrade wallos monitoring tool
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
 
-- name: Ensure owner of wallos application directory is set
-  ansible.builtin.file:
-    path: "{{ wallos_project_src }}"
-    owner: "{{ nfs_user_name }}"
-    group: "{{ nfs_user_name }}"
-    mode: "0740"
-    recurse: true
-    follow: false
-    state: directory
+    - name: Update & start wallos docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
 
-- name: Run wallos migration
-  ansible.builtin.command:
-    chdir: "{{ wallos_project_src }}/endpoints/db"
-    cmd: php migrate.php
-  register: wallos_migration
-  changed_when: "'No migrations to run.' not in wallos_migration.stdout_lines"
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true

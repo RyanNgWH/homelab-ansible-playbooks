@@ -3,227 +3,44 @@
 # Wallos
 # Install and configure Wallos subscription management server.
 ---
-- name: Setup pre-requisites
+- name: Ensure wallos user is present
   become: true
   block:
-    - name: Install pre-requisites
-      ansible.builtin.apt:
-        name:
-          - ca-certificates
-        update_cache: true
+    - name: Ensure wallos group is present
+      ansible.builtin.group:
+        name: "{{ wallos_user_name }}"
+        gid: "{{ wallos_user_id }}"
+        system: true
         state: present
 
-    - name: Install sury php key
-      ansible.builtin.apt:
-        deb: https://packages.sury.org/debsuryorg-archive-keyring.deb
+    - name: Ensure wallos user is present
+      ansible.builtin.user:
+        name: "{{ wallos_user_name }}"
+        group: "{{ wallos_user_name }}"
+        password: "*"
+        shell: "{{ wallos_user_shell }}"
+        create_home: false
+        uid: "{{ wallos_user_id }}"
         state: present
 
-    - name: Create sury php source list
-      ansible.builtin.copy:
-        content: deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ {{ ansible_facts["distribution_release"] }} main
-        dest: /etc/apt/sources.list.d/php.list
-        owner: root
-        group: root
-        mode: "0644"
-
-    - name: "Install php{{ php_version }}"
-      ansible.builtin.apt:
-        name:
-          - php{{ php_version }}
-          - php{{ php_version }}-curl
-          - php{{ php_version }}-gd
-          - php{{ php_version }}-imagick
-          - php{{ php_version }}-intl
-          - php{{ php_version }}-sqlite3
-          - php{{ php_version }}-fpm
-          - php{{ php_version }}-zip
-        update_cache: true
-        state: present
-
-    - name: Set user and group to run php-fpm as
-      block:
-        - name: Set user to run php-fpm as
-          ansible.builtin.lineinfile:
-            path: /etc/php/{{ php_version }}/fpm/pool.d/www.conf
-            line: "user = {{ nfs_user_name }}"
-            regexp: "^user = .*"
-            state: present
-
-        - name: Set group to run php-fpm as
-          ansible.builtin.lineinfile:
-            path: /etc/php/{{ php_version }}/fpm/pool.d/www.conf
-            line: "group = {{ nfs_user_name }}"
-            regexp: "^group = .*"
-            state: present
-
-        - name: Set user to listen php-fpm as
-          ansible.builtin.lineinfile:
-            path: /etc/php/{{ php_version }}/fpm/pool.d/www.conf
-            line: "listen.owner = {{ nfs_user_name }}"
-            regexp: "^listen.owner = .*"
-            state: present
-
-        - name: Set group to listen php-fpm as
-          ansible.builtin.lineinfile:
-            path: /etc/php/{{ php_version }}/fpm/pool.d/www.conf
-            line: "listen.group = {{ nfs_user_name }}"
-            regexp: "^listen.group = .*"
-            state: present
-
-        - name: "Restart php{{ php_version }}-fpm" # noqa: name[template]
-          ansible.builtin.systemd_service:
-            name: "php{{ php_version }}-fpm"
-            state: restarted
-
-- name: Setup Wallos application files
+- name: Setup wallos application files
   become: true
   block:
-    - name: Add git exception for wallos application directory
-      community.general.git_config:
-        name: safe.directory
-        value: "{{ wallos_project_src }}"
-        scope: global
-        state: present
-
-    - name: Clone wallos git repository
-      ansible.builtin.git:
-        repo: https://github.com/ellite/Wallos.git
-        dest: "{{ wallos_project_src }}" # noqa: latest
-        force: true
-
-    - name: Ensure owner of wallos application directory is set
+    - name: Ensure application directory is present
       ansible.builtin.file:
-        path: "{{ wallos_project_src }}"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0740"
-        recurse: true
-        follow: false
-        state: directory
-
-    - name: Link database file
-      ansible.builtin.file:
-        src: "{{ nfs_mounts.sana.mount_point }}/wallos/db/wallos.db"
-        path: "{{ wallos_project_src }}/db/wallos.db"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0640"
-        state: link
-
-    - name: Link uploads directory
-      ansible.builtin.file:
-        src: "{{ nfs_mounts.sana.mount_point }}/wallos/logos"
-        path: "{{ wallos_project_src }}/images/uploads/logos"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
+        path: "{{ docker_project_src }}"
+        owner: "{{ wallos_user_name }}"
+        group: "{{ wallos_user_name }}"
         mode: "0750"
-        state: link
-
-    - name: Ensure cron log directory is present
-      ansible.builtin.file:
-        path: "/var/log/cron"
-        owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_user_name }}"
-        mode: "0740"
         state: directory
 
-    - name: Setup crontab
-      block:
-        - name: Setup next payment update cron job
-          ansible.builtin.cron:
-            name: Next payment update
-            user: "{{ nfs_user_name }}"
-            minute: "0"
-            hour: "1"
-            day: "*"
-            month: "*"
-            weekday: "*"
-            job: "php {{ wallos_project_src }}/endpoints/cronjobs/updatenextpayment.php >> /var/log/cron/updatenextpayment.log 2>&1"
-            state: present
-
-        - name: Setup exchange cron job
-          ansible.builtin.cron:
-            name: Exchange
-            user: "{{ nfs_user_name }}"
-            minute: "0"
-            hour: "2"
-            day: "*"
-            month: "*"
-            weekday: "*"
-            job: "php {{ wallos_project_src }}/endpoints/cronjobs/updateexchange.php >> /var/log/cron/updateexchange.log 2>&1"
-            state: present
-
-        - name: Setup cancellation notifications cron job
-          ansible.builtin.cron:
-            name: Cancellation notifications
-            user: "{{ nfs_user_name }}"
-            minute: "0"
-            hour: "8"
-            day: "*"
-            month: "*"
-            weekday: "*"
-            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/sendcancellationnotifications.php >> /var/log/cron/sendcancellationnotifications.log 2>&1"
-            state: present
-
-        - name: Setup notifications cron job
-          ansible.builtin.cron:
-            name: Notifications
-            user: "{{ nfs_user_name }}"
-            minute: "0"
-            hour: "9"
-            day: "*"
-            month: "*"
-            weekday: "*"
-            job: "php {{ wallos_project_src }}/endpoints/cronjobs/sendnotifications.php >> /var/log/cron/sendnotifications.log 2>&1"
-            state: present
-
-        - name: Setup verification emails cron job
-          ansible.builtin.cron:
-            name: Verification emails
-            user: "{{ nfs_user_name }}"
-            minute: "*/2"
-            hour: "*"
-            day: "*"
-            month: "*"
-            weekday: "*"
-            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/sendverificationemails.php >> /var/log/cron/sendverificationemail.log 2>&1"
-            state: present
-
-        - name: Setup reset passwords cron job
-          ansible.builtin.cron:
-            name: Reset passwords
-            user: "{{ nfs_user_name }}"
-            minute: "*/2"
-            hour: "*"
-            day: "*"
-            month: "*"
-            weekday: "*"
-            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/sendresetpasswordemails.php >> /var/log/cron/sendresetpasswordemails.log 2>&1"
-            state: present
-
-        - name: Setup update check cron job
-          ansible.builtin.cron:
-            name: Updates check
-            user: "{{ nfs_user_name }}"
-            minute: "0"
-            hour: "*/6"
-            day: "*"
-            month: "*"
-            weekday: "*"
-            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/checkforupdates.php >> /var/log/cron/checkforupdates.log 2>&1"
-            state: present
-
-        - name: Setup store yearly costs cron job
-          ansible.builtin.cron:
-            name: Store total yearly cost
-            user: "{{ nfs_user_name }}"
-            minute: "30"
-            hour: "1"
-            day: "*"
-            month: "*"
-            weekday: "1"
-            job: "php {{ wallos_project_src }}/html/endpoints/cronjobs/storetotalyearlycost.php >> /var/log/cron/storetotalyearlycost.log 2>&1"
-            state: present
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
+        owner: "{{ wallos_user_name }}"
+        group: "{{ wallos_user_name }}"
+        mode: "0640"
 
 - name: Install and configure nginx
   vars:
@@ -231,15 +48,12 @@
       - nginx
     nginx_tls_domains:
       - "{{ ansible_host }}"
-    debian_common_nginx_user: "{{ nfs_user_name }}"
-    debian_common_nginx_group: "{{ nfs_user_name }}"
   ansible.builtin.include_role:
     name: debian-common
 
-- name: Run wallos migration
+- name: Start wallos docker containers
   become: true
-  ansible.builtin.command:
-    chdir: "{{ wallos_project_src }}/endpoints/db"
-    cmd: php migrate.php
-  register: wallos_migration
-  changed_when: "'No migrations to run.' not in wallos_migration.stdout_lines"
+  community.docker.docker_compose_v2:
+    project_name: "{{ docker_project_name }}"
+    project_src: "{{ docker_project_src }}"
+    state: present
