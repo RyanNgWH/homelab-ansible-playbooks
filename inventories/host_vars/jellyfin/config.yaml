@@ -20,9 +20,6 @@ nfs_mounts:
   marilyn-media:
     mount_share: /marilyn-media
     mount_point: /srv/marilyn-media
-  marilyn-configs-jellyfin:
-    mount_share: /marilyn-configs-jellyfin
-    mount_point: /srv/marilyn-configs-jellyfin
 
 ## NGINX variables
 nginx_conf_files:
