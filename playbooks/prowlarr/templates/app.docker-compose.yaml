@@ -10,6 +10,7 @@ services:
       UMASK: 007
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/prowlarr/config:/config
+      - {{ nfs_mounts["marilyn-configs-prowlarr"].mount_point }}/backups:/data/backups
     ports:
       - 9696:9696
     restart: unless-stopped
