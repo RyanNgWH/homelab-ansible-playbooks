@@ -23,7 +23,7 @@
       ansible.builtin.set_fact:
         kuma_latest_version: "v{{ kuma_latest_version }}"
 
-    - name: Stop play if miniflux has no updates
+    - name: Stop play if uptime-kuma has no updates
       ansible.builtin.meta: end_play
       when: kuma_image_version == kuma_latest_version
 
