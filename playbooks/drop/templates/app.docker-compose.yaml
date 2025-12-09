@@ -6,12 +6,13 @@ services:
     environment:
       DATABASE_URL: postgres://drop:{{ drop_database_password }}@postgres:5432/drop
       EXTERNAL_URL: https://{{ ansible_host }}
+
       IGDB_CLIENT_ID: {{ drop_igdb_client_id }}
       IGDB_CLIENT_SECRET: {{ drop_igdb_client_secret }}
     volumes:
       # Folder where your games are stored
-      - {{ nfs_mounts.daisy.mount_point }}/library:/library
-      - {{ nfs_mounts.daisy.mount_point }}/data:/data
+      - {{ nfs_mounts.daisy.mount_point }}/drop/library:/library
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/drop/data:/data
     ports:
       - "3000:3000"
     restart: unless-stopped
@@ -27,7 +28,7 @@ services:
       POSTGRES_PASSWORD: {{ drop_database_password }}
       POSTGRES_DB: drop
     volumes:
-      - {{ nfs_mounts.daisy.mount_point }}/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/drop/db:/var/lib/postgresql/data
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
     healthcheck:
