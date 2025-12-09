@@ -25,13 +25,6 @@ nfs_clients:
   gitea:
     name: gitea
     uid: 180
-  grafana:
-    name: grafana
-    uid: 192
-    groups: monitoring
-  homarr:
-    name: homarr
-    uid: 140
   immich:
     name: immich
     uid: 120
@@ -39,26 +32,12 @@ nfs_clients:
     name: jellyfin
     uid: 281
     groups: media
-  jellyseerr:
-    name: jellyseerr
-    uid: 285
-    groups: media
-  miniflux:
-    name: miniflux
-    uid: 250
   nextcloud:
     name: nextcloud
     uid: 233
   paperless:
     name: paperless
     uid: 130
-  piped:
-    name: piped
-    uid: 204
-  prometheus:
-    name: prometheus
-    uid: 191
-    groups: monitoring
   prowlarr:
     name: prowlarr
     uid: 286
@@ -71,9 +50,6 @@ nfs_clients:
     name: radarr
     uid: 283
     groups: media
-  scrutiny:
-    name: scrutiny
-    uid: 150
   send:
     name: send
     uid: 210
@@ -84,23 +60,11 @@ nfs_clients:
   vikunja:
     name: vikunja
     uid: 240
-  uptime-kuma:
-    name: uptime-kuma
-    uid: 290
-  wallos:
-    name: wallos
-    uid: 220
   wikijs:
     name: wikijs
     uid: 170
-  your-spotify:
-    name: yourspotify
-    uid: 217
 
 nfs_groups:
   media:
     name: media
     gid: 200
-  monitoring:
-    name: monitoring
-    gid: 190

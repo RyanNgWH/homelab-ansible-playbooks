@@ -121,28 +121,18 @@ nfs:
     drop:
     firefly:
     gitea:
-    grafana:
-    homarr:
     immich:
     jellyfin:
-    jellyseerr:
-    miniflux:
     nas:
     nextcloud:
     paperless:
-    piped:
-    prometheus:
     prowlarr:
     qbittorrent:
     radarr:
-    scrutiny:
     send:
     sonarr:
-    uptime_kuma:
     vikunja:
-    wallos:
     wikijs:
-    your_spotify:
 
 nginx:
   children:

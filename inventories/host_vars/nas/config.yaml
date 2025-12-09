@@ -20,50 +20,26 @@ nfs_exports:
     dest: /export/alyssa
   - src: /aspen/daisy/
     dest: /export/daisy
-  - src: /aspen/daisy/library
-    dest: /export/daisy/library
-  - src: /aspen/florence/
-    dest: /export/florence
-  - src: /aspen/hanni/
-    dest: /export/hanni
   - src: /aspen/marilyn/
     dest: /export/marilyn
-  - src: /aspen/marilyn/configs/
+  - src: /aspen/marilyn/configs
     dest: /export/marilyn/configs
-  - src: /aspen/marilyn/configs/
-    dest: /export/marilyn-configs
-  - src: /aspen/marilyn/configs/jellyfin/
-    dest: /export/marilyn-configs-jellyfin
-  - src: /aspen/marilyn/configs/jellyseerr/
-    dest: /export/marilyn-configs-jellyseerr
+  - src: /aspen/marilyn/configs/bazarr/
+    dest: /export/marilyn-configs-bazarr
+  - src: /aspen/marilyn/configs/bazarr4k/
+    dest: /export/marilyn-configs-bazarr4k
+  - src: /aspen/marilyn/configs/bazarr-anime/
+    dest: /export/marilyn-configs-bazarr-anime
   - src: /aspen/marilyn/configs/prowlarr/
     dest: /export/marilyn-configs-prowlarr
-  - src: /aspen/marilyn/databases/
-    dest: /export/marilyn/databases
-  - src: /aspen/marilyn/databases/bazarr/
-    dest: /export/marilyn-databases-bazarr
-  - src: /aspen/marilyn/databases/prowlarr/
-    dest: /export/marilyn-databases-prowlarr
   - src: /aspen/marilyn/media/
     dest: /export/marilyn-media
-  - src: /aspen/melanie/
-    dest: /export/melanie
-  - src: /aspen/melodee/
-    dest: /export/melodee
   - src: /aspen/petal/
     dest: /export/petal
-  - src: /aspen/sana/
-    dest: /export/sana
-  - src: /aspen/serene/
-    dest: /export/serene
-  - src: /aspen/solar/
-    dest: /export/solar
   - src: /aspen/stevie/
     dest: /export/stevie
   - src: /aspen/tiffany/
     dest: /export/tiffany
-  - src: /aspen/twyla/
-    dest: /export/twyla
   - src: /aspen/wendy/
     dest: /export/wendy
   - src: /aspen/winter/
