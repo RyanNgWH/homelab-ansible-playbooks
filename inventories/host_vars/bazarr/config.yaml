@@ -20,9 +20,15 @@ nfs_mounts:
   marilyn-media:
     mount_share: /marilyn-media
     mount_point: /srv/marilyn-media
-  marilyn-configs:
-    mount_share: /marilyn-configs
-    mount_point: /srv/marilyn-configs
+  marilyn-configs-bazarr:
+    mount_share: /marilyn-configs-bazarr
+    mount_point: /srv/marilyn-configs-bazarr
+  marilyn-configs-bazarr4k:
+    mount_share: /marilyn-configs-bazarr4k
+    mount_point: /srv/marilyn-configs-bazarr4k
+  marilyn-configs-bazarr-anime:
+    mount_share: /marilyn-configs-bazarr-anime
+    mount_point: /srv/marilyn-configs-bazarr-anime
 
 ## NGINX variables
 nginx_conf_files:

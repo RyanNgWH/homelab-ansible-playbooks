@@ -16,6 +16,7 @@ services:
       POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/bazarr/config:/config
+      - {{ nfs_mounts["marilyn-configs-bazarr"].mount_point }}/backups:/data/backups
       - {{ nfs_mounts["marilyn-media"].mount_point }}/movies:/data/movies
       - {{ nfs_mounts["marilyn-media"].mount_point }}/tv:/data/tv
     ports:
@@ -42,6 +43,7 @@ services:
       POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/bazarr4k/config:/config
+      - {{ nfs_mounts["marilyn-configs-bazarr4k"].mount_point }}/backups:/data/backups
       - {{ nfs_mounts["marilyn-media"].mount_point }}/movies4k:/data/movies4k
       - {{ nfs_mounts["marilyn-media"].mount_point }}/tv4k:/data/tv4k
     ports:
@@ -68,6 +70,7 @@ services:
       POSTGRES_PASSWORD: {{ bazarr_postgres_pass }}
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/bazarr-anime/config:/config
+      - {{ nfs_mounts["marilyn-configs-bazarr-anime"].mount_point }}/backups:/data/backups
       - {{ nfs_mounts["marilyn-media"].mount_point }}/anime:/data/anime
       - {{ nfs_mounts["marilyn-media"].mount_point }}/animetv:/data/animetv
     ports:
