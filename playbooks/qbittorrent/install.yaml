@@ -103,7 +103,7 @@
         src: templates/cross-seed.config.js
         dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/cross-seed/config/config.js'
         owner: "{{ nfs_user_name }}"
-        group: "{{ nfs_groups['media'].name }}"
+        group: "{{ nfs_user_name }}"
         mode: "0660"
 
     - name: Setup qbit-manage configuration file
