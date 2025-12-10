@@ -37,6 +37,8 @@ all:
       ansible_host: cloud.tinynamoo.com
     ntfy:
       ansible_host: push.tinynamoo.com
+    ollama:
+      ansible_host: assistant.tinynamoo.com
     opnsense:
       ansible_host: router.tinynamoo.com
     paperless:
@@ -97,6 +99,7 @@ debian:
     nas:
     nextcloud:
     ntfy:
+    ollama:
     paperless:
     piped:
     prometheus:
@@ -167,6 +170,7 @@ sierra_proxmox:
     nextcloud:
     nas:
     ntfy:
+    ollama:
     paperless:
     piped:
     prometheus:

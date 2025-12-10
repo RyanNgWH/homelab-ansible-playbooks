@@ -1,0 +1,32 @@
+# @format
+
+# Ollama
+# Install and configure the Ollama LLM runner service.
+---
+- name: Install and configure the Ollama LLM runner service
+  hosts: ollama
+
+  pre_tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
+  handlers:
+    - name: Import handlers
+      ansible.builtin.import_tasks: handlers/main.yaml
+
+  roles:
+    - role: debian-13-setup
+      tags: install
+    - role: debian-common
+      tags: install
+      vars:
+        debian_common_task_list:
+          - docker
+
+  tasks:
+    - name: Install and configure the Ollama LLM runner service
+      ansible.builtin.import_tasks: install.yaml
+      tags: install

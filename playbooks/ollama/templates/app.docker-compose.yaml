@@ -1,0 +1,63 @@
+services:
+  ollama:
+    container_name: {{ ollama_docker_name }}
+    image: ollama/ollama:latest
+    volumes:
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/ollama/ollama:/.ollama
+    ports:
+      - "11434:11434"
+    user: {{ ollama_user_id }}:{{ ollama_user_id}}
+    restart: unless-stopped
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  open-webui:
+    container_name: {{ open_webui_docker_name }}
+    image: ghcr.io/open-webui/open-webui:main
+    environment:
+      DATABASE_TYPE: postgresql
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: open-webui
+      DATABASE_USER: open-webui
+      DATABASE_PASSWORD: {{ open_webui_postgres_pass_encoded }}
+
+      OLLAMA_BASE_URL: http://ollama:11434
+
+      WEBUI_URL: https://{{ ansible_host }}
+      WEBUI_NAME: Tiny Assistant
+
+      ENABLE_SIGNUP_PASSWORD_CONFIRMATION: true
+
+      VECTOR_DB: pgvector
+    volumes:
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/open-webui/data:/app/backend/data
+    ports:
+      - 8080:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+
+    restart: unless-stopped
+
+  postgres:
+    container_name: postgres
+    image: pgvector/pgvector:pg18-trixie
+    environment:
+      POSTGRES_DB: open-webui
+      POSTGRES_USER: open-webui
+      POSTGRES_PASSWORD: {{ open_webui_postgres_pass }}
+    volumes:
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/open-webui/db:/var/lib/postgresql
+    user: {{ ollama_user_id }}:{{ ollama_user_id }}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h localhost -U $$POSTGRES_USER -d open-webui"]
+      interval: 2s
+      timeout: 20s

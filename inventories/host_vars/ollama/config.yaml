@@ -1,0 +1,39 @@
+# @format
+---
+## debian-13-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.20.1
+
+# User
+debian_user_name: olivia
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE62/etb51xhQsBa+kmknRpmqI5X9NKDrWwkQQUHF9TC olivia@assistant.tinynamoo.com"
+
+# Sources
+debian_sources_allow_non_free: true
+
+## NGINX variables
+nginx_conf_files:
+  - filename: ollama.conf
+    path: templates/nginx.ollama.conf
+  - filename: open-webui.conf
+    path: templates/nginx.open-webui.conf
+
+## Ollama variables
+ollama_user_name: ollama
+ollama_user_id: 205
+ollama_user_shell: /usr/sbin/nologin
+
+ollama_hostname: llm.tinynamoo.com
+
+ollama_docker_name: ollama
+
+open_webui_docker_name: open-webui
+
+## Proxmox instance variables
+proxmox_snapshot_vmid: 20050
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: ollama
+docker_project_src: /opt/ollama
