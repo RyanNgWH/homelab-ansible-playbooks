@@ -25,6 +25,7 @@ services:
       DATABASE_NAME: open-webui
       DATABASE_USER: open-webui
       DATABASE_PASSWORD: {{ open_webui_postgres_pass_encoded }}
+      VECTOR_DB: pgvector
 
       OLLAMA_BASE_URL: http://ollama:11434
 
@@ -33,7 +34,8 @@ services:
 
       ENABLE_SIGNUP_PASSWORD_CONFIRMATION: true
 
-      VECTOR_DB: pgvector
+      BYPASS_MODEL_ACCESS_CONTROL: TRUE
+
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/open-webui/data:/app/backend/data
     ports:
