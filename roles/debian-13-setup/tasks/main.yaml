@@ -50,6 +50,13 @@
             dest: /etc/apt/sources.list.d/debian.sources
             mode: "0644"
 
+        - name: Update Debian sources with 'non-free' components (if specified)
+          ansible.builtin.replace:
+            path: /etc/apt/sources.list.d/debian.sources
+            regexp: '(^Suites: {{ ansible_facts["distribution_release"] }}$\n)(^Components: main contrib non-free-firmware$)'
+            replace: '\1Components: main contrib non-free non-free-firmware'
+          when: debian_sources_allow_non_free
+
         - name: Set debian backports sources
           ansible.builtin.template:
             src: templates/debian-backports.sources

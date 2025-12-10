@@ -31,6 +31,12 @@ This role utilises modules from the following collections that is not part of `a
 | `debian_datetime_timezone`       | Timezone of the system.                                             | `Asia/Singapore` |
 | `debian_datetime_hardware_clock` | Timezone of hardware clock.<br><br>Options:<br>- `UTC`<br>- `local` | `UTC`            |
 
+### Sources
+
+| Variable                        | Description                    | Default |
+| ------------------------------- | ------------------------------ | ------- |
+| `debian_sources_allow_non_free` | Allow non-free debian sources. | `false` |
+
 ### User
 
 | Variable                     | Description                                                                                                                                           | Default     |

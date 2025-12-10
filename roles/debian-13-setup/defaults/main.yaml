@@ -5,6 +5,9 @@ debian_datetime_ntp_server: pool.ntp.org
 debian_datetime_timezone: Asia/Singapore
 debian_datetime_hardware_clock: UTC
 
+# Sources configurations
+debian_sources_allow_non_free: false
+
 # User configurations
 debian_user_name: debian
 debian_user_password: "*"
