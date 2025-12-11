@@ -37,14 +37,14 @@ protonvpn_gateway: 10.2.0.1
 protonvpn_port_forward_lifetime: 60 # ProtonVPN currently limits at 60s
 protonvpn_port_forward_interval: 45
 
-cross_seed_prowlarr_hostname: indexers.tinynamoo.com
-cross_seed_sonarr_hostname: tv.tinynamoo.com
-cross_seed_sonarr4k_hostname: tv4k.tinynamoo.com
-cross_seed_sonarr_anime_hostname: animetv.tinynamoo.com
-cross_seed_radarr_hostname: movies.tinynamoo.com
-cross_seed_radarr4k_hostname: movies4k.tinynamoo.com
-cross_seed_radarr_anime_hostname: anime.tinynamoo.com
-cross_seed_ntfy_hostname: push.tinynamoo.com
+cross_seed_prowlarr_hostname: '{{ hostvars["prowlarr"]["ansible_host"] }}'
+cross_seed_sonarr_hostname: '{{ hostvars["sonarr"]["ansible_host"] }}'
+cross_seed_sonarr4k_hostname: '{{ hostvars["sonarr"]["sonarr_4k_hostname"] }}'
+cross_seed_sonarr_anime_hostname: '{{ hostvars["sonarr"]["sonarr_anime_hostname"] }}'
+cross_seed_radarr_hostname: '{{ hostvars["radarr"]["ansible_host"] }}'
+cross_seed_radarr4k_hostname: '{{ hostvars["radarr"]["radarr_4k_hostname"] }}'
+cross_seed_radarr_anime_hostname: '{{ hostvars["radarr"]["radarr_anime_hostname"] }}'
+cross_seed_ntfy_hostname: '{{ hostvars["ntfy"]["ansible_host"] }}'
 cross_seed_docker_name: cross-seed
 
 qbit_manage_docker_name: qbit-manage
