@@ -8,13 +8,14 @@ services:
     environment:
       MEILI_ADDR: http://meilisearch:7700
       BROWSER_WEBSOCKET_URL: ws://browserless:3000/chromium/playwright
-      OLLAMA_BASE_URL: https://{{ hostvars["ollama"]["ansible_host"] }}:11435
+      OLLAMA_BASE_URL: https://{{ hostvars["ollama"]["ollama_hostname"] }}:11435/api
 
       # You almost never want to change the value of the DATA_DIR variable.
       # If you want to mount a custom directory, change the volume mapping above instead.
       DATA_DIR: /data # DON'T CHANGE THIS
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/karakeep/karakeep/data:/data
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/karakeep/karakeep/cache:/app/apps/web/.next/cache
     ports:
       - "3000:3000"
     user: {{ karakeep_user_id }}:{{ karakeep_user_id}}
