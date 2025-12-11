@@ -1,0 +1,98 @@
+# @format
+
+# Ollama
+# Upgrade the Ollama LLM runner service
+---
+- name: Check if containers requires update
+  become: true
+  block:
+    - name: Get latest containers releases from github
+      become: false
+      community.general.github_release:
+        user: "{{ item.docker_user }}"
+        repo: "{{ item.docker_repo }}"
+        action: latest_release
+      delegate_to: localhost
+      register: github_release
+
+    - name: Extract latest containers versions
+      ansible.builtin.set_fact:
+        "{{ item.name }}_latest_version": "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
+      loop:
+    - name: ollama
+      docker_user: ollama
+      docker_repo: ollama
+    - name: open_webui
+      docker_user: open-webui
+      docker_repo: open-webui
+
+- name: Check if applications have updates
+  ansible.builtin.set_fact:
+    ollama_has_updates: "{{ ollama_image_version != ollama_latest_version }}"
+    open_webui_has_updates: "{{ open_webui_image_version != open_webui_latest_version }}"
+
+- name: Stop play if applications have no updates
+  ansible.builtin.meta: end_play
+  when: "(not ollama_has_updates) and (not open_webui_has_updates)"
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (ollama_image_version | regex_replace('[.]', '-')) }} + '_' + {{ (open_webui_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: |
+      [Ansible] Working snapshot of ollama
+
+      Current:
+        ollama: {{ ollama_image_version }}
+        open-webui: {{ open_webui_image_version }}
+
+       New:
+        ollama: {{ ollama_latest_version }}
+        ollama: {{ open_webui_latest_version }}
+  delegate_to: localhost
+
+- name: Upgrade ollama llm runner service
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Ensure docker compose file is updated
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
+        owner: "{{ ollama_user_name }}"
+        group: "{{ ollama_user_name }}"
+        mode: "0640"
+
+    - name: Update & start docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+      loop:
+        - services: "{{ ollama_docker_name }}"
+          condition: "{{ ollama_has_updates }}"
+        - services:
+            - "{{ open_webui_docker_name }}"
+            - postgres
+          condition: "{{ open_webui_has_updates }}"
+      when: item.condition
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true

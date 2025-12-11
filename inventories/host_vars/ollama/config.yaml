@@ -26,8 +26,10 @@ ollama_user_shell: /usr/sbin/nologin
 ollama_hostname: llm.tinynamoo.com
 
 ollama_docker_name: ollama
+ollama_image_version: v0.13.2
 
 open_webui_docker_name: open-webui
+open_webui_image_version: v0.6.41
 
 ## Proxmox instance variables
 proxmox_snapshot_vmid: 20050
