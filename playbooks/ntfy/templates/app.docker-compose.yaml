@@ -7,9 +7,9 @@ services:
     environment:
       TZ: {{ debian_datetime_timezone }}
     volumes:
-      - {{ debian_additional_disks["appdata"]["mount_point"] }}/cache:/var/cache/ntfy
-      - {{ debian_additional_disks["appdata"]["mount_point"] }}/data:/var/lib/ntfy
-      - {{ debian_additional_disks["appdata"]["mount_point"] }}/config:/etc/ntfy
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/ntfy/cache:/var/cache/ntfy
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/ntfy/data:/var/lib/ntfy
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/ntfy/config:/etc/ntfy
     ports:
       - "8080:80"
       - "25:25"
@@ -19,5 +19,5 @@ services:
         timeout: 10s
         retries: 3
         start_period: 40s
-    user: {{ ntfy_user_id }}:{{ ntfy_user_id}}
+    user: {{ ntfy_user_id }}:{{ ntfy_user_id }}
     restart: unless-stopped

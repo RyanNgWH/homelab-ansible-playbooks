@@ -45,23 +45,10 @@
     - name: Setup ntfy configuration file
       ansible.builtin.template:
         src: templates/app.configuration.yml
-        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/config/server.yml'
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/ntfy/config/server.yml'
         owner: "{{ ntfy_user_name }}"
         group: "{{ ntfy_user_name }}"
         mode: "0640"
-
-    - name: Ensure cache & data directories permissions is set
-      ansible.builtin.file:
-        path: '{{ debian_additional_disks["appdata"]["mount_point"] }}/{{ item }}'
-        owner: "{{ ntfy_user_name }}"
-        group: "{{ ntfy_user_name }}"
-        mode: "0750"
-        recurse: true
-        follow: false
-        state: directory
-      loop:
-        - cache
-        - data
 
 - name: Setup Fail2Ban
   become: true

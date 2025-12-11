@@ -54,7 +54,7 @@
     - name: Ensure configuration file is updated
       ansible.builtin.template:
         src: templates/app.configuration.yml
-        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/config/server.yml'
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/ntfy/config/server.yml'
         owner: "{{ ntfy_user_name }}"
         group: "{{ ntfy_user_name }}"
         mode: "0640"
