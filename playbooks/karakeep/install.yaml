@@ -1,0 +1,67 @@
+# @format
+
+# Karakeep
+# Install and configure the Karakeep bookmarking service.
+---
+- name: Ensure karakeep user is present
+  become: true
+  block:
+    - name: Ensure karakeep group is present
+      ansible.builtin.group:
+        name: "{{ karakeep_user_name }}"
+        gid: "{{ karakeep_user_id }}"
+        system: true
+        state: present
+
+    - name: Ensure karakeep user is present
+      ansible.builtin.user:
+        name: "{{ karakeep_user_name }}"
+        group: "{{ karakeep_user_name }}"
+        password: "*"
+        shell: "{{ karakeep_user_shell }}"
+        create_home: false
+        uid: "{{ karakeep_user_id }}"
+        state: present
+
+- name: Setup karakeep application files
+  become: true
+  block:
+    - name: Ensure karakeep directory is present
+      ansible.builtin.file:
+        path: "{{ docker_project_src }}"
+        owner: "{{ karakeep_user_name }}"
+        group: "{{ karakeep_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
+        owner: "{{ karakeep_user_name }}"
+        group: "{{ karakeep_user_name }}"
+        mode: "0640"
+
+    - name: Setup karakeep configuration file
+      ansible.builtin.template:
+        src: templates/app.configuration.env
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/karakeep/.env'
+        owner: "{{ karakeep_user_name }}"
+        group: "{{ karakeep_user_name }}"
+        mode: "0640"
+
+- name: Install and configure nginx
+  vars:
+    debian_common_task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ ansible_host }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Start karakeep docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: "{{ docker_project_name }}"
+    project_src: "{{ docker_project_src }}"
+    state: present

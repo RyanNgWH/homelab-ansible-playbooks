@@ -1,0 +1,53 @@
+---
+services:
+  karakeep:
+    container_name: {{ karakeep_docker_name }}
+    image: ghcr.io/karakeep-app/karakeep:${KARAKEEP_VERSION:-release}
+    env_file:
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/karakeep/.env
+    environment:
+      MEILI_ADDR: http://meilisearch:7700
+      BROWSER_WEBSOCKET_URL: ws://browserless:3000/chromium/playwright
+      OLLAMA_BASE_URL: https://{{ hostvars["ollama"]["ansible_host"] }}:11435
+
+      # You almost never want to change the value of the DATA_DIR variable.
+      # If you want to mount a custom directory, change the volume mapping above instead.
+      DATA_DIR: /data # DON'T CHANGE THIS
+    volumes:
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/karakeep/karakeep/data:/data
+    ports:
+      - "3000:3000"
+    user: {{ karakeep_user_id }}:{{ karakeep_user_id}}
+    restart: unless-stopped
+    depends_on:
+      browserless:
+        condition: service_healthy
+      meilisearch:
+        condition: service_started
+
+  browserless:
+    container_name: {{ browserless_docker_name }}
+    image: ghcr.io/browserless/chromium:latest
+    environment:
+      TZ: {{ debian_datetime_timezone }}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/pressure"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  meilisearch:
+    container_name: {{ meilisearch_docker_name }}
+    image: getmeili/meilisearch:v1.13.3
+    env_file:
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/karakeep/.env
+    environment:
+      MEILI_ENV: production
+
+      MEILI_NO_ANALYTICS: true
+    volumes:
+      - {{ debian_additional_disks["appdata"]["mount_point"] }}/karakeep/meilisearch/data:/meili_data
+    user: {{ karakeep_user_id }}:{{ karakeep_user_id}}
+    restart: unless-stopped

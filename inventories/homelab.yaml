@@ -27,6 +27,8 @@ all:
       ansible_host: filme.tinynamoo.com
     jellyseerr:
       ansible_host: media.tinynamoo.com
+    karakeep:
+      ansible_host: keep.tinynamoo.com
     mat2_web:
       ansible_host: clean.tinynamoo.com
     miniflux:
@@ -94,6 +96,7 @@ debian:
     it_tools:
     jellyfin:
     jellyseerr:
+    karakeep:
     mat2_web:
     miniflux:
     nas:
@@ -165,6 +168,7 @@ sierra_proxmox:
     it_tools:
     jellyfin:
     jellyseerr:
+    karakeep:
     mat2_web:
     miniflux:
     nextcloud:

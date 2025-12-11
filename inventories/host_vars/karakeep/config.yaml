@@ -1,0 +1,47 @@
+# @format
+---
+## debian-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.20.1
+
+# User
+debian_user_name: kiara
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPfYsXj1p/8t18mWWf6MsKkSADIOmotpovX3jY1/zddS kiara@keep.tinynamoo.com"
+
+## NGINX variables
+nginx_conf_files:
+  - filename: karakeep.conf
+    path: templates/nginx.karakeep.conf
+
+## Karakeep variables
+karakeep_user_name: karakeep
+karakeep_user_id: 206
+karakeep_user_shell: /usr/sbin/nologin
+
+karakeep_max_asset_size: 50
+
+karakeep_ollama_inference_text_model: qwen3:8b
+karakeep_ollama_inference_image_model: llava:7b
+karakeep_ollama_inference_context_length: 32768
+karakeep_ollama_embedding_text_model: nomic-embed-text:v1.5
+
+karakeep_smtp_host: smtp.protonmail.ch
+karakeep_smtp_port: 587
+karakeep_smtp_secure: "false"
+karakeep_smtp_user: sunny@mail.tinynamoo.com
+karakeep_smtp_from: sunny@mail.tinynamoo.com
+
+karakeep_docker_name: karakeep
+
+browserless_docker_name: browserless
+
+meilisearch_docker_name: meilisearch
+
+## Proxmox instance variables
+proxmox_snapshot_vmid: 20060
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: karakeep
+docker_project_src: /opt/karakeep
