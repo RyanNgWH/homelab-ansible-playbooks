@@ -41,7 +41,7 @@
 
        New:
         ollama: {{ ollama_latest_version }}
-        ollama: {{ open_webui_latest_version }}
+        open-webui: {{ open_webui_latest_version }}
   delegate_to: localhost
 
 - name: Upgrade ollama llm runner service
