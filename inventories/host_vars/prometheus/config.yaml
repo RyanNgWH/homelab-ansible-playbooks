@@ -18,7 +18,7 @@ nginx_conf_files:
     path: templates/nginx.prometheus.conf
 
 ## Prometheus variables
-prometheus_image_version: v3.8.0
+prometheus_image_version: v3.8.1
 
 ## Proxmox instance variables
 proxmox_snapshot_vmid: 10191
