@@ -24,7 +24,7 @@ scrutiny_smtp_proton_username: sunny@mail.tinynamoo.com
 scrutiny_smtp_from_email: sunny@mail.tinynamoo.com
 scrutiny_smtp_to_email: admin@tinynamoo.com
 
-scrutiny_ntfy_hostname: push.tinynamoo.com
+scrutiny_ntfy_hostname: '{{ hostvars["ntfy"]["ansible_host"] }}'
 scrutiny_ntfy_topic: Scrutiny
 
 scrutiny_docker_name: scrutiny

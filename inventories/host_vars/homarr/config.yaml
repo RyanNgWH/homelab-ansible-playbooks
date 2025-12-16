@@ -18,7 +18,7 @@ nginx_conf_files:
     path: templates/nginx.homarr.conf
 
 ## Homarr variables
-jellyseerr_hostname: media.tinynamoo.com
+jellyseerr_hostname: '{{ hostvars["jellyseerr"]["ansible_host"] }}'
 
 homarr_docker_name: homarr
 homarr_image_version: v1.45.3

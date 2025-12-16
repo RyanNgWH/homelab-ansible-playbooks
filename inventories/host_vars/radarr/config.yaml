@@ -33,7 +33,7 @@ nginx_conf_files:
 ## Radarr variables
 radarr_4k_hostname: movies4k.tinynamoo.com
 radarr_anime_hostname: anime.tinynamoo.com
-radarr_media_group_name: media
+radarr_media_group_name: "{{ nfs_groups['media'].name }}"
 radarr_media_group_gid: "{{ nfs_groups['media'].gid }}"
 
 radarr_docker_name: radarr
