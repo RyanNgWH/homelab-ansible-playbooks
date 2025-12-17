@@ -26,3 +26,7 @@
     - name: Install and configure Grafana data visualisation server
       ansible.builtin.import_tasks: install.yaml
       tags: install
+
+    - name: Upgrade Grafana data visualisation server
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade

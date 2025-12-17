@@ -1,0 +1,77 @@
+# @format
+
+# Grafana
+# Upgrade the Grafana data visualisation service
+---
+- name: Check if containers requires update
+  become: true
+  block:
+    - name: Get application current and latest versions
+      become: true
+      block:
+        - name: Get latest grafana release from github
+          become: false
+          community.general.github_release:
+            user: grafana
+            repo: grafana
+            action: latest_release
+          delegate_to: localhost
+          register: github_release
+
+        - name: Extract latest containers versions
+          ansible.builtin.set_fact:
+            grafana_latest_version: "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
+
+    - name: Check if applications have updates
+      ansible.builtin.set_fact:
+        grafana_has_updates: "{{ grafana_image_version != grafana_latest_version }}"
+
+    - name: Stop play if applications have no updates
+      ansible.builtin.meta: end_play
+      when: "(not grafana_has_updates)"
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (grafana_image_version | regex_replace('[.]', '-')) }}" # noqa: yaml[line-length]
+    proxmox_snapshot_description: |
+      [Ansible] Working snapshot of grafana {{ grafana_image_version }} before upgrading to {{ grafana_latest_version }}
+  delegate_to: localhost
+
+- name: Upgrade grafana data visualisation service
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Ensure docker compose file is updated
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
+        owner: "{{ grafana_user_name }}"
+        group: "{{ grafana_user_name }}"
+        mode: "0640"
+
+    - name: Update & start docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true

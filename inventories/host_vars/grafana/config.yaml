@@ -17,6 +17,9 @@ nginx_conf_files:
   - filename: grafana.conf
     path: templates/nginx.grafana.conf
 
+## Grafana variables
+grafana_image_version: v12.4.0
+
 ## Proxmox instance variables
 proxmox_snapshot_vmid: 10192
 proxmox_snapshot_retention: 3
