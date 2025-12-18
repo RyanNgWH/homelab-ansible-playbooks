@@ -4,6 +4,7 @@ services:
     image: fireflyiii/core:latest
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/firefly/uploads:/var/www/html/storage/upload
+      - /usr/lib/locale/locale-archive:/usr/lib/locale/locale-archive:z
     env_file: {{ debian_additional_disks["appdata"]["mount_point"] }}/firefly/.env
     ports:
       - 8080:8080
