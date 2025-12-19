@@ -117,7 +117,7 @@ proxmox_ve_storages:
       - rootdir
   local-zfs-postgres:
     storage: local-zfs-postgres
-    blocksize: 8k
+    blocksize: 16k
     content:
       - images
       - rootdir
