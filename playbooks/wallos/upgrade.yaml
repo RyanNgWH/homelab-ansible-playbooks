@@ -6,6 +6,15 @@
 - name: Check if wallos requires update
   become: true
   block:
+    - name: Get current wallos container version
+      ansible.builtin.import_role:
+        name: docker
+        public: false
+      vars:
+        docker_task_list: get_container_image_version
+        docker_container_name: "{{ wallos_docker_name }}"
+        docker_fact_name: wallos
+
     - name: Get latest wallos container release from github
       become: false
       community.general.github_release:
@@ -21,7 +30,7 @@
 
     - name: Fix application docker image versionings in fact
       ansible.builtin.set_fact:
-        wallos_latest_version: "v{{ wallos_latest_version }}"
+        wallos_image_version: "v{{ wallos_image_version}}"
 
     - name: Stop play if wallos has no updates
       ansible.builtin.meta: end_play
@@ -33,7 +42,7 @@
     public: false
   vars:
     proxmox_task_list: snapshot
-    proxmox_snapshot_name: "{{ 'pre_upgrade_uptime_wallos_' + (wallos_latest_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_name: "{{ 'pre_upgrade_wallos_' + (wallos_latest_version | regex_replace('[.]', '-')) }}"
     proxmox_snapshot_description: "[Ansible] Working snapshot of wallos {{ wallos_image_version }} before upgrading to {{ wallos_latest_version }}"
   delegate_to: localhost
 
