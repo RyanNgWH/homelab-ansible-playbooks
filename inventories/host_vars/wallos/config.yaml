@@ -19,7 +19,7 @@ nginx_conf_files:
 
 ## Wallos variables
 wallos_docker_name: wallos
-wallos_image_version: v4.5.0
+wallos_image_version: v4.6.0
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20220
