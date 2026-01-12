@@ -38,6 +38,11 @@ gitea_smtp_port: 587
 gitea_smtp_protocol: smtp+starttls
 gitea_smtp_from_address: sunny@mail.tinynamoo.com
 
+gitea_themes:
+  - catppuccin-latte-green
+  - catppuccin-mocha-green
+  - catppuccin-green-auto
+
 ## Proxmox variables
 proxmox_snapshot_vmid: 20180
 proxmox_snapshot_retention: 3

@@ -65,6 +65,9 @@ services:
 
       # Oauth2 configurations
       GITEA__oauth2__JWT_SECRET: {{ gitea_oauth2_jwt }}
+
+      # Themes
+      GITEA__ui__THEMES: {{ gitea_themes | join(',') }}
     restart: unless-stopped
     networks:
       - gitea

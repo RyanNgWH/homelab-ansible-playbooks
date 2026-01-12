@@ -22,6 +22,15 @@
         group: "{{ nfs_user_name }}"
         mode: "0640"
 
+    - name: Setup custom themes
+      ansible.builtin.copy:
+        src: files/app.theme-{{ item }}.css
+        dest: /srv/appdata/gitea/data/public/assets/css/theme-{{ item }}.css
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0750"
+      loop: "{{ gitea_themes }}"
+
 - name: Setup gitea SSH container passthrough
   become: true
   block:
