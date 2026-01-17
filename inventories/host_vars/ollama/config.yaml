@@ -26,7 +26,7 @@ ollama_user_shell: /usr/sbin/nologin
 ollama_hostname: llm.tinynamoo.com
 
 ollama_docker_name: ollama
-ollama_image_version: v0.13.5
+ollama_image_version: v0.14.2
 
 open_webui_docker_name: open-webui
 open_webui_image_version: v0.7.2
