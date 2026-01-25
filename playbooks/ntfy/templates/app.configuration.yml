@@ -95,6 +95,8 @@ cache-file: "/var/cache/ntfy/cache.db"
 #
 auth-file: "/var/lib/ntfy/user.db"
 auth-default-access: "deny-all"
+auth-access:
+  - "*:up*:wo" # Allow anonymous write access for UnifiedPush prefix
 # auth-startup-queries:
 
 # If set, the X-Forwarded-For header is used to determine the visitor IP address
