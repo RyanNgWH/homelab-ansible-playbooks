@@ -26,6 +26,11 @@ scrape_configs:
     static_configs:
       - targets: ["{{ hostvars['jellyfin'].ansible_host }}"]
 
+  - job_name: "ntfy"
+    scheme: https
+    static_configs:
+      - targets: ["{{ hostvars['ntfy'].ansible_host }}"]
+
   - job_name: "node-exporters"
     scheme: https
     static_configs:

@@ -3,6 +3,15 @@
 # Ntfy
 # Install and configure the Ntfy notifications service.
 ---
+- name: Gather prometheus facts
+  hosts: prometheus
+  tasks:
+    - name: Get prometheus IP address
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
 - name: Install and configure Ntfy notifications service
   hosts: ntfy
 
