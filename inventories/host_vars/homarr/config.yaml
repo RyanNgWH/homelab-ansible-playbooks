@@ -21,7 +21,7 @@ nginx_conf_files:
 jellyseerr_hostname: '{{ hostvars["jellyseerr"]["ansible_host"] }}'
 
 homarr_docker_name: homarr
-homarr_image_version: v1.50.1
+homarr_image_version: v1.51.0
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20030
