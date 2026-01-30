@@ -27,10 +27,22 @@
       ansible.builtin.import_tasks: install.yaml
       tags: install
 
-- name: Deploy and configure the Scrutiny spokes
+- name: Deploy and configure the Scrutiny spokes (Linux)
   hosts: scrutiny_spokes
 
   tasks:
     - name: Deploy and configure the Scrutiny spokes
       ansible.builtin.import_tasks: deploy.yaml
       tags: deploy
+
+- name: Deploy and configure the Scrutiny spokes (Opnsense)
+  hosts: opnsense
+
+  handlers:
+    - name: Import handlers
+      ansible.builtin.import_tasks: handlers/main.yaml
+
+  tasks:
+    - name: Deploy and configure the Scrutiny spokes (Opnsense)
+      ansible.builtin.import_tasks: deploy-opnsense.yaml
+      tags: deploy-opnsense

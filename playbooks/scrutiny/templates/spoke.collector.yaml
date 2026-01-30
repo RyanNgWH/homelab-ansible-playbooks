@@ -1,0 +1,22 @@
+# Commented Scrutiny Configuration File
+#
+# The default location for this file is /opt/scrutiny/config/collector.yaml.
+# In some cases to improve clarity default values are specified,
+# uncommented. Other example values are commented out.
+#
+# When this file is parsed by Scrutiny, all configuration file keys are
+# lowercased automatically. As such, Configuration keys are case-insensitive,
+# and should be lowercase in this file to be consistent with usage.
+#
+
+######################################################################
+# Version
+#
+# version specifies the version of this configuration file schema, not
+# the scrutiny binary. There is only 1 version available at the moment
+version: 1
+
+# The host id is a label used for identifying groups of disks running on the same host
+# Primiarly used for hub/spoke deployments (can be left empty if using all-in-one image).
+host:
+  id: "{{ scrutiny_spoke_collector_host_id }}"

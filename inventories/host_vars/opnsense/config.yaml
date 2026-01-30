@@ -1,0 +1,9 @@
+# @format
+
+## Scrutiny variables
+scrutiny_spoke_project_src: /opt/scrutiny
+scrutiny_spoke_collector_host_id: "[Rosabelle] OPNsense"
+scrutiny_spoke_collector_api_endpoint: https://smart.tinynamoo.com
+
+scrutiny_github_user: Starosdev
+scrutiny_github_repo: scrutiny

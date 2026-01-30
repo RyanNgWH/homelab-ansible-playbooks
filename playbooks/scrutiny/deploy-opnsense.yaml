@@ -1,0 +1,70 @@
+# @format
+
+# Scrutiny
+# Deploy and configure the Scrutiny spokes (Opnsense)
+---
+- name: Setup scrutiny spoke application files
+  become: true
+  block:
+    - name: Ensure scrutiny spoke directories are present
+      ansible.builtin.file:
+        path: "{{ scrutiny_spoke_project_src }}/{{ item }}"
+        owner: root
+        group: wheel
+        mode: "0755"
+        state: directory
+      loop:
+        - bin
+        - config
+
+    - name: Setup scrutiny-spoke configuration file
+      ansible.builtin.template:
+        src: templates/spoke.collector.yaml
+        dest: "{{ scrutiny_spoke_project_src }}/config/collector.yaml"
+        owner: root
+        group: wheel
+        mode: "0644"
+
+- name: Setup scrutiny spoke binaries
+  become: true
+  block:
+    - name: Get latest scrutiny releases from github
+      become: false
+      community.general.github_release:
+        user: "{{ scrutiny_github_user }}"
+        repo: "{{ scrutiny_github_repo }}"
+        action: latest_release
+      delegate_to: localhost
+      register: scrutiny_latest_release
+
+    - name: Fetch scrutiny spoke binaries
+      ansible.builtin.get_url:
+        url: https://github.com/{{ scrutiny_github_user }}/{{ scrutiny_github_repo }}/releases/download/{{ scrutiny_latest_release.tag }}/scrutiny-collector-{{ item }}-freebsd-amd64 # noqa: yaml[line-length]
+        dest: "{{ scrutiny_spoke_project_src }}/bin/scrutiny-collector-{{ item }}-freebsd-amd64"
+        owner: root
+        group: wheel
+        force: true
+        mode: "0755"
+      loop:
+        - metrics
+        - zfs
+
+- name: Setup OPNsense
+  become: true
+  block:
+    - name: Setup scrutiny collector script
+      ansible.builtin.template:
+        src: templates/opnsense.run-scrutiny.sh
+        dest: "{{ scrutiny_spoke_project_src }}/run-scrutiny.sh"
+        owner: root
+        group: wheel
+        mode: "0755"
+
+    - name: Setup scrutiny configd action
+      ansible.builtin.template:
+        src: templates/opnsense.actions_scrutinyCollector.conf
+        dest: /usr/local/opnsense/service/conf/actions.d/actions_scrutinyCollector.conf
+        owner: root
+        group: wheel
+        mode: "0644"
+      notify: Restart configd
