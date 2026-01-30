@@ -13,7 +13,7 @@ services:
 
   scrutiny:
     container_name: {{ scrutiny_docker_name }}
-    image: ghcr.io/analogj/scrutiny:master-web
+    image: ghcr.io/starosdev/scrutiny:latest-web
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/scrutiny/config:/opt/scrutiny/config
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/scrutiny/logs:/opt/scrutiny/logs
