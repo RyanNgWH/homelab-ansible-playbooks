@@ -29,9 +29,26 @@
         group: root
         mode: "0640"
 
+- name: Get latest scrutiny container release from github
+  become: false
+  community.general.github_release:
+    user: Starosdev
+    repo: scrutiny
+    action: latest_release
+  delegate_to: localhost
+
 - name: Start scrutiny spoke docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ scrutiny_spoke_docker_project_name }}"
     project_src: "{{ scrutiny_spoke_project_src }}"
     state: present
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/spoke.VERSION
+    dest: "{{ scrutiny_spoke_project_src }}/VERSION"
+    owner: root
+    group: root
+    mode: "0640"

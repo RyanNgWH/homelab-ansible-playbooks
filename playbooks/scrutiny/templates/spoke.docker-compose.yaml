@@ -1,6 +1,6 @@
 ---
 services:
-  collector:
+  scrutiny-spoke:
     container_name: {{ scrutiny_spoke_docker_name }}
     image: ghcr.io/starosdev/scrutiny:latest-collector
     environment:
@@ -16,7 +16,7 @@ services:
     restart: unless-stopped
 {{ "    network_mode: host" if scrutiny_spoke_host_mode is defined }}
 
-  collector-zfs:
+  scrutiny-spoke-zfs:
     container_name: {{ scrutiny_spoke_docker_name }}-zfs
     image: ghcr.io/starosdev/scrutiny:latest-collector-zfs
     environment:

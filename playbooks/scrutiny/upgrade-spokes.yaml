@@ -1,0 +1,79 @@
+# @format
+
+# Scrutiny
+# Upgrade the Scrutiny spokes
+---
+- name: Get scrutiny spokes current version
+  become: true
+  block:
+    - name: Get scrutiny version file
+      ansible.builtin.slurp:
+        src: "{{ scrutiny_spoke_project_src }}/VERSION"
+      register: version_file
+
+    - name: Extract version information
+      ansible.builtin.set_fact:
+        scrutiny_spoke_image_version: "{{ version_file['content'] | b64decode }}"
+
+- name: Check if scrutiny requires update
+  become: true
+  block:
+    - name: Get latest scrutiny container release from github
+      become: false
+      community.general.github_release:
+        user: Starosdev
+        repo: scrutiny
+        action: latest_release
+      delegate_to: localhost
+      register: scrutiny_github_release
+
+    - name: Extract latest scrutiny container version
+      ansible.builtin.set_fact:
+        scrutiny_latest_version: "{{ scrutiny_github_release.tag }}"
+
+    - name: Stop play if scrutiny has no updates
+      ansible.builtin.meta: end_play
+      when: scrutiny_spoke_image_version == scrutiny_latest_version
+
+- name: Upgrade scrutiny spoke
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Ensure docker compose file is updated
+      ansible.builtin.template:
+        src: templates/spoke.docker-compose.yaml
+        dest: "{{ scrutiny_spoke_project_src }}/docker-compose.yaml"
+        owner: root
+        group: root
+        mode: "0640"
+
+    - name: Update & start scrutiny spoke container
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ scrutiny_spoke_docker_project_name }}"
+        project_src: "{{ scrutiny_spoke_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true
+
+    - name: Update version file
+      ansible.builtin.template:
+        src: templates/spoke.VERSION
+        dest: "{{ scrutiny_spoke_project_src }}/VERSION"
+        owner: root
+        group: root
+        mode: "0640"

@@ -27,6 +27,10 @@
       ansible.builtin.import_tasks: install.yaml
       tags: install
 
+    - name: Upgrade Scrutiny SMART monitoring server
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade
+
 - name: Deploy and configure the Scrutiny spokes (Linux)
   hosts: scrutiny_spokes
 
@@ -34,6 +38,10 @@
     - name: Deploy and configure the Scrutiny spokes
       ansible.builtin.import_tasks: deploy.yaml
       tags: deploy
+
+    - name: Upgrade the Scrutiny spokes
+      ansible.builtin.import_tasks: upgrade-spokes.yaml
+      tags: upgrade
 
 - name: Deploy and configure the Scrutiny spokes (Opnsense)
   hosts: opnsense
@@ -46,3 +54,7 @@
     - name: Deploy and configure the Scrutiny spokes (Opnsense)
       ansible.builtin.import_tasks: deploy-opnsense.yaml
       tags: deploy-opnsense
+
+    - name: Upgrade the Scrutiny spokes (Opnsense)
+      ansible.builtin.import_tasks: upgrade-opnsense.yaml
+      tags: upgrade-opnsense
