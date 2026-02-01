@@ -60,7 +60,7 @@
 
     - name: Update version file
       ansible.builtin.template:
-        src: templates/spoke.VERSION
+        src: templates/app.VERSION
         dest: "{{ scrutiny_spoke_project_src }}/VERSION"
         owner: root
         group: wheel

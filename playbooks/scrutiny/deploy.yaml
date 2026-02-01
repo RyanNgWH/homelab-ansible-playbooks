@@ -36,6 +36,7 @@
     repo: scrutiny
     action: latest_release
   delegate_to: localhost
+  register: scrutiny_github_release
 
 - name: Start scrutiny spoke docker containers
   become: true
@@ -47,7 +48,7 @@
 - name: Set version file
   become: true
   ansible.builtin.template:
-    src: templates/spoke.VERSION
+    src: templates/app.VERSION
     dest: "{{ scrutiny_spoke_project_src }}/VERSION"
     owner: root
     group: root

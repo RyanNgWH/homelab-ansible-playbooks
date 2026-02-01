@@ -6,6 +6,15 @@
 - name: Check if scrutiny requires update
   become: true
   block:
+    - name: Get scrutiny version file
+      ansible.builtin.slurp:
+        src: "{{ docker_project_src }}/VERSION"
+      register: version_file
+
+    - name: Extract version information
+      ansible.builtin.set_fact:
+        scrutiny_image_version: "{{ version_file['content'] | b64decode | trim }}"
+
     - name: Get latest scrutiny container release from github
       become: false
       community.general.github_release:
@@ -59,3 +68,11 @@
         images: true
         networks: true
         volumes: true
+
+    - name: Update version file
+      ansible.builtin.template:
+        src: templates/app.VERSION
+        dest: "{{ docker_project_src }}/VERSION"
+        owner: root
+        group: root
+        mode: "0640"

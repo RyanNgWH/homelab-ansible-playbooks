@@ -28,7 +28,6 @@ scrutiny_ntfy_hostname: '{{ hostvars["ntfy"]["ansible_host"] }}'
 scrutiny_ntfy_topic: Scrutiny
 
 scrutiny_docker_name: scrutiny
-scrutiny_image_version: v1.19.1
 
 ## Docker variables
 docker_project_name: scrutiny

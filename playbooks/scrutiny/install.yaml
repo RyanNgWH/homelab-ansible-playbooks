@@ -67,9 +67,27 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest scrutiny container release from github
+  become: false
+  community.general.github_release:
+    user: Starosdev
+    repo: scrutiny
+    action: latest_release
+  delegate_to: localhost
+  register: scrutiny_github_release
+
 - name: Start scrutiny docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: root
+    group: root
+    mode: "0640"
