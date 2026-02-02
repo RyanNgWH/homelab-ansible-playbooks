@@ -147,9 +147,34 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest versions from github
+  ansible.builtin.include_tasks: get-versions.yaml
+  vars:
+    versions_list:
+      - latest
+  loop:
+    - name: ollama
+      docker_user: ollama
+      docker_repo: ollama
+    - name: open_webui
+      docker_user: open-webui
+      docker_repo: open-webui
+
 - name: Start ollama docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+
+- name: Set version files
+  become: true
+  ansible.builtin.template:
+    src: templates/app.{{ item }}.VERSION
+    dest: "{{ docker_project_src }}/{{ item }}.VERSION"
+    owner: root
+    group: root
+    mode: "0640"
+  loop:
+    - ollama
+    - open-webui

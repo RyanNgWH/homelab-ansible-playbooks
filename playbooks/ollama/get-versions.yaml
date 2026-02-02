@@ -3,8 +3,22 @@
 # Ollama
 # Get current and latest versions of the Ollama applications
 ---
-- name: Get application current and latest versions
+- name: Get application latest versions
   become: true
+  when: "'current' in versions_list"
+  block:
+    - name: Get current version file
+      ansible.builtin.slurp:
+        src: "{{ item.version_file_location }}"
+      register: version_file
+
+    - name: Extract version information
+      ansible.builtin.set_fact:
+        "{{ item.name }}_image_version": "{{ version_file['content'] | b64decode | trim }}"
+
+- name: Get application latest versions
+  become: true
+  when: "'latest' in versions_list"
   block:
     - name: Get latest containers releases from github
       become: false

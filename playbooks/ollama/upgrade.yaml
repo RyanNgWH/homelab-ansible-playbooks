@@ -6,15 +6,21 @@
 - name: Check if containers requires update
   become: true
   block:
-    - name: Get latest containers releases from github
+    - name: Get container versions
       ansible.builtin.include_tasks: get-versions.yaml
+      vars:
+        versions_list:
+          - current
+          - latest
       loop:
         - name: ollama
           docker_user: ollama
           docker_repo: ollama
+          version_file_location: "{{ docker_project_src }}/ollama.VERSION"
         - name: open_webui
           docker_user: open-webui
           docker_repo: open-webui
+          version_file_location: "{{ docker_project_src }}/open-webui.VERSION"
 
 - name: Check if applications have updates
   ansible.builtin.set_fact:
@@ -86,3 +92,14 @@
         images: true
         networks: true
         volumes: true
+
+    - name: Update version files
+      ansible.builtin.template:
+        src: templates/app.{{ item }}.VERSION
+        dest: "{{ docker_project_src }}/{{ item }}.VERSION"
+        owner: root
+        group: root
+        mode: "0640"
+      loop:
+        - ollama
+        - open-webui
