@@ -95,11 +95,14 @@
 
     - name: Update version files
       ansible.builtin.template:
-        src: templates/app.{{ item }}.VERSION
-        dest: "{{ docker_project_src }}/{{ item }}.VERSION"
+        src: templates/app.{{ item.name }}.VERSION
+        dest: "{{ docker_project_src }}/{{ item.name }}.VERSION"
         owner: root
         group: root
         mode: "0640"
       loop:
-        - ollama
-        - open-webui
+        - name: ollama
+          condition: "{{ ollama_has_updates }}"
+        - name: open-webui
+          condition: "{{ open_webui_has_updates }}"
+      when: item.condition
