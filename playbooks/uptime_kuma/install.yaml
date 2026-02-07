@@ -51,9 +51,31 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest scrutiny container release from github
+  become: false
+  community.general.github_release:
+    user: louislam
+    repo: uptime-kuma
+    action: latest_release
+  delegate_to: localhost
+  register: kuma_github_release
+
+- name: Fix application docker image versionings in fact
+  ansible.builtin.set_fact:
+    kuma_latest_version: "v{{ kuma_latest_version }}"
+
 - name: Start uptime kuma docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: "{{ uptime_kuma_user_name }}"
+    group: "{{ uptime_kuma_user_name }}"
+    mode: "0640"
