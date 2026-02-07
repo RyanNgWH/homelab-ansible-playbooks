@@ -172,8 +172,8 @@
   ansible.builtin.template:
     src: templates/app.{{ item }}.VERSION
     dest: "{{ docker_project_src }}/{{ item }}.VERSION"
-    owner: root
-    group: root
+    owner: "{{ ollama_user_name }}"
+    group: "{{ ollama_user_name }}"
     mode: "0640"
   loop:
     - ollama
