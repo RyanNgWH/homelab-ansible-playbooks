@@ -6,6 +6,15 @@
 - name: Check if homarr requires update
   become: true
   block:
+    - name: Get homarr version file
+      ansible.builtin.slurp:
+        src: "{{ docker_project_src }}/VERSION"
+      register: version_file
+
+    - name: Extract version information
+      ansible.builtin.set_fact:
+        homarr_image_version: "{{ version_file['content'] | b64decode | trim }}"
+
     - name: Get latest homarr container release from github
       become: false
       community.general.github_release:
@@ -67,3 +76,11 @@
         images: true
         networks: true
         volumes: true
+
+    - name: Update version file
+      ansible.builtin.template:
+        src: templates/app.VERSION
+        dest: "{{ docker_project_src }}/VERSION"
+        owner: "{{ homarr_user_name }}"
+        group: "{{ homarr_user_name }}"
+        mode: "0640"

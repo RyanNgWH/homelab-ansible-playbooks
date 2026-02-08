@@ -51,9 +51,30 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest homarr container release from github
+  community.general.github_release:
+    user: homarr-labs
+    repo: homarr
+    action: latest_release
+  delegate_to: localhost
+  register: homarr_github_release
+
+- name: Extract latest homarr container version
+  ansible.builtin.set_fact:
+    homarr_latest_version: "{{ homarr_github_release.tag }}"
+
 - name: Start homarr docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: "{{ homarr_user_name }}"
+    group: "{{ homarr_user_name }}"
+    mode: "0640"
