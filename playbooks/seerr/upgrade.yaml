@@ -1,0 +1,86 @@
+# @format
+
+# Seerr
+# Upgrade the Seerr media management server
+---
+- name: Check if seerr requires update
+  become: true
+  block:
+    - name: Get seerr version file
+      ansible.builtin.slurp:
+        src: "{{ docker_project_src }}/VERSION"
+      register: version_file
+
+    - name: Extract version information
+      ansible.builtin.set_fact:
+        seerr_image_version: "{{ version_file['content'] | b64decode | trim }}"
+
+    - name: Get latest seerr container release from github
+      become: false
+      community.general.github_release:
+        user: seerr-team
+        repo: seerr
+        action: latest_release
+      delegate_to: localhost
+      register: seerr_github_release
+
+    - name: Extract latest seerr container version
+      ansible.builtin.set_fact:
+        seerr_latest_version: "{{ seerr_github_release.tag }}"
+
+    - name: Stop play if seerr has no updates
+      ansible.builtin.meta: end_play
+      when: seerr_image_version == seerr_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (seerr_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of seerr {{ seerr_image_version }} before upgrading to {{ seerr_latest_version }}"
+  delegate_to: localhost
+
+- name: Upgrade the Seerr media management server
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Ensure docker compose file is updated
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
+        owner: "{{ seerr_user_name }}"
+        group: "{{ seerr_user_name }}"
+        mode: "0640"
+
+    - name: Update & start Seerr docker containers
+      become: true
+      community.docker.docker_compose_v2:
+        project_name: "{{ docker_project_name }}"
+        project_src: "{{ docker_project_src }}"
+        remove_orphans: true
+        pull: always
+        state: present
+
+    - name: Prune unused docker objects
+      community.docker.docker_prune:
+        builder_cache_all: true
+        containers: true
+        images: true
+        networks: true
+        volumes: true
+
+    - name: Update version file
+      ansible.builtin.template:
+        src: templates/app.VERSION
+        dest: "{{ docker_project_src }}/VERSION"
+        owner: "{{ seerr_user_name }}"
+        group: "{{ seerr_user_name }}"
+        mode: "0640"

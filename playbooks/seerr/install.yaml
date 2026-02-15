@@ -1,0 +1,72 @@
+# @format
+
+# Seerr
+# Install and configure the Seerr media managment server.
+---
+- name: Ensure seerr user is present
+  become: true
+  block:
+    - name: Ensure seerr group is present
+      ansible.builtin.group:
+        name: "{{ seerr_user_name }}"
+        gid: "{{ seerr_user_id }}"
+        system: true
+        state: present
+
+    - name: Ensure seerr user is present
+      ansible.builtin.user:
+        name: "{{ seerr_user_name }}"
+        group: "{{ seerr_user_name }}"
+        password: "*"
+        shell: "{{ seerr_user_shell }}"
+        create_home: false
+        uid: "{{ seerr_user_id }}"
+        state: present
+
+- name: Setup Seerr application files
+  become: true
+  block:
+    - name: Ensure application directory is present
+      ansible.builtin.file:
+        path: "{{ docker_project_src }}"
+        owner: "{{ seerr_user_name }}"
+        group: "{{ seerr_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Setup docker-compose file
+      ansible.builtin.template:
+        src: templates/app.docker-compose.yaml
+        dest: "{{ docker_project_src }}/docker-compose.yaml"
+        owner: "{{ seerr_user_name }}"
+        group: "{{ seerr_user_name }}"
+        mode: "0640"
+
+- name: Install and configure nginx
+  vars:
+    debian_common_task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ ansible_host }}"
+  ansible.builtin.include_role:
+    name: debian-common
+
+- name: Get latest seerr container release from github
+  become: false
+  community.general.github_release:
+    user: seerr-team
+    repo: seerr
+    action: latest_release
+  delegate_to: localhost
+  register: seerr_github_release
+
+- name: Extract latest seerr container version
+  ansible.builtin.set_fact:
+    seerr_latest_version: "{{ seerr_github_release.tag }}"
+
+- name: Start seerr docker containers
+  become: true
+  community.docker.docker_compose_v2:
+    project_name: "{{ docker_project_name }}"
+    project_src: "{{ docker_project_src }}"
+    state: present

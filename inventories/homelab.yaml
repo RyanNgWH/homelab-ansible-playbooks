@@ -25,7 +25,7 @@ all:
       ansible_host: tools.tinynamoo.com
     jellyfin:
       ansible_host: filme.tinynamoo.com
-    jellyseerr:
+    seerr:
       ansible_host: media.tinynamoo.com
     karakeep:
       ansible_host: keep.tinynamoo.com
@@ -95,7 +95,7 @@ debian:
     immich:
     it_tools:
     jellyfin:
-    jellyseerr:
+    seerr:
     karakeep:
     mat2_web:
     miniflux:
@@ -167,7 +167,7 @@ sierra_proxmox:
     immich:
     it_tools:
     jellyfin:
-    jellyseerr:
+    seerr:
     karakeep:
     mat2_web:
     miniflux:

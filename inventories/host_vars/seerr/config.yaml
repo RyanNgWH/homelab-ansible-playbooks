@@ -8,18 +8,17 @@ debian_datetime_ntp_server: 172.28.20.1
 debian_user_name: juliette
 debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAIVlf7iMs/iJm/+rAS3uH5jBaIdjbztb0+17AL2ZwHh juliette@media.tinynamoo.com"
 
-jellyseerr_user_name: jellyseerr
-jellyseerr_user_id: 285
-jellyseerr_user_shell: /usr/sbin/nologin
+seerr_user_name: seerr
+seerr_user_id: 285
+seerr_user_shell: /usr/sbin/nologin
 
 ## NGINX variables
 nginx_conf_files:
-  - filename: jellyseerr.conf
-    path: templates/nginx.jellyseerr.conf
+  - filename: seerr.conf
+    path: templates/nginx.seerr.conf
 
-## Jellyseerr variables
-jellyseerr_docker_name: jellyseerr
-jellyseerr_image_version: v2.7.3
+## Seerr variables
+seerr_docker_name: seerr
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 20116
@@ -27,5 +26,5 @@ proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
 
 ## Docker variables
-docker_project_name: jellyseerr
-docker_project_src: /opt/jellyseerr
+docker_project_name: seerr
+docker_project_src: /opt/seerr

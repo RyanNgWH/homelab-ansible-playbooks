@@ -1,10 +1,10 @@
 # @format
 
-# Jellyseerr
-# Configure & manage Jellyseerr media management server.
+# Seerr
+# Configure & manage Seerr media management server.
 ---
-- name: Configure & manage Jellyseerr media management server
-  hosts: jellyseerr
+- name: Configure & manage Seerr media management server
+  hosts: seerr
 
   pre_tasks:
     - name: Gather facts
@@ -23,10 +23,10 @@
           - docker
 
   tasks:
-    - name: Install and configure the Jellyseerr media management server
+    - name: Install and configure the Seerr media management server
       ansible.builtin.import_tasks: install.yaml
       tags: install
 
-    - name: Upgrade the Jellyseerr media management server
+    - name: Upgrade the Seerr media management server
       ansible.builtin.import_tasks: upgrade.yaml
       tags: upgrade
