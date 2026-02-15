@@ -96,9 +96,31 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest ntfy container release from github
+  become: false
+  community.general.github_release:
+    user: binwiederhier
+    repo: ntfy
+    action: latest_release
+  delegate_to: localhost
+  register: ntfy_github_release
+
+- name: Extract latest ntfy container version
+  ansible.builtin.set_fact:
+    ntfy_latest_version: "{{ ntfy_github_release.tag }}"
+
 - name: Start ntfy docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: "{{ ntfy_user_name }}"
+    group: "{{ ntfy_user_name }}"
+    mode: "0640"

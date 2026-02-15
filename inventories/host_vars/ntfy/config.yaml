@@ -22,7 +22,6 @@ ntfy_smtp_server: smtp.tinynamoo.com
 ntfy_smtp_from_email: sunny@mail.tinynamoo.com
 
 ntfy_docker_name: ntfy
-ntfy_image_version: v2.14.0
 
 ## Proxmox instance variables
 proxmox_snapshot_vmid: 14160
