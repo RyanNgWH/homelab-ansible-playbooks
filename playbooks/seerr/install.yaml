@@ -51,19 +51,6 @@
   ansible.builtin.include_role:
     name: debian-common
 
-- name: Get latest seerr container release from github
-  become: false
-  community.general.github_release:
-    user: seerr-team
-    repo: seerr
-    action: latest_release
-  delegate_to: localhost
-  register: seerr_github_release
-
-- name: Extract latest seerr container version
-  ansible.builtin.set_fact:
-    seerr_latest_version: "{{ seerr_github_release.tag }}"
-
 - name: Start seerr docker containers
   become: true
   community.docker.docker_compose_v2:
