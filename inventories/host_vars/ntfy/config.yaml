@@ -25,7 +25,7 @@ ntfy_docker_name: ntfy
 ntfy_image_version: v2.14.0
 
 ## Proxmox instance variables
-proxmox_snapshot_vmid: 10160
+proxmox_snapshot_vmid: 14160
 proxmox_snapshot_retention: 3
 proxmox_snapshot_include_ram: false
 
