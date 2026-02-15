@@ -51,9 +51,31 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest miniflux container release from github
+  become: false
+  community.general.github_release:
+    user: miniflux
+    repo: v2
+    action: latest_release
+  delegate_to: localhost
+  register: miniflux_github_release
+
+- name: Extract latest miniflux container version
+  ansible.builtin.set_fact:
+    miniflux_latest_version: "{{ miniflux_github_release.tag }}"
+
 - name: Start miniflux docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: "{{ miniflux_user_name }}"
+    group: "{{ miniflux_user_name }}"
+    mode: "0640"
