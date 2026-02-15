@@ -18,8 +18,6 @@ nginx_conf_files:
     path: templates/nginx.homarr.conf
 
 ## Homarr variables
-jellyseerr_hostname: '{{ hostvars["jellyseerr"]["ansible_host"] }}'
-
 homarr_docker_name: homarr
 
 ## Proxmox variables
