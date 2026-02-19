@@ -3,27 +3,47 @@
 # Jellyfin
 # Get current and latest versions of the jellyfin/jellystat applications
 ---
-- name: Get application current and latest versions
+- name: Get jellyfin current container version
+  become: true
+  ansible.builtin.import_role:
+    name: docker
+    public: false
+  vars:
+    docker_task_list: get_container_image_version
+    docker_container_name: "{{ jellyfin_docker_name }}"
+    docker_fact_name: jellyfin
+
+- name: Get jellystat current version
   become: true
   block:
-    - name: Get current containers version
-      ansible.builtin.import_role:
-        name: docker
-        public: false
-      vars:
-        docker_task_list: get_container_image_version
-        docker_container_name: "{{ item.docker_name }}"
-        docker_fact_name: "{{ item.name }}"
+    - name: Get current version file
+      ansible.builtin.slurp:
+        src: "{{ docker_project_src }}/jellystat.VERSION"
+      register: version_file
 
-    - name: Get latest containers releases from github
-      become: false
-      community.general.github_release:
-        user: "{{ item.docker_user }}"
-        repo: "{{ item.docker_repo }}"
-        action: latest_release
-      delegate_to: localhost
-      register: github_release
-
-    - name: Extract latest containers versions
+    - name: Extract version information
       ansible.builtin.set_fact:
-        "{{ item.name }}_latest_version": "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
+        jellystat_image_version: "{{ version_file['content'] | b64decode | trim }}"
+
+- name: Get latest jellyfin release from github
+  become: false
+  community.general.github_release:
+    user: jellyfin
+    repo: jellyfin
+    action: latest_release
+  delegate_to: localhost
+  register: jellyfin_github_release
+
+- name: Get latest jellystat release from github
+  become: false
+  community.general.github_release:
+    user: CyferShepard
+    repo: Jellystat
+    action: latest_release
+  delegate_to: localhost
+  register: jellystat_github_release
+
+- name: Extract latest containers versions
+  ansible.builtin.set_fact:
+    jellyfin_latest_version: "{{ jellyfin_github_release.tag }}" # noqa: var-naming[no-jinja]
+    jellystat_latest_version: "{{ jellystat_github_release.tag | lower }}"
