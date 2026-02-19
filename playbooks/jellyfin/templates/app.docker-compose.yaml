@@ -30,6 +30,12 @@ services:
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/jellystat/backup-data:/app/backend/backup-data
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/jellystat/npm:/.npm
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:3000/auth/isConfigured || exit 1
+      interval: 60s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
     depends_on:
@@ -38,13 +44,13 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:16
+    image: postgres:18
     environment:
       POSTGRES_DB: jellystat
       POSTGRES_USER: jellystat
       POSTGRES_PASSWORD: {{ jellystat_postgres_pass }}
     volumes:
-    - {{ debian_additional_disks["postgres"]["mount_point"] }}/jellystat/db:/var/lib/postgresql/data
+    - {{ debian_additional_disks["postgres"]["mount_point"] }}/jellystat/db:/var/lib/postgresql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "jellystat"]
       interval: 2s
