@@ -3,30 +3,48 @@
 # Vikunja
 # Upgrade Vikunja tasks mangement server
 ---
-# - name: Check if vikunja requires update
-#   become: true
-#   block:
-#     - name: Get current vikunja container version
-#       ansible.builtin.import_role:
-#         name: docker
-#         public: false
-#       vars:
-#         docker_task_list: get_container_image_version
-#         docker_container_name: "{{ vikunja_docker_name }}"
-#         docker_fact_name: vikunja
+- name: Check if vikunja requires update
+  become: true
+  block:
+    - name: Get current vikunja container version
+      ansible.builtin.import_role:
+        name: docker
+        public: false
+      vars:
+        docker_task_list: get_container_image_version
+        docker_container_name: "{{ vikunja_docker_name }}"
+        docker_fact_name: vikunja
 
-#     - name: Get all vikunja releases from gitea
-#       ansible.builtin.uri:
-#         url: https://kolaente.dev/api/v1/repos/vikunja/vikunja/releases
-#       register: vikunja_releases
+    - name: Fix application docker image versionings in fact
+      ansible.builtin.set_fact:
+        vikunja_image_version: "v{{ vikunja_image_version }}"
 
-#     - name: Extract latest vikunja version
-#       ansible.builtin.set_fact:
-#         vikunja_latest_version: "{{ vikunja_releases.json[0].tag_name }}"
+    - name: Get latest vikunja container release from github
+      become: false
+      community.general.github_release:
+        user: go-vikunja
+        repo: vikunja
+        action: latest_release
+      delegate_to: localhost
+      register: vikunja_github_release
 
-#     - name: Stop play if sonarr has no updates
-#       ansible.builtin.meta: end_play
-#       when: sonarr_image_version == sonarr_latest_version
+    - name: Extract latest vikunja container version
+      ansible.builtin.set_fact:
+        vikunja_latest_version: "{{ vikunja_github_release.tag }}"
+
+    - name: Stop play if vikunja has no updates
+      ansible.builtin.meta: end_play
+      when: vikunja_image_version == vikunja_latest_version
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (vikunja_image_version | regex_replace('[.]', '-')) }}"
+    proxmox_snapshot_description: "[Ansible] Working snapshot of vikunja {{ vikunja_image_version }} before upgrading to {{ vikunja_latest_version }}"
+  delegate_to: localhost
 
 - name: Upgrade Vikunja tasks management server
   become: true
