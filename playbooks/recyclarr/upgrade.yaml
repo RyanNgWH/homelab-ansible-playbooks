@@ -53,6 +53,14 @@
         autoremove: true
         purge: true
 
+    - name: Ensure recyclarr configuration is updated
+      ansible.builtin.template:
+        src: ../{{ inventory_hostname }}/templates/app.recyclarr.yaml
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/recyclarr/config/recyclarr.yaml'
+        owner: "{{ nfs_user_name }}"
+        group: "media"
+        mode: "0640"
+
     - name: Update & start recyclarr docker container
       become: true
       community.docker.docker_compose_v2:
