@@ -59,9 +59,33 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest karakeep container release from github
+  become: false
+  community.general.github_release:
+    user: karakeep-app
+    repo: karakeep
+    action: latest_release
+  delegate_to: localhost
+  register: karakeep_github_release
+
+- name: Extract latest scrutiny container version
+  ansible.builtin.set_fact:
+    scrutiny_latest_version: "{{ scrutiny_github_release.tag }}"
+
 - name: Start karakeep docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+  register: docker_containers_started
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: "{{ karakeep_user_name }}"
+    group: "{{ karakeep_user_name }}"
+    mode: "0640"
+  when: docker_containers_started.changed

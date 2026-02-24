@@ -6,21 +6,27 @@
 - name: Check if containers requires update
   become: true
   block:
-    - name: Get application current and latest versions
-      become: true
-      block:
-        - name: Get latest karakeep release from github
-          become: false
-          community.general.github_release:
-            user: karakeep-app
-            repo: karakeep
-            action: latest_release
-          delegate_to: localhost
-          register: github_release
+    - name: Get karakeep version file
+      ansible.builtin.slurp:
+        src: "{{ docker_project_src }}/VERSION"
+      register: version_file
 
-        - name: Extract latest containers versions
-          ansible.builtin.set_fact:
-            karakeep_latest_version: "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
+    - name: Extract version information
+      ansible.builtin.set_fact:
+        karakeep_image_version: "{{ version_file['content'] | b64decode | trim }}"
+
+    - name: Get latest karakeep release from github
+      become: false
+      community.general.github_release:
+        user: karakeep-app
+        repo: karakeep
+        action: latest_release
+      delegate_to: localhost
+      register: github_release
+
+    - name: Extract latest containers versions
+      ansible.builtin.set_fact:
+        karakeep_latest_version: "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
 
     - name: Check if applications have updates
       ansible.builtin.set_fact:
@@ -59,6 +65,14 @@
         group: "{{ karakeep_user_name }}"
         mode: "0640"
 
+    - name: Ensure karakeep configuration file is updated
+      ansible.builtin.template:
+        src: templates/app.configuration.env
+        dest: '{{ debian_additional_disks["appdata"]["mount_point"] }}/karakeep/.env'
+        owner: "{{ karakeep_user_name }}"
+        group: "{{ karakeep_user_name }}"
+        mode: "0640"
+
     - name: Update & start docker containers
       become: true
       community.docker.docker_compose_v2:
@@ -67,6 +81,7 @@
         remove_orphans: true
         pull: always
         state: present
+      register: docker_containers_updated
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
@@ -75,3 +90,12 @@
         images: true
         networks: true
         volumes: true
+
+    - name: Update version file
+      ansible.builtin.template:
+        src: templates/app.VERSION
+        dest: "{{ docker_project_src }}/VERSION"
+        owner: root
+        group: root
+        mode: "0640"
+      when: docker_containers_updated.changed

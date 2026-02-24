@@ -32,10 +32,7 @@ karakeep_smtp_user: sunny@mail.tinynamoo.com
 karakeep_smtp_from: sunny@mail.tinynamoo.com
 
 karakeep_docker_name: karakeep
-karakeep_image_version: v0.30.0
-
 browserless_docker_name: browserless
-
 meilisearch_docker_name: meilisearch
 
 ## Proxmox instance variables
