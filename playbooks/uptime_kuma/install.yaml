@@ -70,6 +70,7 @@
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+  register: docker_containers_started
 
 - name: Set version file
   become: true
@@ -79,3 +80,4 @@
     owner: "{{ uptime_kuma_user_name }}"
     group: "{{ uptime_kuma_user_name }}"
     mode: "0640"
+  when: docker_containers_started.changed

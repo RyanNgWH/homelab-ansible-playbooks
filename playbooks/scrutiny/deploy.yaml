@@ -44,6 +44,7 @@
     project_name: "{{ scrutiny_spoke_docker_project_name }}"
     project_src: "{{ scrutiny_spoke_project_src }}"
     state: present
+  register: docker_containers_started
 
 - name: Set version file
   become: true
@@ -53,3 +54,4 @@
     owner: root
     group: root
     mode: "0640"
+  when: docker_containers_started.changed
