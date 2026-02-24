@@ -60,6 +60,7 @@
         remove_orphans: true
         pull: always
         state: present
+      register: docker_containers_updated
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
@@ -76,3 +77,4 @@
         owner: "{{ miniflux_user_name }}"
         group: "{{ miniflux_user_name }}"
         mode: "0640"
+      when: docker_containers_updated.changed

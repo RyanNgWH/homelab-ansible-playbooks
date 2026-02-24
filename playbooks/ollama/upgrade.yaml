@@ -84,6 +84,7 @@
             - postgres
           condition: "{{ open_webui_has_updates }}"
       when: item.condition
+      register: docker_containers_updated
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
@@ -105,4 +106,4 @@
           condition: "{{ ollama_has_updates }}"
         - name: open-webui
           condition: "{{ open_webui_has_updates }}"
-      when: item.condition
+      when: item.condition and docker_containers_updated.changed
