@@ -31,12 +31,9 @@
       ansible.builtin.set_fact:
         scrutiny_latest_version: "{{ scrutiny_github_release.tag }}"
 
-    - name: Stop play if scrutiny has no updates
-      ansible.builtin.meta: end_play
-      when: scrutiny_spoke_image_version == scrutiny_latest_version
-
 - name: Upgrade scrutiny spoke
   become: true
+  when: scrutiny_spoke_image_version != scrutiny_latest_version
   block:
     - name: Update apt cache, upgrade packages and remove unused dependencies
       ansible.builtin.apt:
