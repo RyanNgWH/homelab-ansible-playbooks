@@ -95,7 +95,7 @@
       ansible.builtin.template:
         src: templates/app.VERSION
         dest: "{{ docker_project_src }}/VERSION"
-        owner: root
-        group: root
+        owner: "{{ karakeep_user_name }}"
+        group: "{{ karakeep_user_name }}"
         mode: "0640"
       when: docker_containers_updated.changed
