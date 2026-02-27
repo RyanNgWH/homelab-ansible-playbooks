@@ -53,6 +53,14 @@ web:
     # tls:
     #   insecure_skip_verify: false
 
+# Uptime Kuma push monitor (optional)
+# When configured here, this URL takes precedence over the Settings UI value.
+# The monitor itself is enabled/disabled via the Settings API or UI.
+# Env: SCRUTINY_WEB_UPTIME_KUMA_PUSH_URL
+#
+uptime_kuma:
+  push_url: "https://{{ hostvars["uptime_kuma"]["ansible_host"] }}/api/push/{{ scrutiny_uptime_kuma_token }}"
+
 log:
   file: '{{ docker_project_src }}/logs/scrutiny.log' #absolute or relative paths allowed, eg. web.log
   level: INFO
