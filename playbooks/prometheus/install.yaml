@@ -60,6 +60,19 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest prometheus container release from github
+  become: false
+  community.general.github_release:
+    user: prometheus
+    repo: prometheus
+    action: latest_release
+  delegate_to: localhost
+  register: prometheus_github_release
+
+- name: Extract latest prometheus container version
+  ansible.builtin.set_fact:
+    prometheus_latest_version: "{{ prometheus_github_release.tag }}"
+
 - name: Start prometheus docker containers
   become: true
   community.docker.docker_compose_v2:
@@ -75,3 +88,13 @@
     project_src: "{{ docker_project_src }}"
     state: restarted
   when: prometheus_config_file.changed and not docker_containers_started.changed
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: "{{ prometheus_user_name }}"
+    group: "{{ prometheus_user_name }}"
+    mode: "0640"
+  when: docker_containers_started.changed
