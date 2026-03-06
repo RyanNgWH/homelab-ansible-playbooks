@@ -55,7 +55,7 @@ services:
 
   recyclarr:
     container_name: {{ recyclarr_docker_name }}
-    image: ghcr.io/recyclarr/recyclarr:latest
+    image: ghcr.io/recyclarr/recyclarr:8
     environment:
       TZ: {{ debian_datetime_timezone }}
     volumes:
