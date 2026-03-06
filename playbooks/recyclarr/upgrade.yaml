@@ -61,6 +61,14 @@
         group: "media"
         mode: "0640"
 
+    - name: Ensure docker compose configuration is updated
+      ansible.builtin.template:
+        src: ../{{ inventory_hostname }}/templates/app.docker-compose.yaml
+        dest: /opt/{{ inventory_hostname }}/docker-compose.yaml
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+
     - name: Update & start recyclarr docker container
       become: true
       community.docker.docker_compose_v2:
