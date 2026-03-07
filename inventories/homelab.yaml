@@ -29,8 +29,6 @@ all:
       ansible_host: media.tinynamoo.com
     karakeep:
       ansible_host: keep.tinynamoo.com
-    mat2_web:
-      ansible_host: clean.tinynamoo.com
     miniflux:
       ansible_host: feeds.tinynamoo.com
     nas:
@@ -57,6 +55,9 @@ all:
       ansible_host: download.tinynamoo.com
     radarr:
       ansible_host: movies.tinynamoo.com
+    rocketpool:
+      ansible_host: rocketpool.tinynamoo.com
+      ansible_common_remote_group: ansible
     scrutiny:
       ansible_host: smart.tinynamoo.com
     send:
@@ -97,7 +98,6 @@ debian:
     jellyfin:
     seerr:
     karakeep:
-    mat2_web:
     miniflux:
     nas:
     nextcloud:
@@ -110,6 +110,7 @@ debian:
     prowlarr:
     qbittorrent:
     radarr:
+    rocketpool:
     scrutiny:
     send:
     sonarr:
@@ -169,7 +170,6 @@ sierra_proxmox:
     jellyfin:
     seerr:
     karakeep:
-    mat2_web:
     miniflux:
     nextcloud:
     nas:
@@ -182,6 +182,7 @@ sierra_proxmox:
     prowlarr:
     qbittorrent:
     radarr:
+    rocketpool:
     scrutiny:
     send:
     sonarr:
