@@ -17,6 +17,10 @@ nginx_conf_files:
 # Refer to https://www.kernel.org/doc/html/latest/admin-guide/pm/cpufreq.html#generic-scaling-governors for more information
 cpufreq_governor: ondemand
 
+# Sizing determined using the guideline provided at https://klarasystems.com/articles/arc-and-l2arc-sizing-for-proxmox/
+host_zfs_arc_min: 20043180715 # 1/3 of max value
+host_zfs_arc_max: 60129542144 # 56 GiB - 25% of total memory
+
 proxmox_ve_groups:
   - name: admins
     comment: "[Proxmox] Proxmox administrators group"

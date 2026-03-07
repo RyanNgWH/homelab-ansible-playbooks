@@ -134,6 +134,30 @@
     user: root
     state: present
 
+- name: Setup ZFS ARC size
+  become: true
+  block:
+    - name: Setup ZFS modprobe file
+      ansible.builtin.template:
+        src: templates/host.zfs-modprobe.conf
+        dest: /etc/modprobe.d/zfs.conf
+        owner: root
+        group: root
+        mode: "0644"
+      register: zfs_modprobe_updated
+
+    - name: Update initramfs
+      ansible.builtin.command: update-initramfs -u -k all
+      register: update_initramfs
+      changed_when: update_initramfs.rc == 0
+      failed_when: update_initramfs.rc != 0
+      when: zfs_modprobe_updated.changed
+
+    - name: Reboot system
+      become: true
+      ansible.builtin.reboot:
+      when: update_initramfs.changed
+
 - name: Setup networking
   become: true
   block:
