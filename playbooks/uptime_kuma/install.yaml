@@ -51,7 +51,7 @@
   ansible.builtin.include_role:
     name: debian-common
 
-- name: Get latest scrutiny container release from github
+- name: Get latest uptime-kuma container release from github
   become: false
   community.general.github_release:
     user: louislam
