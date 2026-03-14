@@ -3,7 +3,7 @@ services:
     container_name: {{ docker_project_name }}
     image: grafana/grafana:main
     environment:
-      GF_DEFAULT_INSTANCE_NAME: {{ ansible_hostname }}
+      GF_DEFAULT_INSTANCE_NAME: {{ ansible_facts["hostname"] }}
 
       GF_SERVER_PROTOCOL: http
       GF_SERVER_DOMAIN: {{ ansible_host }}

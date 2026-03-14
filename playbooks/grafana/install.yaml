@@ -51,9 +51,33 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest grafana container release from github
+  become: false
+  community.general.github_release:
+    user: grafana
+    repo: grafana
+    action: latest_release
+  delegate_to: localhost
+  register: grafana_github_release
+
+- name: Fix application docker image versionings in fact
+  ansible.builtin.set_fact:
+    grafana_latest_version: "v{{ grafana_latest_version }}"
+
 - name: Start grafana docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+  register: docker_containers_started
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: "{{ grafana_user_name }}"
+    group: "{{ grafana_user_name }}"
+    mode: "0640"
+  when: docker_containers_started.changed
