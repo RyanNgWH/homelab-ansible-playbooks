@@ -1,0 +1,12 @@
+# @format
+
+# Debian
+# Upgrade Debian servers
+
+- name: Upgrade packages & purge unused dependencies
+  become: true
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: dist
+    autoremove: true
+    purge: true
