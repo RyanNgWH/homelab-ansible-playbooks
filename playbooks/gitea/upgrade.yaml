@@ -6,6 +6,15 @@
 - name: Check if gitea requires update
   become: true
   block:
+    - name: Get current gitea server version
+      ansible.builtin.import_role:
+        name: docker
+        public: false
+      vars:
+        docker_task_list: get_container_image_version
+        docker_container_name: "{{ gitea_docker_name }}"
+        docker_fact_name: gitea
+
     - name: Get latest gitea container release from github
       become: false
       community.general.github_release:
@@ -15,9 +24,10 @@
       delegate_to: localhost
       register: gitea_github_release
 
-    - name: Extract latest gitea container version
+    - name: Extract latest gitea container version & fix image version fact
       ansible.builtin.set_fact:
         gitea_latest_version: "{{ gitea_github_release.tag }}"
+        gitea_image_version: "v{{ gitea_image_version }}"
 
     - name: Stop play if gitea has no updates
       ansible.builtin.meta: end_play
