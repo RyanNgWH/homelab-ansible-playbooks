@@ -10,6 +10,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
       interval: 2s
       timeout: 20s
+    ulimits:
+      nofile: 2048
 
   scrutiny:
     container_name: {{ scrutiny_docker_name }}
