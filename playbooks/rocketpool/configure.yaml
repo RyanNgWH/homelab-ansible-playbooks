@@ -1,0 +1,18 @@
+# @format
+
+# Rocketpool
+# Configure the Rocketpool Ethereum staking node.
+---
+- name: Configure rockerpool docker override files
+  become: true
+  ansible.builtin.template:
+    src: templates/app.{{ item }}-override.yml
+    dest: "/home/rocketpool/.rocketpool/override/{{ item }}.yml"
+    owner: "{{ rocketpool_user_name }}"
+    group: "{{ rocketpool_user_name }}"
+    mode: "0664"
+  loop:
+    - alertmanager
+    - eth1
+    - eth2
+    - prometheus

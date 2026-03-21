@@ -1,0 +1,101 @@
+# @format
+
+# Rocketpool
+# Upgrade the Rocketpool Ethereum staking node
+---
+- name: Check if rocketpool requires update
+  become: true
+  block:
+    - name: Get rocketpool version file
+      ansible.builtin.slurp:
+        src: "{{ project_src }}/bin/VERSION"
+      register: version_file
+
+    - name: Extract version information
+      ansible.builtin.set_fact:
+        rocketpool_image_version: "{{ version_file['content'] | b64decode | trim }}"
+
+    - name: Get latest rocketpool release from github
+      become: false
+      community.general.github_release:
+        user: rocket-pool
+        repo: smartnode
+        action: latest_release
+      delegate_to: localhost
+      register: rocketpool_github_release
+
+    - name: Extract latest rocketpool version
+      ansible.builtin.set_fact:
+        rocketpool_latest_version: "{{ rocketpool_github_release.tag }}"
+
+    - name: Check if application has updates
+      ansible.builtin.set_fact:
+        rocketpool_has_updates: "{{ rocketpool_image_version != rocketpool_latest_version }}"
+
+    - name: Stop play if applications have no updates
+      ansible.builtin.meta: end_play
+      when: "(not rocketpool_has_updates)"
+
+- name: Take snapshot of Proxmox instance
+  ansible.builtin.import_role:
+    name: proxmox
+    public: false
+  vars:
+    proxmox_task_list: snapshot
+    proxmox_snapshot_name: "{{ 'pre_upgrade_' + (rocketpool_image_version | regex_replace('[.]', '-')) }}" # noqa: yaml[line-length]
+    proxmox_snapshot_description: |
+      [Ansible] Working snapshot of rocketpool {{ rocketpool_image_version }} before upgrading to {{ rocketpool_latest_version }}
+  delegate_to: localhost
+
+- name: Upgrade rocketpool ethereum staking node
+  become: true
+  block:
+    - name: Update apt cache, upgrade packages and remove unused dependencies
+      ansible.builtin.apt:
+        update_cache: true
+        upgrade: dist
+        autoremove: true
+        purge: true
+
+    - name: Stop rocketpool services
+      become: true
+      become_user: "{{ rocketpool_user_name }}"
+      ansible.builtin.command: "{{ project_src }}/bin/rocketpool service stop -y"
+      register: rocketpool_stop_services
+      changed_when: rocketpool_stop_services.rc == 0
+      failed_when: rocketpool_stop_services.rc != 0
+
+    - name: Fetch rocketpool cli binary
+      ansible.builtin.get_url:
+        url: https://github.com/rocket-pool/smartnode/releases/latest/download/rocketpool-cli-{{ ansible_facts['system'] }}-{{ debian_architecture[ansible_facts["architecture"]] }}
+        dest: "{{ project_src }}/bin/rocketpool"
+        owner: "{{ rocketpool_user_name }}"
+        group: "{{ rocketpool_user_name }}"
+        force: true
+        mode: "0755"
+      register: rocketpool_binary_fetched
+
+    - name: Update version file
+      ansible.builtin.template:
+        src: templates/app.VERSION
+        dest: "{{ project_src }}/bin/VERSION"
+        owner: "{{ rocketpool_user_name }}"
+        group: "{{ rocketpool_user_name }}"
+        mode: "0640"
+      when: rocketpool_binary_fetched.changed
+
+    - name: Update rocketpool services
+      become: true
+      become_user: "{{ rocketpool_user_name }}"
+      ansible.builtin.command: "{{ project_src }}/bin/rocketpool service install -d -y"
+      register: rocketpool_update_services
+      changed_when: rocketpool_update_services.rc == 0
+      failed_when: rocketpool_update_services.rc != 0
+
+    - name: Start rocketpool services
+      become: true
+      become_user: "{{ rocketpool_user_name }}"
+      ansible.builtin.command: "{{ project_src }}/bin/rocketpool service start -y"
+      register: rocketpool_start_services
+      changed_when: rocketpool_start_services.rc == 0
+      failed_when: rocketpool_start_services.rc != 0

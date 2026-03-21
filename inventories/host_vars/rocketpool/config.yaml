@@ -1,0 +1,26 @@
+# @format
+---
+## debian-13-setup variables
+# Datetime
+debian_datetime_ntp_server: 172.28.14.1
+
+# User
+debian_user_name: rina
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILGa/Z3IXJB2yrDFZ838uRG2Ve9ffJsex+3KdchwcQDs rina@rocketpool.tinynamoo.com"
+
+## Rocketpool variables
+project_src: /opt/rocketpool
+
+rocketpool_user_name: rocketpool
+rocketpool_user_id: 200
+rocketpool_user_shell: /bin/bash
+
+## NGINX variables
+nginx_conf_files:
+  - filename: prometheus.conf
+    path: templates/nginx.prometheus.conf
+
+## Proxmox instance variables
+proxmox_snapshot_vmid: 14200
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false

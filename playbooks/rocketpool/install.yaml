@@ -1,0 +1,79 @@
+# @format
+
+# Rocketpool
+# Install the Rocketpool Ethereum staking node.
+---
+- name: Ensure rocketpool user is present
+  become: true
+  block:
+    - name: Ensure rocketpool group is present
+      ansible.builtin.group:
+        name: "{{ rocketpool_user_name }}"
+        gid: "{{ rocketpool_user_id }}"
+        system: true
+        state: present
+
+    - name: Ensure rocketpool user is present
+      ansible.builtin.user:
+        name: "{{ rocketpool_user_name }}"
+        group: "{{ rocketpool_user_name }}"
+        groups:
+          - ansible
+          - docker
+          - sudo
+        password: "{{ rocketpool_user_password }}"
+        shell: "{{ rocketpool_user_shell }}"
+        create_home: true
+        uid: "{{ rocketpool_user_id }}"
+
+- name: Setup rocketpool application files
+  become: true
+  block:
+    - name: Ensure rocketpool directory is present
+      ansible.builtin.file:
+        path: "{{ project_src }}/bin"
+        owner: "{{ rocketpool_user_name }}"
+        group: "{{ rocketpool_user_name }}"
+        mode: "0750"
+        state: directory
+
+    - name: Get latest rocketpool release from github
+      become: false
+      community.general.github_release:
+        user: rocket-pool
+        repo: smartnode
+        action: latest_release
+      delegate_to: localhost
+      register: rocketpool_github_release
+
+    - name: Extract latest rocketpool version
+      ansible.builtin.set_fact:
+        rocketpool_latest_version: "{{ rocketpool_github_release.tag }}"
+
+    - name: Fetch rocketpool cli binary
+      ansible.builtin.get_url:
+        url: https://github.com/rocket-pool/smartnode/releases/latest/download/rocketpool-cli-{{ ansible_facts['system'] }}-{{ debian_architecture[ansible_facts["architecture"]] }}
+        dest: "{{ project_src }}/bin/rocketpool"
+        owner: "{{ rocketpool_user_name }}"
+        group: "{{ rocketpool_user_name }}"
+        force: true
+        mode: "0755"
+      register: rocketpool_binary_fetched
+
+    - name: Set version file
+      ansible.builtin.template:
+        src: templates/app.VERSION
+        dest: "{{ project_src }}/bin/VERSION"
+        owner: "{{ rocketpool_user_name }}"
+        group: "{{ rocketpool_user_name }}"
+        mode: "0640"
+      when: rocketpool_binary_fetched.changed
+
+- name: Install and configure nginx (for prometheus server)
+  vars:
+    debian_common_task_list:
+      - nginx
+    nginx_tls_domains:
+      - "{{ ansible_host }}"
+  ansible.builtin.include_role:
+    name: debian-common

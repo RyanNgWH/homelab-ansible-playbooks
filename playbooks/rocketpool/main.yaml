@@ -1,0 +1,31 @@
+# @format
+
+# Rocketpool
+# Install and configure the Rocketpool Ethereum staking node.
+---
+- name: Install and configure the Rocketpool Ethereum staking node
+  hosts: rocketpool
+
+  pre_tasks:
+    - name: Gather facts
+      ansible.builtin.setup:
+        gather_subset:
+          - default_ipv4
+      tags: always
+
+  roles:
+    - role: debian-13-setup
+      tags: install
+
+  tasks:
+    - name: Install the Rocketpool Ethereum staking node
+      ansible.builtin.import_tasks: install.yaml
+      tags: install
+
+    - name: Configure the Rocketpool Ethereum staking node
+      ansible.builtin.import_tasks: configure.yaml
+      tags: configure
+
+    - name: Upgrade the Rocketpool Ethereum staking node
+      ansible.builtin.import_tasks: upgrade.yaml
+      tags: upgrade
