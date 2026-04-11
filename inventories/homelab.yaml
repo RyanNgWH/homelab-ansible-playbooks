@@ -9,6 +9,8 @@ all:
       ansible_host: ansible.tinynamoo.com
     bazarr:
       ansible_host: subtitles.tinynamoo.com
+    bento_pdf:
+      ansible_host: pdf.tinynamoo.com
     drop:
       ansible_host: games.tinynamoo.com
     firefly:
@@ -88,6 +90,7 @@ debian:
     ansible_lxc:
     ansible_vm:
     bazarr:
+    bento_pdf:
     drop:
     firefly:
     gitea:
@@ -160,6 +163,7 @@ sierra_proxmox:
     ansible_lxc:
     ansible_vm:
     bazarr:
+    bento_pdf:
     drop:
     firefly:
     gitea:

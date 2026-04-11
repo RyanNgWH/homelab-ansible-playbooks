@@ -1,0 +1,16 @@
+# @format
+---
+services:
+  bento-pdf:
+    container_name: {{ bento_pdf_docker_name }}
+    image: ghcr.io/alam00000/bentopdf-simple:latest
+    environment:
+      DISABLE_ADDITIONAL_FEATURES: false
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:8080"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

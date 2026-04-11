@@ -1,0 +1,30 @@
+# @format
+---
+## debian-13-setup variables
+# Date time configurations
+debian_datetime_ntp_server: 172.28.20.1
+
+# User configurations
+debian_user_name: belle
+debian_user_ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ5TXE3NAWlolEKwpwXlpAkMGgon/0itV1rvWYfSJ6o8 belle@pdf.tinynamoo.com"
+
+bento_pdf_user_name: bento_pdf
+bento_pdf_user_id: 202
+bento_pdf_user_shell: /usr/sbin/nologin
+
+## NGINX variables
+nginx_conf_files:
+  - filename: bento-pdf.conf
+    path: templates/nginx.bento-pdf.conf
+
+# Bento-pdf variables
+bento_pdf_docker_name: bento-pdf
+
+## Proxmox variables
+proxmox_snapshot_vmid: 20040
+proxmox_snapshot_retention: 3
+proxmox_snapshot_include_ram: false
+
+## Docker variables
+docker_project_name: bento-pdf
+docker_project_src: /opt/bento-pdf
