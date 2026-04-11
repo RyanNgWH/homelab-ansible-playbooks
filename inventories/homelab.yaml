@@ -66,8 +66,6 @@ all:
       ansible_host: send.tinynamoo.com
     sonarr:
       ansible_host: tv.tinynamoo.com
-    stirling_pdf:
-      ansible_host: pdf.tinynamoo.com
     uptime_kuma:
       ansible_host: status.tinynamoo.com
     vikunja:
@@ -117,7 +115,6 @@ debian:
     scrutiny:
     send:
     sonarr:
-    stirling_pdf:
     uptime_kuma:
     vikunja:
     wallos:
@@ -190,7 +187,6 @@ sierra_proxmox:
     scrutiny:
     send:
     sonarr:
-    stirling_pdf:
     uptime_kuma:
     vikunja:
     wallos:
