@@ -6,14 +6,14 @@
 - name: Check if gitea requires update
   become: true
   block:
-    - name: Get current gitea server version
-      ansible.builtin.import_role:
-        name: docker
-        public: false
-      vars:
-        docker_task_list: get_container_image_version
-        docker_container_name: "{{ gitea_docker_name }}"
-        docker_fact_name: gitea
+    - name: Get gitea version file
+      ansible.builtin.slurp:
+        src: "{{ docker_project_src }}/VERSION"
+      register: version_file
+
+    - name: Extract version information
+      ansible.builtin.set_fact:
+        gitea_image_version: "{{ version_file['content'] | b64decode | trim }}"
 
     - name: Get latest gitea container release from github
       become: false
@@ -27,7 +27,6 @@
     - name: Extract latest gitea container version & fix image version fact
       ansible.builtin.set_fact:
         gitea_latest_version: "{{ gitea_github_release.tag }}"
-        gitea_image_version: "v{{ gitea_image_version }}"
 
     - name: Stop play if gitea has no updates
       ansible.builtin.meta: end_play
@@ -61,6 +60,7 @@
         remove_orphans: true
         pull: always
         state: present
+      register: docker_containers_updated
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
@@ -69,3 +69,12 @@
         images: true
         networks: true
         volumes: true
+
+    - name: Update version file
+      ansible.builtin.template:
+        src: templates/app.VERSION
+        dest: "{{ docker_project_src }}/VERSION"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+      when: docker_containers_updated.changed

@@ -118,9 +118,32 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest gitea container release from github
+  become: false
+  community.general.github_release:
+    user: go-gitea
+    repo: gitea
+    action: latest_release
+  delegate_to: localhost
+  register: gitea_github_release
+
+- name: Extract latest gitea container version & fix image version fact
+  ansible.builtin.set_fact:
+    gitea_latest_version: "{{ gitea_github_release.tag }}"
+
 - name: Start gitea docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: "{{ nfs_user_name }}"
+    group: "{{ nfs_user_name }}"
+    mode: "0640"
+  when: docker_containers_started.changed
