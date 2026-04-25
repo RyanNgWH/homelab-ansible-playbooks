@@ -85,3 +85,4 @@
         owner: "{{ bento_pdf_user_name }}"
         group: "{{ bento_pdf_user_name }}"
         mode: "0640"
+      when: docker_containers_updated.changed
