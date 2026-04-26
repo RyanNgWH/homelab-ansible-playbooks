@@ -48,7 +48,6 @@ cross_seed_ntfy_hostname: '{{ hostvars["ntfy"]["ansible_host"] }}'
 cross_seed_docker_name: cross-seed
 
 qbit_manage_docker_name: qbit-manage
-qbit_manage_image_version: v4.6.5
 
 ## Proxmox variables
 proxmox_snapshot_vmid: 17112

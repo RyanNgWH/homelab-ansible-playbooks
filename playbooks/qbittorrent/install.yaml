@@ -123,12 +123,35 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest qbit-manage container release from github
+  community.general.github_release:
+    user: StuffAnThings
+    repo: qbit_manage
+    action: latest_release
+  delegate_to: localhost
+  register: qbit_manage_github_release
+
+- name: Extract latest qbit-manage container version
+  ansible.builtin.set_fact:
+    qbit_manage_latest_version: "{{ qbit_manage_github_release.tag }}"
+
 - name: Start qbittorrent docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+  register: docker_containers_started
+
+- name: Set version file
+  become: true
+  ansible.builtin.template:
+    src: templates/app.qbit-manage.VERSION
+    dest: "{{ docker_project_src }}/qbit-manage.VERSION"
+    owner: "{{ nfs_user_name }}"
+    group: "{{ nfs_user_name }}"
+    mode: "0640"
+  when: docker_containers_started.changed
 
 - name: Setup ProtonVPN port forwarding
   become: true

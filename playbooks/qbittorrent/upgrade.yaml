@@ -15,8 +15,18 @@
       docker_user: cross-seed
       docker_repo: cross-seed
 
-- name: Get qbit-manage latest version
+- name: Get qbit-manage currnt and latest version
+  become: true
   block:
+    - name: Get qbit-manage version file
+      ansible.builtin.slurp:
+        src: "{{ docker_project_src }}/qbit-manage.VERSION"
+      register: version_file
+
+    - name: Extract version information
+      ansible.builtin.set_fact:
+        qbit_manage_image_version: "{{ version_file['content'] | b64decode | trim }}"
+
     - name: Get latest qbit-manage container release from github
       community.general.github_release:
         user: StuffAnThings
@@ -119,6 +129,7 @@
         - services: "{{ qbit_manage_docker_name }}"
           condition: "{{ qbit_manage_has_updates }}"
       when: item.condition
+      register: docker_containers_updated
 
     - name: Prune unused docker objects
       community.docker.docker_prune:
@@ -127,3 +138,15 @@
         images: true
         networks: true
         volumes: true
+
+    - name: Update version files
+      ansible.builtin.template:
+        src: templates/app.{{ item.name }}.VERSION
+        dest: "{{ docker_project_src }}/{{ item.name }}.VERSION"
+        owner: "{{ nfs_user_name }}"
+        group: "{{ nfs_user_name }}"
+        mode: "0640"
+      loop:
+        - name: qbit-manage
+          condition: "{{ qbit_manage_has_updates }}"
+      when: item.condition and docker_containers_updated.changed
