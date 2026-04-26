@@ -137,6 +137,7 @@
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+  register: docker_containers_started
 
 - name: Set version file
   become: true
