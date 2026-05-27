@@ -53,7 +53,7 @@
         sudoers_path: /usr/local/etc/sudoers.d
         state: present
 
-    - name: "Add SSH authorised key for user: {{ debian_user_name }}"
+    - name: "Add SSH authorised key for user: {{ sanoid_user_name }}"
       ansible.posix.authorized_key:
         user: "{{ sanoid_user_name }}"
         key: "{{ sanoid_ssh_public_key }}"
