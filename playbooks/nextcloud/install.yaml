@@ -99,9 +99,32 @@
   ansible.builtin.include_role:
     name: debian-common
 
+- name: Get latest nextcloud container release from github
+  become: false
+  community.general.github_release:
+    user: nextcloud
+    repo: docker
+    action: latest_release
+  delegate_to: localhost
+  register: nextcloud_github_release
+
+- name: Extract latest nextcloud container version
+  ansible.builtin.set_fact:
+    nextcloud_latest_version: "{{ nextcloud_github_release.tag }}"
+
 - name: Start nextcloud docker containers
   become: true
   community.docker.docker_compose_v2:
     project_name: "{{ docker_project_name }}"
     project_src: "{{ docker_project_src }}"
     state: present
+  register: docker_containers_started
+
+- name: Set version file
+  ansible.builtin.template:
+    src: templates/app.VERSION
+    dest: "{{ docker_project_src }}/VERSION"
+    owner: "{{ nfs_user_name }}"
+    group: "{{ nfs_user_name }}"
+    mode: "0640"
+  when: docker_containers_started.changed
