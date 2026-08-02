@@ -70,7 +70,7 @@
 
 - name: Extract latest containers versions
   ansible.builtin.set_fact:
-    karakeep_latest_version: "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
+    karakeep_latest_version: "{{ karakeep_github_release.tag }}" # noqa: var-naming[no-jinja]
 
 - name: Start karakeep docker containers
   become: true
