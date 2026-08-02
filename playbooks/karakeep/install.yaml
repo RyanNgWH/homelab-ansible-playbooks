@@ -68,9 +68,9 @@
   delegate_to: localhost
   register: karakeep_github_release
 
-- name: Extract latest scrutiny container version
+- name: Extract latest containers versions
   ansible.builtin.set_fact:
-    scrutiny_latest_version: "{{ scrutiny_github_release.tag }}"
+    karakeep_latest_version: "{{ github_release.tag }}" # noqa: var-naming[no-jinja]
 
 - name: Start karakeep docker containers
   become: true
