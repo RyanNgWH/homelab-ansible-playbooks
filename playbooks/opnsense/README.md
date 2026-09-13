@@ -24,5 +24,5 @@ Major updates of OPNsense could fail due to incompatible versions of `pkg`. This
 ### Example
 
 ```
-fetch https://pkg.opnsense.org/FreeBSD:14:amd64/25.1/MINT/25.1.12/latest/All/pkg-1.19.2_5.pkg && pkg install -f pkg-1.19.2_5.pkg
+fetch https://pkg.opnsense.org/FreeBSD:15:amd64/26.7/MINT/26.7.3/latest/All/pkg-2.3.1_1.pkg && pkg install -f pkg-2.3.1_1.pkg
 ```

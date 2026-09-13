@@ -5,7 +5,7 @@
   block:
     - name: Enable FreeBSD pkg repository
       ansible.builtin.copy:
-        content: "FreeBSD: { enabled: yes }"
+        content: "FreeBSD-ports: { enabled: yes }"
         dest: /usr/local/etc/pkg/repos/FreeBSD.conf
         owner: root
         group: wheel
@@ -20,7 +20,7 @@
 
     - name: Disable FreeBSD pkg repository
       ansible.builtin.copy:
-        content: "FreeBSD: { enabled: no }"
+        content: "FreeBSD-ports: { enabled: no }"
         dest: /usr/local/etc/pkg/repos/FreeBSD.conf
         owner: root
         group: wheel
