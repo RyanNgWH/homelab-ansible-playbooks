@@ -19,7 +19,7 @@ services:
 
   piped:
     container_name: piped-backend
-    image: 1337kavin/piped:latest
+    image: ghcr.io/spendable1569/piped-backend:beta
     volumes:
       - ./config/config.properties:/app/config.properties:ro
     depends_on:
