@@ -1,7 +1,7 @@
 services:
   grafana:
     container_name: {{ docker_project_name }}
-    image: grafana/grafana:main
+    image: grafana/grafana:latest
     environment:
       GF_DEFAULT_INSTANCE_NAME: {{ ansible_facts["hostname"] }}
 

@@ -13,7 +13,7 @@
 
     - name: Extract version information
       ansible.builtin.set_fact:
-        kuma_image_version: "{{ version_file['content'] | b64decode | trim }}"
+        grafana_image_version: "{{ version_file['content'] | b64decode | trim }}"
 
     - name: Get latest grafana release from github
       become: false
