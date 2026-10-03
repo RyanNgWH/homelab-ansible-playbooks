@@ -8,7 +8,7 @@ services:
       VIKUNJA_DATABASE_TYPE: postgres
       VIKUNJA_DATABASE_USER: vikunja
       VIKUNJA_DATABASE_DATABASE: vikunja
-      VIKUNJA_SERVICE_JWTSECRET: "{{ vikunja_service_jwtsecret }}"
+      VIKUNJA_SERVICE_SECRET: "{{ vikunja_service_secret }}"
       VIKUNJA_REDIS_ENABLED: 1
       VIKUNJA_REDIS_HOST: redis:6379
       VIKUNJA_CACHE_ENABLED: 1
