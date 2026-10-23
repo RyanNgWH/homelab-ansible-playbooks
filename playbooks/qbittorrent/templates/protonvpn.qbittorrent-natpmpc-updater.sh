@@ -17,7 +17,7 @@ findactiveport() {
 }
 
 qbt_login() {
-  qbt_sid=$(curl -s -i --header "Referer: https://{{ ansible_host }}" --data "username={{ qbit_username }}" --data-urlencode "password={{ natpmpc_qbit_password }}" "https://{{ ansible_host }}/api/v2/auth/login" | grep -oP '(?!set-cookie:.)SID=.*(?=\;.HttpOnly\;)')
+  qbt_sid=$(curl -s -i --header "Referer: https://{{ ansible_host }}" --data "username={{ qbit_username }}" --data-urlencode "password={{ natpmpc_qbit_password }}" "https://{{ ansible_host }}/api/v2/auth/login" | grep -oP '(?!set-cookie:.*)QBT_SID.*=.*(?=\;.HttpOnly\;)')
   return $?
 }
 
