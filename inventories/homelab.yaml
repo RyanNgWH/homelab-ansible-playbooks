@@ -19,8 +19,6 @@ all:
       ansible_host: git.tinynamoo.com
     grafana:
       ansible_host: monitor.tinynamoo.com
-    homarr:
-      ansible_host: tinynamoo.com
     immich:
       ansible_host: photos.tinynamoo.com
     it_tools:
@@ -93,7 +91,6 @@ debian:
     firefly:
     gitea:
     grafana:
-    homarr:
     immich:
     it_tools:
     jellyfin:
@@ -165,7 +162,6 @@ sierra_proxmox:
     firefly:
     gitea:
     grafana:
-    homarr:
     immich:
     it_tools:
     jellyfin:
