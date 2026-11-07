@@ -7,7 +7,7 @@ services:
       USERMAP_UID: {{ nfs_user_id }}
       USERMAP_GID: {{ nfs_user_id }}
 
-      PAPERLESS_REDIS: redis://broker:6379
+      PAPERLESS_REDIS: redis://valkey:6379
 
       PAPERLESS_DBHOST: postgres
       PAPERLESS_DBUSER: paperless
@@ -25,7 +25,7 @@ services:
       - {{ nfs_mounts.alyssa.mount_point }}/paperless/export:/usr/src/paperless/export
     depends_on:
       - postgres
-      - broker
+      - valkey
       - gotenberg
       - tika
     restart: unless-stopped
@@ -42,9 +42,11 @@ services:
     restart: unless-stopped
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
 
-  broker:
-    container_name: broker
+  valkey:
+    container_name: valkey
     image: docker.io/valkey/valkey:9-alpine
+    healthcheck:
+      test: redis-cli ping | grep -q PONG || exit 1
     restart: unless-stopped
 
   gotenberg:
