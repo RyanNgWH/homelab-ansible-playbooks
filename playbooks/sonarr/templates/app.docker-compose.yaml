@@ -69,13 +69,13 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:16
+    image: postgres:18
     environment:
       POSTGRES_DB: sonarr-main
       POSTGRES_USER: sonarr
       POSTGRES_PASSWORD: {{ sonarr_postgres_pass }}
     volumes:
-      - {{ debian_additional_disks["postgres"]["mount_point"] }}/sonarr/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/sonarr/db:/var/lib/postgresql
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
     healthcheck:
