@@ -1,7 +1,7 @@
 services:
   influxdb:
     container_name: influxdb
-    image: influxdb:2.2
+    image: influxdb:2.9
     volumes:
       - {{ debian_additional_disks["postgres"]["mount_point"] }}/scrutiny/influxdb2:/var/lib/influxdb2
     user: {{ scrutiny_user_id }}:{{ scrutiny_user_id }}
