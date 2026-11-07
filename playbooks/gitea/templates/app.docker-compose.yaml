@@ -86,7 +86,7 @@ services:
       - postgres
 
   postgres:
-    image: postgres:16
+    image: postgres:18
     container_name: postgres
     restart: unless-stopped
     environment:
@@ -96,5 +96,5 @@ services:
     networks:
       - gitea
     volumes:
-      - {{ debian_additional_disks["postgres"]["mount_point"] }}/gitea/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/gitea/db:/var/lib/postgresql
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
