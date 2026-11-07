@@ -41,7 +41,7 @@ services:
 
   meilisearch:
     container_name: {{ meilisearch_docker_name }}
-    image: getmeili/meilisearch:v1.13.3
+    image: getmeili/meilisearch:v1.55.0
     env_file:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/karakeep/.env
     environment:
