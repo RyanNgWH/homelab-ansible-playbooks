@@ -59,13 +59,13 @@ services:
 
   postgres:
     container_name: postgres
-    image: postgres:17
+    image: postgres:18
     environment:
       POSTGRES_DB: grafana
       POSTGRES_USER: grafana
       POSTGRES_PASSWORD: {{ grafana_postgres_pass }}
     volumes:
-      - {{ debian_additional_disks["postgres"]["mount_point"] }}/grafana/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/grafana/db:/var/lib/postgresql
     user: {{ grafana_user_id }}:{{ grafana_user_id }}
     restart: unless-stopped
     healthcheck:
