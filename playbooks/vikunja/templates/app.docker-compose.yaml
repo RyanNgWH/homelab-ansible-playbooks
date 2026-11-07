@@ -10,7 +10,7 @@ services:
       VIKUNJA_DATABASE_DATABASE: vikunja
       VIKUNJA_SERVICE_SECRET: "{{ vikunja_service_secret }}"
       VIKUNJA_REDIS_ENABLED: 1
-      VIKUNJA_REDIS_HOST: redis:6379
+      VIKUNJA_REDIS_HOST: valkey:6379
       VIKUNJA_CACHE_ENABLED: 1
       VIKUNJA_CACHE_TYPE: 1
     ports:
@@ -21,7 +21,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
+      valkey:
         condition: service_healthy
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
@@ -42,11 +42,9 @@ services:
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
 
-  redis:
-    container_name: redis
-    image: redis
-    user: {{ nfs_user_id }}:{{ nfs_user_id }}
+  valkey:
+    container_name: valkey
+    image: docker.io/valkey/valkey:latest
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 2s
+      test: redis-cli ping | grep -q PONG || exit 1
     restart: unless-stopped
