@@ -7,7 +7,7 @@ services:
       USERMAP_UID: {{ nfs_user_id }}
       USERMAP_GID: {{ nfs_user_id }}
 
-      PAPERLESS_REDIS: redis://redis:6379
+      PAPERLESS_REDIS: redis://broker:6379
 
       PAPERLESS_DBHOST: postgres
       PAPERLESS_DBUSER: paperless
@@ -25,26 +25,26 @@ services:
       - {{ nfs_mounts.alyssa.mount_point }}/paperless/export:/usr/src/paperless/export
     depends_on:
       - postgres
-      - redis
+      - broker
       - gotenberg
       - tika
     restart: unless-stopped
 
   postgres:
     container_name: postgres
-    image: docker.io/library/postgres:16
+    image: docker.io/library/postgres:18
     environment:
       POSTGRES_DB: paperless
       POSTGRES_USER: paperless
       POSTGRES_PASSWORD: {{ paperless_postgres_pass }}
     volumes:
-      - {{ debian_additional_disks["postgres"]["mount_point"] }}/paperless/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/paperless/db:/var/lib/postgresql
     restart: unless-stopped
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
 
-  redis:
-    container_name: redis
-    image: docker.io/library/redis:8
+  broker:
+    container_name: broker
+    image: docker.io/valkey/valkey:9-alpine
     restart: unless-stopped
 
   gotenberg:
