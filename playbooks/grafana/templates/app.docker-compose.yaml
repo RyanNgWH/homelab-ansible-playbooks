@@ -17,7 +17,7 @@ services:
       GF_DATABASE_PASSWORD: {{ grafana_postgres_pass }}
 
       GF_REMOTE_CACHE_TYPE: redis
-      GF_REMOTE_CACHE_CONNSTR: addr=redis:6379
+      GF_REMOTE_CACHE_CONNSTR: addr=valkey:6379
 
       GF_ANALYTICS_REPORTING_ENABLED: false
       GF_ANALYTICS_CHECK_FOR_UPDATES: true
@@ -54,7 +54,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
+      valkey:
         condition: service_healthy
 
   postgres:
@@ -73,10 +73,9 @@ services:
       interval: 2s
       timeout: 20s
 
-  redis:
-    container_name: redis
-    image: 'redis:alpine'
+  valkey:
+    container_name: valkey
+    image: docker.io/valkey/valkey:latest
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 2s
+      test: redis-cli ping | grep -q PONG || exit 1
     restart: unless-stopped
