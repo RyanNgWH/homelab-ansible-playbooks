@@ -8,7 +8,7 @@ services:
       POSTGRES_USER: nextcloud
       POSTGRES_PASSWORD: '{{ nextcloud_postgres_pass }}'
 
-      REDIS_HOST: redis
+      REDIS_HOST: valkey
 
       NEXTCLOUD_DATA_DIR: /srv/nextcloud/data
       NEXTCLOUD_TRUSTED_DOMAINS: {{ ansible_host }}
@@ -37,7 +37,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
+      valkey:
         condition: service_healthy
       clamav:
         condition: service_healthy
@@ -63,16 +63,15 @@ services:
       interval: 2s
       timeout: 20s
 
-  redis:
-    container_name: redis
-    image: redis:alpine
+  valkey:
+    container_name: valkey
+    image: docker.io/valkey/valkey:latest
     restart: unless-stopped
     networks:
       nextcloud:
         ipv4_address: "172.18.0.4"
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 2s
+      test: redis-cli ping | grep -q PONG || exit 1
 
   clamav:
     container_name: clamav
