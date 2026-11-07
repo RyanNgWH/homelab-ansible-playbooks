@@ -60,9 +60,9 @@
   delegate_to: localhost
   register: grafana_github_release
 
-- name: Fix application docker image versionings in fact
+- name: Extract latest containers versions
   ansible.builtin.set_fact:
-    grafana_latest_version: "v{{ grafana_latest_version }}"
+    grafana_latest_version: "{{ grafana_github_release.tag }}" # noqa: var-naming[no-jinja]
 
 - name: Start grafana docker containers
   become: true
