@@ -3,7 +3,7 @@ services:
     container_name: {{ vikunja_docker_name }}
     image: vikunja/vikunja
     environment:
-      VIKUNJA_DATABASE_HOST: db
+      VIKUNJA_DATABASE_HOST: postgres
       VIKUNJA_DATABASE_PASSWORD: {{ vikunja_database_password }}
       VIKUNJA_DATABASE_TYPE: postgres
       VIKUNJA_DATABASE_USER: vikunja
@@ -19,22 +19,22 @@ services:
       - {{ nfs_mounts.tiffany.mount_point }}/vikunja/files:/app/vikunja/files
       - ./config.yaml:/etc/vikunja/config.yaml
     depends_on:
-      db:
+      postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
     restart: unless-stopped
 
-  db:
+  postgres:
     container_name: postgres
-    image: postgres:16
+    image: postgres:18
     environment:
       POSTGRES_PASSWORD: {{ vikunja_database_password }}
       POSTGRES_USER: vikunja
       POSTGRES_DB: vikunja
     volumes:
-      - {{ debian_additional_disks["postgres"]["mount_point"] }}/vikunja/db:/var/lib/postgresql/data
+      - {{ debian_additional_disks["postgres"]["mount_point"] }}/vikunja/db:/var/lib/postgresql
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "vikunja"]
       interval: 2s
