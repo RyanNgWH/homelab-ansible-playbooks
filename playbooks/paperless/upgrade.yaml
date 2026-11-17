@@ -81,7 +81,7 @@
         - services:
             - "{{ paperless_docker_name }}"
             - postgres
-            - broker
+            - valkey
             - tika
           condition: "{{ paperless_has_updates }}"
         - services: "{{ gotenberg_docker_name }}"
