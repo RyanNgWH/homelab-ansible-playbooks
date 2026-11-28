@@ -55,9 +55,10 @@ services:
 
   recyclarr:
     container_name: {{ recyclarr_docker_name }}
-    image: ghcr.io/recyclarr/recyclarr:8
+    image: ghcr.io/recyclarr/recyclarr:9
     environment:
       TZ: {{ debian_datetime_timezone }}
+      RECYCLARR_API_KEY: {{ recyclarr_api_key }}
     volumes:
       - {{ debian_additional_disks["appdata"]["mount_point"] }}/recyclarr/config:/config
     user: {{ nfs_user_id }}:{{ nfs_user_id }}
